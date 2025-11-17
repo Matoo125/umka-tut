@@ -1,0 +1,44 @@
+import "time.um"
+
+fn main() {
+    var startTime = time.now()
+    var reversed = false     // false = counting forward, true = counting backward
+    var elapsed: real        // in seconds
+    var input: str
+
+    printf("Timer started!\n")
+    printf("Press: L = lapse, R = reverse, S = stop\n\n")
+
+    loop {
+        printf("Command: ")
+        scanf("%s", &input)
+
+        // Calculate elapsed time
+        elapsed = time.now() - startTime
+
+        // Apply reverse mode
+        if reversed {
+            elapsed = -elapsed
+        }
+
+        match input {
+            "L" => {
+                printf("Elapsed time: %.3f seconds\n", elapsed)
+            }
+
+            "R" => {
+                reversed = !reversed
+                printf("Reverse mode: %s\n", if reversed { "ON" } else { "OFF" })
+            }
+
+            "S" => {
+                printf("Final time: %.3f seconds\n", elapsed)
+                printf("Timer stopped.\n")
+                break
+            }
+
+            _ => printf("Unknown command.\n")
+        }
+    }
+}
+
