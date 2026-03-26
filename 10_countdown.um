@@ -1,0 +1,17 @@
+fn main() {
+    var start: int32
+
+    printf("Enter countdown start: ")
+    scanf("%d", &start)
+
+    if start < 0 {
+        printf("Countdown start must be zero or greater.\n")
+        return
+    }
+
+    for i := start; i >= 0; i-- {
+        printf("%d\n", i)
+    }
+
+    printf("Lift off!\n")
+}

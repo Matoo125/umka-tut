@@ -1,0 +1,18 @@
+fn main() {
+    var size: int32
+
+    printf("Enter table size: ")
+    scanf("%d", &size)
+
+    if size <= 0 {
+        printf("Table size must be positive.\n")
+        return
+    }
+
+    for row := 1; row <= size; row++ {
+        for col := 1; col <= size; col++ {
+            printf("%4d", row * col)
+        }
+        printf("\n")
+    }
+}

@@ -1,0 +1,18 @@
+fn main() {
+    var choice: str
+    var value: real32
+
+    printf("Choose conversion (CtoF or FtoC): ")
+    scanf("%s", &choice)
+
+    printf("Enter temperature value: ")
+    scanf("%f", &value)
+
+    if choice == "CtoF" {
+        printf("Result: %.2f\n", value * 9 / 5 + 32)
+    } else if choice == "FtoC" {
+        printf("Result: %.2f\n", (value - 32) * 5 / 9)
+    } else {
+        printf("Unknown conversion type.\n")
+    }
+}

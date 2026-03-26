@@ -1,0 +1,35 @@
+fn drawTable(width: int, height: int) {
+    // Top border
+    printf("+")
+    for i := 1; i <= width - 2; i++ { printf("-") }
+    printf("+\n")
+
+    // Middle rows
+    for row := 1; row <= height - 2; row++ {
+        printf("|")
+        for col := 1; col <= width - 2; col++ { printf(" ") }
+        printf("|\n")
+    }
+
+    // Bottom border
+    printf("+")
+    for i := 1; i <= width - 2; i++ { printf("-") }
+    printf("+\n")
+}
+
+fn main() {
+    var w, h: int32
+
+    printf("Enter table width: ")
+    scanf("%d", &w)
+
+    printf("Enter table height: ")
+    scanf("%d", &h)
+
+    if w < 2 || h < 2 {
+        printf("Width and height must be at least 2.\n")
+        return
+    }
+
+    drawTable(w, h)
+}
