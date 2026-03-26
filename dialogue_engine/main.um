@@ -1,0 +1,5 @@
+import "engine.um"
+
+fn main() {
+    engine::runFromArgs()
+}

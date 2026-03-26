@@ -1,0 +1,566 @@
+import "std.um"
+
+const (
+    maxChoices*    = int32(4)
+    maxEffects*    = int32(4)
+    maxConditions* = int32(4)
+    maxVars*       = int32(16)
+    nodeIntro*     = "intro"
+)
+
+type Variable* = struct {
+    name: str
+    value: int32
+}
+
+type State* = struct {
+    varCount: int32
+    vars: [maxVars]Variable
+}
+
+type Effect* = struct {
+    name: str
+    op: str
+    value: int32
+}
+
+type Condition* = struct {
+    name: str
+    op: str
+    value: int32
+}
+
+type Choice* = struct {
+    text: str
+    target: str
+    effectCount: int32
+    effects: [maxEffects]Effect
+    conditionCount: int32
+    conditions: [maxConditions]Condition
+}
+
+type Node* = struct {
+    id: str
+    speaker: str
+    text: str
+    isEnding: bool
+    endingText: str
+    effectCount: int32
+    effects: [maxEffects]Effect
+    choiceCount: int32
+    choices: [maxChoices]Choice
+}
+
+type Story* = struct {
+    title: str
+    underline: str
+    initialState: State
+    nodes: []Node
+    parseError: str
+}
+
+type SaveData* = struct {
+    found: bool
+    nodeId: str
+    nodeEffectsApplied: bool
+    state: State
+}
+
+fn getVarIndex(state: State, name: str): int32 {
+    for i := int32(0); i < state.varCount; i++ {
+        if state.vars[i].name == name {
+            return i
+        }
+    }
+
+    return -1
+}
+
+fn getVar*(state: State, name: str): int32 {
+    idx := getVarIndex(state, name)
+    return idx >= 0 ? state.vars[idx].value : 0
+}
+
+fn setVar*(state: ^State, name: str, value: int32) {
+    idx := getVarIndex(state^, name)
+    if idx >= 0 {
+        state^.vars[idx].value = value
+    } else if state^.varCount < maxVars {
+        state^.vars[state^.varCount].name = name
+        state^.vars[state^.varCount].value = value
+        state^.varCount++
+    }
+}
+
+fn initialState*(game: Story): State {
+    return game.initialState
+}
+
+fn argc*(): int {
+    return std::argc()
+}
+
+fn argv*(i: int): str {
+    return std::argv(i)
+}
+
+fn appendString(chars: ^[]char, s: str) {
+    for i := 0; i < len(s); i++ {
+        chars^ = append(chars^, s[i])
+    }
+}
+
+fn applyEffect(state: ^State, effect: Effect) {
+    current := getVar(state^, effect.name)
+
+    if effect.op == "set" {
+        setVar(state, effect.name, effect.value)
+    } else if effect.op == "add" {
+        setVar(state, effect.name, current + effect.value)
+    } else if effect.op == "sub" {
+        setVar(state, effect.name, current - effect.value)
+    }
+}
+
+fn applyNodeEffects*(state: State, node: Node): State {
+    for i := int32(0); i < node.effectCount; i++ {
+        applyEffect(&state, node.effects[i])
+    }
+
+    return state
+}
+
+fn applyChoice*(state: State, choice: Choice): (State, str) {
+    for i := int32(0); i < choice.effectCount; i++ {
+        applyEffect(&state, choice.effects[i])
+    }
+
+    return state, choice.target
+}
+
+fn matchesCondition(state: State, condition: Condition): bool {
+    value := getVar(state, condition.name)
+
+    if condition.op == "==" {
+        return value == condition.value
+    } else if condition.op == "!=" {
+        return value != condition.value
+    } else if condition.op == ">=" {
+        return value >= condition.value
+    } else if condition.op == "<=" {
+        return value <= condition.value
+    } else if condition.op == ">" {
+        return value > condition.value
+    } else if condition.op == "<" {
+        return value < condition.value
+    }
+
+    return false
+}
+
+fn isChoiceVisible*(choice: Choice, state: State): bool {
+    for i := int32(0); i < choice.conditionCount; i++ {
+        if !matchesCondition(state, choice.conditions[i]) {
+            return false
+        }
+    }
+
+    return true
+}
+
+fn interpolate*(template: str, state: State): str {
+    chars := []char{}
+    nameChars := []char{}
+    inPlaceholder := false
+
+    for i := 0; i < len(template); i++ {
+        if inPlaceholder {
+            if template[i] == '}' {
+                name := std::trim(str(nameChars))
+                valueText := std::itoa(getVar(state, name))
+                appendString(&chars, valueText)
+                nameChars = []char{}
+                inPlaceholder = false
+            } else {
+                nameChars = append(nameChars, template[i])
+            }
+        } else if template[i] == '{' {
+            inPlaceholder = true
+            nameChars = []char{}
+        } else {
+            chars = append(chars, template[i])
+        }
+    }
+
+    if inPlaceholder {
+        chars = append(chars, '{')
+        appendString(&chars, str(nameChars))
+    }
+
+    return str(chars)
+}
+
+fn findNode*(game: Story, id: str): Node {
+    for i := 0; i < len(game.nodes); i++ {
+        if game.nodes[i].id == id {
+            return game.nodes[i]
+        }
+    }
+
+    var missing: Node
+    missing.isEnding = true
+    missing.endingText = "Story error: missing node."
+    return missing
+}
+
+fn startsWith(s: str, prefix: str): bool {
+    if len(prefix) > len(s) {
+        return false
+    }
+
+    for i := 0; i < len(prefix); i++ {
+        if s[i] != prefix[i] {
+            return false
+        }
+    }
+
+    return true
+}
+
+fn afterPrefix(s: str, prefix: str): str {
+    chars := []char{}
+
+    for i := len(prefix); i < len(s); i++ {
+        chars = append(chars, s[i])
+    }
+
+    return std::trim(str(chars))
+}
+
+fn splitLines(content: str): []str {
+    var lines: []str
+    chars := []char{}
+
+    for i := 0; i < len(content); i++ {
+        if content[i] == '\n' {
+            lines = append(lines, std::trim(str(chars)))
+            chars = []char{}
+        } else if content[i] != '\r' {
+            chars = append(chars, content[i])
+        }
+    }
+
+    if len(chars) > 0 {
+        lines = append(lines, std::trim(str(chars)))
+    }
+
+    return lines
+}
+
+fn splitFields(line: str): []str {
+    var fields: []str
+    chars := []char{}
+
+    for i := 0; i < len(line); i++ {
+        if line[i] == '|' {
+            fields = append(fields, std::trim(str(chars)))
+            chars = []char{}
+        } else {
+            chars = append(chars, line[i])
+        }
+    }
+
+    fields = append(fields, std::trim(str(chars)))
+    return fields
+}
+
+fn parseEffectFields(fields: []str): Effect {
+    var effect: Effect
+
+    if len(fields) >= 3 {
+        effect.name = fields[0]
+        effect.op = fields[1]
+        effect.value = int32(std::atoi(fields[2]))
+    }
+
+    return effect
+}
+
+fn parseConditionFields(fields: []str): Condition {
+    var condition: Condition
+
+    if len(fields) >= 3 {
+        condition.name = fields[0]
+        condition.op = fields[1]
+        condition.value = int32(std::atoi(fields[2]))
+    }
+
+    return condition
+}
+
+fn readFile(path: str): str {
+    f, _ := std::fopen(path, "r")
+    data, _ := std::freadall(f)
+    std::fclose(f)
+    return str(data)
+}
+
+fn hasNode(game: Story, id: str): bool {
+    for i := 0; i < len(game.nodes); i++ {
+        if game.nodes[i].id == id {
+            return true
+        }
+    }
+
+    return false
+}
+
+fn isValidEffectOp(op: str): bool {
+    return op == "set" || op == "add" || op == "sub"
+}
+
+fn isValidConditionOp(op: str): bool {
+    return op == "==" || op == "!=" || op == ">=" || op == "<=" || op == ">" || op == "<"
+}
+
+fn validateStory*(game: Story): (bool, str) {
+    if game.parseError != "" {
+        return false, game.parseError
+    }
+
+    if game.title == "" {
+        return false, "Story is missing a title."
+    }
+
+    if !hasNode(game, nodeIntro) {
+        return false, "Story is missing the required start node: intro"
+    }
+
+    for i := 0; i < len(game.nodes); i++ {
+        node := game.nodes[i]
+        if node.id == "" {
+            return false, "A node is missing its ID."
+        }
+
+        for j := i + 1; j < len(game.nodes); j++ {
+            if node.id == game.nodes[j].id {
+                return false, "Duplicate node ID: " + node.id
+            }
+        }
+
+        if node.isEnding {
+            if node.endingText == "" {
+                return false, "Ending node is missing ending_text: " + node.id
+            }
+            if node.choiceCount > 0 {
+                return false, "Ending node cannot define choices: " + node.id
+            }
+        } else if node.choiceCount == 0 {
+            return false, "Non-ending node has no choices: " + node.id
+        }
+
+        for j := int32(0); j < node.effectCount; j++ {
+            if !isValidEffectOp(node.effects[j].op) {
+                return false, "Invalid node_effect operator on node " + node.id + ": " + node.effects[j].op
+            }
+        }
+
+        for j := int32(0); j < node.choiceCount; j++ {
+            choice := node.choices[j]
+            if choice.text == "" {
+                return false, "A choice on node " + node.id + " is missing text."
+            }
+            if choice.target == "" {
+                return false, "A choice on node " + node.id + " is missing a target."
+            }
+            if !hasNode(game, choice.target) {
+                return false, "Choice on node " + node.id + " targets missing node: " + choice.target
+            }
+
+            for k := int32(0); k < choice.effectCount; k++ {
+                if !isValidEffectOp(choice.effects[k].op) {
+                    return false, "Invalid choice_effect operator on node " + node.id + ": " + choice.effects[k].op
+                }
+            }
+
+            for k := int32(0); k < choice.conditionCount; k++ {
+                if !isValidConditionOp(choice.conditions[k].op) {
+                    return false, "Invalid choice_when operator on node " + node.id + ": " + choice.conditions[k].op
+                }
+            }
+        }
+    }
+
+    return true, ""
+}
+
+fn saveExists*(path: str): bool {
+    return len(readFile(path)) > 0
+}
+
+fn writeSave*(path: str, nodeId: str, nodeEffectsApplied: bool, state: State) {
+    chars := []char{}
+    f, _ := std::fopen(path, "w")
+    if len(nodeId) == 0 {
+        return
+    }
+
+    appendString(&chars, "node:")
+    appendString(&chars, nodeId)
+    appendString(&chars, "\n")
+    appendString(&chars, "node_effects_applied:")
+    appendString(&chars, nodeEffectsApplied ? "1\n" : "0\n")
+
+    for i := int32(0); i < state.varCount; i++ {
+        appendString(&chars, "var:")
+        appendString(&chars, state.vars[i].name)
+        appendString(&chars, "|")
+        appendString(&chars, std::itoa(state.vars[i].value))
+        appendString(&chars, "\n")
+    }
+
+    written, writeErr := std::fwrite(f, chars)
+    closeErr := std::fclose(f)
+}
+
+fn clearSave*(path: str) {
+    removeErr := std::remove(path)
+}
+
+fn loadSave*(path: str, defaultNodeId: str, defaultState: State): SaveData {
+    lines := splitLines(readFile(path))
+    var save: SaveData
+
+    save.nodeId = defaultNodeId
+    save.state = defaultState
+
+    for i := 0; i < len(lines); i++ {
+        line := lines[i]
+        if line == "" || startsWith(line, "#") {
+            continue
+        }
+
+        if startsWith(line, "node:") {
+            save.nodeId = afterPrefix(line, "node:")
+            save.found = true
+        } else if startsWith(line, "node_effects_applied:") {
+            save.nodeEffectsApplied = afterPrefix(line, "node_effects_applied:") == "1"
+        } else if startsWith(line, "var:") {
+            fields := splitFields(afterPrefix(line, "var:"))
+            if len(fields) >= 2 {
+                setVar(&save.state, fields[0], int32(std::atoi(fields[1])))
+            }
+        }
+    }
+
+    return save
+}
+
+fn loadStory*(path: str): Story {
+    content := readFile(path)
+    lines := splitLines(content)
+    var game: Story
+    var current: Node
+    hasCurrent := false
+    currentChoice := int32(-1)
+
+    game.underline = "---------"
+
+    for i := 0; i < len(lines); i++ {
+        line := lines[i]
+        if line == "" || startsWith(line, "#") {
+            continue
+        }
+
+        if startsWith(line, "title:") {
+            game.title = afterPrefix(line, "title:")
+        } else if startsWith(line, "underline:") {
+            game.underline = afterPrefix(line, "underline:")
+        } else if startsWith(line, "var:") {
+            fields := splitFields(afterPrefix(line, "var:"))
+            if len(fields) >= 2 {
+                setVar(&game.initialState, fields[0], int32(std::atoi(fields[1])))
+            } else if game.parseError == "" {
+                game.parseError = "Invalid var line: " + line
+            }
+        } else if startsWith(line, "node:") {
+            if hasCurrent {
+                game.nodes = append(game.nodes, current)
+            }
+
+            current = Node{}
+            current.id = afterPrefix(line, "node:")
+            hasCurrent = true
+            currentChoice = -1
+        } else if startsWith(line, "speaker:") {
+            current.speaker = afterPrefix(line, "speaker:")
+        } else if startsWith(line, "text:") {
+            current.text = afterPrefix(line, "text:")
+        } else if startsWith(line, "node_effect:") {
+            if current.effectCount >= maxEffects {
+                game.parseError = "Too many node_effect entries on node: " + current.id
+                return game
+            }
+            current.effects[current.effectCount] = parseEffectFields(splitFields(afterPrefix(line, "node_effect:")))
+            current.effectCount++
+        } else if startsWith(line, "choice:") {
+            fields := splitFields(afterPrefix(line, "choice:"))
+            if current.choiceCount >= maxChoices {
+                game.parseError = "Too many choices on node: " + current.id
+                return game
+            }
+            currentChoice = current.choiceCount
+            current.choices[currentChoice].text = fields[0]
+            if len(fields) >= 2 {
+                current.choices[currentChoice].target = fields[1]
+            } else if game.parseError == "" {
+                game.parseError = "Invalid choice line: " + line
+                return game
+            }
+            current.choiceCount++
+        } else if startsWith(line, "choice_when:") {
+            if currentChoice < 0 {
+                game.parseError = "choice_when appears before any choice in node: " + current.id
+                return game
+            }
+            if current.choices[currentChoice].conditionCount >= maxConditions {
+                game.parseError = "Too many choice_when entries on node: " + current.id
+                return game
+            }
+            fields := splitFields(afterPrefix(line, "choice_when:"))
+            current.choices[currentChoice].conditions[current.choices[currentChoice].conditionCount] = parseConditionFields(fields)
+            current.choices[currentChoice].conditionCount++
+        } else if startsWith(line, "choice_effect:") {
+            if currentChoice < 0 {
+                game.parseError = "choice_effect appears before any choice in node: " + current.id
+                return game
+            }
+            if current.choices[currentChoice].effectCount >= maxEffects {
+                game.parseError = "Too many choice_effect entries on node: " + current.id
+                return game
+            }
+            fields := splitFields(afterPrefix(line, "choice_effect:"))
+            current.choices[currentChoice].effects[current.choices[currentChoice].effectCount] = parseEffectFields(fields)
+            current.choices[currentChoice].effectCount++
+        } else if line == "ending" {
+            current.isEnding = true
+        } else if startsWith(line, "ending_text:") {
+            current.endingText = afterPrefix(line, "ending_text:")
+        } else if line == "endnode" {
+            if hasCurrent {
+                game.nodes = append(game.nodes, current)
+                hasCurrent = false
+                currentChoice = -1
+            }
+        } else if game.parseError == "" {
+            game.parseError = "Unknown story line: " + line
+            return game
+        }
+    }
+
+    if hasCurrent {
+        game.nodes = append(game.nodes, current)
+    }
+
+    return game
+}

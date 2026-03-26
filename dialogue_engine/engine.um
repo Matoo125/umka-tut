@@ -1,0 +1,136 @@
+import "story.um"
+
+const saveFile = "dialogue_engine/savegame.txt"
+
+fn printState(state: story::State) {
+    printf("\n[")
+    for i := int32(0); i < state.varCount; i++ {
+        if i > 0 {
+            printf(", ")
+        }
+        printf("%s=%d", state.vars[i].name, state.vars[i].value)
+    }
+    printf("]\n\n")
+}
+
+fn showNode(node: story::Node, state: story::State, visibleIndexes: ^[story::maxChoices]int32): int32 {
+    var visibleCount: int32
+
+    visibleCount = 0
+    if node.speaker != "" {
+        printf("%s: %s\n", node.speaker, story::interpolate(node.text, state))
+    }
+
+    for i := int32(0); i < node.choiceCount; i++ {
+        if story::isChoiceVisible(node.choices[i], state) {
+            visibleIndexes^[visibleCount] = i
+            visibleCount++
+            printf("%d. %s\n", visibleCount, story::interpolate(node.choices[i].text, state))
+        }
+    }
+
+    return visibleCount
+}
+
+fn readChoice(limit: int32): int32 {
+    var choice: int32
+
+    choice = -1
+    for choice < 0 || choice > limit {
+        printf("Choose (0=save and exit): ")
+        scanf("%d", &choice)
+
+        if choice < 0 || choice > limit {
+            printf("Invalid choice. Enter a number from 0 to %d.\n", limit)
+        }
+    }
+
+    return choice
+}
+
+fn promptResume(): bool {
+    var choice: int32
+
+    choice = 0
+    printf("Saved game found.\n")
+    for choice < 1 || choice > 2 {
+        printf("1. Resume saved game\n")
+        printf("2. Start a new game\n")
+        printf("Choose: ")
+        scanf("%d", &choice)
+
+        if choice < 1 || choice > 2 {
+            printf("Invalid choice. Enter 1 or 2.\n")
+        }
+    }
+
+    return choice == 1
+}
+
+fn run*(storyPath: str) {
+    nodeId := story::nodeIntro
+    running := true
+    var visibleIndexes: [story::maxChoices]int32
+    game := story::loadStory(storyPath)
+    state := story::initialState(game)
+    nodeEffectsApplied := false
+    resumed := false
+    isValid, validationError := story::validateStory(game)
+
+    if !isValid {
+        printf("Story validation failed: %s\n", validationError)
+        return
+    }
+
+    printf("%s\n", game.title)
+    printf("%s\n", game.underline)
+
+    if story::saveExists(saveFile) && promptResume() {
+        save := story::loadSave(saveFile, nodeId, state)
+        if save.found {
+            nodeId = save.nodeId
+            state = save.state
+            nodeEffectsApplied = save.nodeEffectsApplied
+            resumed = true
+        }
+    }
+
+    if !resumed {
+        story::clearSave(saveFile)
+    }
+
+    for running {
+        node := story::findNode(game, nodeId)
+        if !nodeEffectsApplied {
+            state = story::applyNodeEffects(state, node)
+            nodeEffectsApplied = true
+        }
+        printState(state)
+
+        if node.isEnding {
+            printf("Ending: %s\n", story::interpolate(node.endingText, state))
+            story::clearSave(saveFile)
+            running = false
+        } else {
+            visibleCount := showNode(node, state, &visibleIndexes)
+            choiceNumber := readChoice(visibleCount)
+            if choiceNumber == 0 {
+                story::writeSave(saveFile, nodeId, nodeEffectsApplied, state)
+                printf("Game saved to %s\n", saveFile)
+                running = false
+            } else {
+                choiceIndex := visibleIndexes[choiceNumber - 1]
+                state, nodeId = story::applyChoice(state, node.choices[choiceIndex])
+                nodeEffectsApplied = false
+            }
+        }
+    }
+}
+
+fn runFromArgs*() {
+    if story::argc() > 1 {
+        run(story::argv(1))
+    } else {
+        run("dialogue_engine/city_gate.story")
+    }
+}

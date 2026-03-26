@@ -1,0 +1,71 @@
+
+
+1. Pascal style to syntax
+```um
+for i := 0 to 10 {
+```
+
+current 
+```um
+for i := 0; i <= 10; i++ {
+```
+
+2. Allow a simple print('string')
+
+3. Improve module imports
+While building a modular dialogue engine, I ran into what appears to be a restriction of one `import` per file.
+That makes larger programs awkward to organize.
+
+Desired:
+```um
+import "engine.um"
+import "story.um"
+import "std.um"
+```
+
+4. Add basic string slicing
+Parsing text files is much harder without substring syntax.
+
+Desired:
+```um
+s := "abcdef"
+part := s[1:4]   // "bcd"
+```
+
+5. Add string split helpers to the standard library
+For any parser or config loader, `split()` is a basic need.
+Right now even simple line-based formats require manual character-by-character parsing.
+
+Desired:
+```um
+parts := std::split("a|b|c", "|")
+lines := std::split(text, "\n")
+```
+
+6. Add higher-level file reading helpers
+`fopen` + `freadall` works, but a simple one-shot file read helper would make scripts and tools much easier to write.
+
+Desired:
+```um
+text, err := std::readfile("story.txt")
+```
+
+7. Add stronger parsing/conversion helpers
+It would help to have official helpers for converting strings to integers, reals, and booleans in a more discoverable way.
+There is `atoi`, but this is not obvious from the language surface when writing scripts.
+
+Desired:
+```um
+x := std::atoi("42")
+y := std::atof("3.14")
+b := std::atob("true")
+```
+
+8. Better docs or examples for text parsing and file-based tools
+Umka seems capable enough for small engines and tooling, but the path is not very discoverable.
+Examples for:
+- reading a file into memory
+- parsing line-based formats
+- organizing multi-file projects
+- working with modules
+would make a big difference.
