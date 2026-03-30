@@ -41,23 +41,23 @@ run_path_test() {
 run_path_test \
     "merchant pass ending" \
     $'1\n1\n2\n1\n1\n' \
-    "Your current trust is 2." \
+    "Lena? I know that name. Your current trust is 2." \
     "Show the merchant pass." \
     "Steps into market: 1" \
-    "[trust=3, pass=1, market_seen=1]" \
-    "Ending: You earned a warm welcome with trust 3."
+    "player_name=Lena" \
+    "Ending: You earned a warm welcome, Lena, with trust 3."
 
 run_path_test \
     "rude jail ending" \
     $'2\n2\n1\n' \
     "Take a night in the cell." \
-    "Ending: Your journey stops at the city jail."
+    "Ending: Your journey stops at the city jail, Unknown."
 
 run_path_test \
     "peaceful exit ending" \
     $'1\n2\n1\n' \
     "No name, no entry." \
-    "Ending: You leave the gate behind and try elsewhere."
+    "Ending: You leave the gate behind and try elsewhere, Stranger."
 
 rm -f dialogue_engine/savegame.txt
 
@@ -67,7 +67,7 @@ assert_contains "$save_output" "Game saved to dialogue_engine/savegame.txt" "sav
 resume_output="$(printf '1\n1\n2\n1\n1\n' | umka dialogue_engine/main.um)"
 assert_contains "$resume_output" "Saved game found." "resume flow"
 assert_contains "$resume_output" "Then state your name." "resume flow"
-assert_contains "$resume_output" "Ending: You earned a warm welcome with trust 3." "resume flow"
+assert_contains "$resume_output" "Ending: You earned a warm welcome, Lena, with trust 3." "resume flow"
 
 if [[ -f dialogue_engine/savegame.txt ]]; then
     echo "FAIL: resume flow"

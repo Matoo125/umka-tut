@@ -10,7 +10,9 @@ const (
 
 type Variable* = struct {
     name: str
-    value: int32
+    isString: bool
+    intValue: int32
+    strValue: str
 }
 
 type State* = struct {
@@ -21,13 +23,17 @@ type State* = struct {
 type Effect* = struct {
     name: str
     op: str
-    value: int32
+    isString: bool
+    intValue: int32
+    strValue: str
 }
 
 type Condition* = struct {
     name: str
     op: str
-    value: int32
+    isString: bool
+    intValue: int32
+    strValue: str
 }
 
 type Choice* = struct {
@@ -78,16 +84,40 @@ fn getVarIndex(state: State, name: str): int32 {
 
 fn getVar*(state: State, name: str): int32 {
     idx := getVarIndex(state, name)
-    return idx >= 0 ? state.vars[idx].value : 0
+    return idx >= 0 ? state.vars[idx].intValue : 0
 }
 
 fn setVar*(state: ^State, name: str, value: int32) {
     idx := getVarIndex(state^, name)
     if idx >= 0 {
-        state^.vars[idx].value = value
+        state^.vars[idx].isString = false
+        state^.vars[idx].intValue = value
+        state^.vars[idx].strValue = ""
     } else if state^.varCount < maxVars {
         state^.vars[state^.varCount].name = name
-        state^.vars[state^.varCount].value = value
+        state^.vars[state^.varCount].isString = false
+        state^.vars[state^.varCount].intValue = value
+        state^.vars[state^.varCount].strValue = ""
+        state^.varCount++
+    }
+}
+
+fn getStrVar*(state: State, name: str): str {
+    idx := getVarIndex(state, name)
+    return idx >= 0 ? state.vars[idx].strValue : ""
+}
+
+fn setStrVar*(state: ^State, name: str, value: str) {
+    idx := getVarIndex(state^, name)
+    if idx >= 0 {
+        state^.vars[idx].isString = true
+        state^.vars[idx].strValue = value
+        state^.vars[idx].intValue = 0
+    } else if state^.varCount < maxVars {
+        state^.vars[state^.varCount].name = name
+        state^.vars[state^.varCount].isString = true
+        state^.vars[state^.varCount].strValue = value
+        state^.vars[state^.varCount].intValue = 0
         state^.varCount++
     }
 }
@@ -111,14 +141,20 @@ fn appendString(chars: ^[]char, s: str) {
 }
 
 fn applyEffect(state: ^State, effect: Effect) {
-    current := getVar(state^, effect.name)
+    if effect.isString {
+        if effect.op == "set" {
+            setStrVar(state, effect.name, effect.strValue)
+        }
+    } else {
+        current := getVar(state^, effect.name)
 
-    if effect.op == "set" {
-        setVar(state, effect.name, effect.value)
-    } else if effect.op == "add" {
-        setVar(state, effect.name, current + effect.value)
-    } else if effect.op == "sub" {
-        setVar(state, effect.name, current - effect.value)
+        if effect.op == "set" {
+            setVar(state, effect.name, effect.intValue)
+        } else if effect.op == "add" {
+            setVar(state, effect.name, current + effect.intValue)
+        } else if effect.op == "sub" {
+            setVar(state, effect.name, current - effect.intValue)
+        }
     }
 }
 
@@ -139,20 +175,30 @@ fn applyChoice*(state: State, choice: Choice): (State, str) {
 }
 
 fn matchesCondition(state: State, condition: Condition): bool {
-    value := getVar(state, condition.name)
+    if condition.isString {
+        value := getStrVar(state, condition.name)
 
-    if condition.op == "==" {
-        return value == condition.value
-    } else if condition.op == "!=" {
-        return value != condition.value
-    } else if condition.op == ">=" {
-        return value >= condition.value
-    } else if condition.op == "<=" {
-        return value <= condition.value
-    } else if condition.op == ">" {
-        return value > condition.value
-    } else if condition.op == "<" {
-        return value < condition.value
+        if condition.op == "==" {
+            return value == condition.strValue
+        } else if condition.op == "!=" {
+            return value != condition.strValue
+        }
+    } else {
+        value := getVar(state, condition.name)
+
+        if condition.op == "==" {
+            return value == condition.intValue
+        } else if condition.op == "!=" {
+            return value != condition.intValue
+        } else if condition.op == ">=" {
+            return value >= condition.intValue
+        } else if condition.op == "<=" {
+            return value <= condition.intValue
+        } else if condition.op == ">" {
+            return value > condition.intValue
+        } else if condition.op == "<" {
+            return value < condition.intValue
+        }
     }
 
     return false
@@ -177,7 +223,13 @@ fn interpolate*(template: str, state: State): str {
         if inPlaceholder {
             if template[i] == '}' {
                 name := std::trim(str(nameChars))
-                valueText := std::itoa(getVar(state, name))
+                idx := getVarIndex(state, name)
+                valueText := ""
+                if idx >= 0 && state.vars[idx].isString {
+                    valueText = state.vars[idx].strValue
+                } else {
+                    valueText = std::itoa(getVar(state, name))
+                }
                 appendString(&chars, valueText)
                 nameChars = []char{}
                 inPlaceholder = false
@@ -280,7 +332,7 @@ fn parseEffectFields(fields: []str): Effect {
     if len(fields) >= 3 {
         effect.name = fields[0]
         effect.op = fields[1]
-        effect.value = int32(std::atoi(fields[2]))
+        effect.intValue = int32(std::atoi(fields[2]))
     }
 
     return effect
@@ -292,7 +344,33 @@ fn parseConditionFields(fields: []str): Condition {
     if len(fields) >= 3 {
         condition.name = fields[0]
         condition.op = fields[1]
-        condition.value = int32(std::atoi(fields[2]))
+        condition.intValue = int32(std::atoi(fields[2]))
+    }
+
+    return condition
+}
+
+fn parseStringEffectFields(fields: []str): Effect {
+    var effect: Effect
+
+    if len(fields) >= 3 {
+        effect.name = fields[0]
+        effect.op = fields[1]
+        effect.isString = true
+        effect.strValue = fields[2]
+    }
+
+    return effect
+}
+
+fn parseStringConditionFields(fields: []str): Condition {
+    var condition: Condition
+
+    if len(fields) >= 3 {
+        condition.name = fields[0]
+        condition.op = fields[1]
+        condition.isString = true
+        condition.strValue = fields[2]
     }
 
     return condition
@@ -321,6 +399,14 @@ fn isValidEffectOp(op: str): bool {
 
 fn isValidConditionOp(op: str): bool {
     return op == "==" || op == "!=" || op == ">=" || op == "<=" || op == ">" || op == "<"
+}
+
+fn isValidStringEffectOp(op: str): bool {
+    return op == "set"
+}
+
+fn isValidStringConditionOp(op: str): bool {
+    return op == "==" || op == "!="
 }
 
 fn validateStory*(game: Story): (bool, str) {
@@ -360,7 +446,10 @@ fn validateStory*(game: Story): (bool, str) {
         }
 
         for j := int32(0); j < node.effectCount; j++ {
-            if !isValidEffectOp(node.effects[j].op) {
+            if node.effects[j].isString && !isValidStringEffectOp(node.effects[j].op) {
+                return false, "Invalid node_effect_str operator on node " + node.id + ": " + node.effects[j].op
+            }
+            if !node.effects[j].isString && !isValidEffectOp(node.effects[j].op) {
                 return false, "Invalid node_effect operator on node " + node.id + ": " + node.effects[j].op
             }
         }
@@ -378,13 +467,19 @@ fn validateStory*(game: Story): (bool, str) {
             }
 
             for k := int32(0); k < choice.effectCount; k++ {
-                if !isValidEffectOp(choice.effects[k].op) {
+                if choice.effects[k].isString && !isValidStringEffectOp(choice.effects[k].op) {
+                    return false, "Invalid choice_effect_str operator on node " + node.id + ": " + choice.effects[k].op
+                }
+                if !choice.effects[k].isString && !isValidEffectOp(choice.effects[k].op) {
                     return false, "Invalid choice_effect operator on node " + node.id + ": " + choice.effects[k].op
                 }
             }
 
             for k := int32(0); k < choice.conditionCount; k++ {
-                if !isValidConditionOp(choice.conditions[k].op) {
+                if choice.conditions[k].isString && !isValidStringConditionOp(choice.conditions[k].op) {
+                    return false, "Invalid choice_when_str operator on node " + node.id + ": " + choice.conditions[k].op
+                }
+                if !choice.conditions[k].isString && !isValidConditionOp(choice.conditions[k].op) {
                     return false, "Invalid choice_when operator on node " + node.id + ": " + choice.conditions[k].op
                 }
             }
@@ -415,7 +510,13 @@ fn writeSave*(path: str, nodeId: str, nodeEffectsApplied: bool, state: State) {
         appendString(&chars, "var:")
         appendString(&chars, state.vars[i].name)
         appendString(&chars, "|")
-        appendString(&chars, std::itoa(state.vars[i].value))
+        if state.vars[i].isString {
+            appendString(&chars, "str|")
+            appendString(&chars, state.vars[i].strValue)
+        } else {
+            appendString(&chars, "int|")
+            appendString(&chars, std::itoa(state.vars[i].intValue))
+        }
         appendString(&chars, "\n")
     }
 
@@ -447,7 +548,11 @@ fn loadSave*(path: str, defaultNodeId: str, defaultState: State): SaveData {
             save.nodeEffectsApplied = afterPrefix(line, "node_effects_applied:") == "1"
         } else if startsWith(line, "var:") {
             fields := splitFields(afterPrefix(line, "var:"))
-            if len(fields) >= 2 {
+            if len(fields) >= 3 && fields[1] == "str" {
+                setStrVar(&save.state, fields[0], fields[2])
+            } else if len(fields) >= 3 && fields[1] == "int" {
+                setVar(&save.state, fields[0], int32(std::atoi(fields[2])))
+            } else if len(fields) >= 2 {
                 setVar(&save.state, fields[0], int32(std::atoi(fields[1])))
             }
         }
@@ -483,6 +588,13 @@ fn loadStory*(path: str): Story {
             } else if game.parseError == "" {
                 game.parseError = "Invalid var line: " + line
             }
+        } else if startsWith(line, "var_str:") {
+            fields := splitFields(afterPrefix(line, "var_str:"))
+            if len(fields) >= 2 {
+                setStrVar(&game.initialState, fields[0], fields[1])
+            } else if game.parseError == "" {
+                game.parseError = "Invalid var_str line: " + line
+            }
         } else if startsWith(line, "node:") {
             if hasCurrent {
                 game.nodes = append(game.nodes, current)
@@ -502,6 +614,13 @@ fn loadStory*(path: str): Story {
                 return game
             }
             current.effects[current.effectCount] = parseEffectFields(splitFields(afterPrefix(line, "node_effect:")))
+            current.effectCount++
+        } else if startsWith(line, "node_effect_str:") {
+            if current.effectCount >= maxEffects {
+                game.parseError = "Too many node_effect_str entries on node: " + current.id
+                return game
+            }
+            current.effects[current.effectCount] = parseStringEffectFields(splitFields(afterPrefix(line, "node_effect_str:")))
             current.effectCount++
         } else if startsWith(line, "choice:") {
             fields := splitFields(afterPrefix(line, "choice:"))
@@ -530,6 +649,18 @@ fn loadStory*(path: str): Story {
             fields := splitFields(afterPrefix(line, "choice_when:"))
             current.choices[currentChoice].conditions[current.choices[currentChoice].conditionCount] = parseConditionFields(fields)
             current.choices[currentChoice].conditionCount++
+        } else if startsWith(line, "choice_when_str:") {
+            if currentChoice < 0 {
+                game.parseError = "choice_when_str appears before any choice in node: " + current.id
+                return game
+            }
+            if current.choices[currentChoice].conditionCount >= maxConditions {
+                game.parseError = "Too many choice_when_str entries on node: " + current.id
+                return game
+            }
+            fields := splitFields(afterPrefix(line, "choice_when_str:"))
+            current.choices[currentChoice].conditions[current.choices[currentChoice].conditionCount] = parseStringConditionFields(fields)
+            current.choices[currentChoice].conditionCount++
         } else if startsWith(line, "choice_effect:") {
             if currentChoice < 0 {
                 game.parseError = "choice_effect appears before any choice in node: " + current.id
@@ -541,6 +672,18 @@ fn loadStory*(path: str): Story {
             }
             fields := splitFields(afterPrefix(line, "choice_effect:"))
             current.choices[currentChoice].effects[current.choices[currentChoice].effectCount] = parseEffectFields(fields)
+            current.choices[currentChoice].effectCount++
+        } else if startsWith(line, "choice_effect_str:") {
+            if currentChoice < 0 {
+                game.parseError = "choice_effect_str appears before any choice in node: " + current.id
+                return game
+            }
+            if current.choices[currentChoice].effectCount >= maxEffects {
+                game.parseError = "Too many choice_effect_str entries on node: " + current.id
+                return game
+            }
+            fields := splitFields(afterPrefix(line, "choice_effect_str:"))
+            current.choices[currentChoice].effects[current.choices[currentChoice].effectCount] = parseStringEffectFields(fields)
             current.choices[currentChoice].effectCount++
         } else if line == "ending" {
             current.isEnding = true

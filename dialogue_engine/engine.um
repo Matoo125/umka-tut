@@ -8,7 +8,11 @@ fn printState(state: story::State) {
         if i > 0 {
             printf(", ")
         }
-        printf("%s=%d", state.vars[i].name, state.vars[i].value)
+        if state.vars[i].isString {
+            printf("%s=%s", state.vars[i].name, state.vars[i].strValue)
+        } else {
+            printf("%s=%d", state.vars[i].name, state.vars[i].intValue)
+        }
     }
     printf("]\n\n")
 }

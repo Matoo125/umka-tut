@@ -1,0 +1,29 @@
+import "std.um"
+
+fn main() {
+    // Seed the random number generator
+    std::srand(trunc(std::clock() * 1000))
+
+    // Generate a random number between 1 and 100
+    target := int32(std::rand() % 100 + 1)
+    var guess: int32
+    attempts := int32(0)
+
+    printf("Welcome to the Guessing Game!\n")
+    printf("I'm thinking of a number between 1 and 100.\n")
+    printf("Can you guess it?\n\n")
+
+    for guess != target {
+        printf("Enter your guess: ")
+        scanf("%d", &guess)
+        attempts++
+
+        if guess < target {
+            printf("Too low! Try again.\n")
+        } else if guess > target {
+            printf("Too high! Try again.\n")
+        } else {
+            printf("Correct! You guessed the number in %d attempts.\n", attempts)
+        }
+    }
+}

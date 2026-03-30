@@ -5,7 +5,7 @@ This folder contains a more advanced dialogue engine than the single-file protot
 It supports:
 
 - named node IDs
-- named integer variables
+- named integer and string variables
 - conditional choices
 - per-node and per-choice effects
 - text interpolation with `{variable_name}`
@@ -51,18 +51,23 @@ bash dialogue_engine/test_dialogue_engine.sh
 Story format:
 
 - `var:` defines a named integer variable and its initial value
+- `var_str:` defines a named string variable and its initial value
 - `node:` starts a node block using a named ID like `intro` or `ending_jail`
 - `speaker:` and `text:` define what is shown
 - `node_effect:` uses `name|set|value`, `name|add|value`, or `name|sub|value`
+- `node_effect_str:` uses `name|set|value`
 - `choice:` uses `text|targetNodeId`
 - `choice_when:` uses `name|op|value` where `op` can be `==`, `!=`, `>=`, `<=`, `>`, `<`
+- `choice_when_str:` uses `name|==|value` or `name|!=|value`
 - `choice_effect:` uses the same format as `node_effect:`
+- `choice_effect_str:` uses the same format as `node_effect_str:`
 - `ending_text:` defines the ending message for ending nodes
 - `endnode` closes the current node
 
 Interpolation:
 
 - `text: Your trust is {trust}.`
+- `text: Welcome back, {player_name}.`
 - `choice: Show pass ({pass}).|gate`
 - `ending_text: Final trust: {trust}`
 
