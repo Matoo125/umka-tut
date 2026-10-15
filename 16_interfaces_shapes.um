@@ -1,0 +1,60 @@
+// Exercise 16: Polymorphic Shapes Interface
+// Practices: interface declaration, struct receiver methods, and dynamic dispatch
+
+type Shape = interface {
+    name(): str
+    area(): real
+    perimeter(): real
+}
+
+type Rectangle = struct {
+    width, height: real
+}
+
+fn (r: ^Rectangle) name(): str {
+    return "Rectangle"
+}
+
+fn (r: ^Rectangle) area(): real {
+    return r.width * r.height
+}
+
+fn (r: ^Rectangle) perimeter(): real {
+    return 2.0 * (r.width + r.height)
+}
+
+type Circle = struct {
+    radius: real
+}
+
+fn (c: ^Circle) name(): str {
+    return "Circle"
+}
+
+fn (c: ^Circle) area(): real {
+    const pi = 3.14159
+    return pi * c.radius * c.radius
+}
+
+fn (c: ^Circle) perimeter(): real {
+    const pi = 3.14159
+    return 2.0 * pi * c.radius
+}
+
+fn printShapeSummary(s: Shape) {
+    printf("%-10s -> Area: %6.2f, Perimeter: %6.2f\n", s.name(), s.area(), s.perimeter())
+}
+
+fn main() {
+    rect := Rectangle{width: 4.0, height: 5.0}
+    circle := Circle{radius: 3.0}
+
+    shapes := make([]Shape, 0)
+    shapes = append(shapes, &rect)
+    shapes = append(shapes, &circle)
+
+    printf("Shape Measurements:\n")
+    for i, s in shapes {
+        printShapeSummary(s)
+    }
+}

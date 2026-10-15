@@ -1,0 +1,90 @@
+// Exercise 13: To-Do List
+// Practices: structs, dynamic arrays, append, delete, loops, and formatted printing
+
+import "std.um"
+
+type Task = struct {
+    id: int32
+    title: str
+    done: bool
+}
+
+fn printTasks(tasks: []Task) {
+    if len(tasks) == 0 {
+        printf("Task list is empty.\n")
+        return
+    }
+
+    printf("Tasks:\n")
+    for i, t in tasks {
+        status := "[ ]"
+        if t.done {
+            status = "[x]"
+        }
+        printf("%d. %s %s\n", t.id, status, t.title)
+    }
+}
+
+fn findTaskIndex(tasks: []Task, id: int32): int {
+    for i, t in tasks {
+        if t.id == id {
+            return i
+        }
+    }
+    return -1
+}
+
+fn main() {
+    tasks := make([]Task, 0)
+    nextId := int32(1)
+    running := true
+
+    printf("To-Do List Manager\n")
+    printf("Commands: 1 = Add, 2 = Complete, 3 = Delete, 4 = List, 0 = Exit\n")
+
+    for running {
+        printf("Command: ")
+        var cmd: int32
+        if scanf("%d", &cmd) != 1 {
+            break
+        }
+
+        if cmd == 0 {
+            printf("Goodbye!\n")
+            running = false
+        } else if cmd == 1 {
+            printf("Task title: ")
+            var title: str
+            scanf("%s", &title)
+            tasks = append(tasks, Task{id: nextId, title: title, done: false})
+            printf("Added task %d: %s\n", nextId, title)
+            nextId++
+        } else if cmd == 2 {
+            printf("Task ID to complete: ")
+            var id: int32
+            scanf("%d", &id)
+            idx := findTaskIndex(tasks, id)
+            if idx >= 0 {
+                tasks[idx].done = true
+                printf("Task %d marked as completed.\n", id)
+            } else {
+                printf("Task %d not found.\n", id)
+            }
+        } else if cmd == 3 {
+            printf("Task ID to delete: ")
+            var id: int32
+            scanf("%d", &id)
+            idx := findTaskIndex(tasks, id)
+            if idx >= 0 {
+                tasks = delete(tasks, idx)
+                printf("Task %d deleted.\n", id)
+            } else {
+                printf("Task %d not found.\n", id)
+            }
+        } else if cmd == 4 {
+            printTasks(tasks)
+        } else {
+            printf("Unknown command %d. Choose between 0 and 4.\n", cmd)
+        }
+    }
+}

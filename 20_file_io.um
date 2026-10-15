@@ -1,0 +1,77 @@
+// Exercise 20: File I/O and Content Processing
+// Practices: std::fopen, std::fwrite, std::freadall, std::fclose, std::remove, and file error handling
+
+import "std.um"
+
+fn writeFile(filename: str, content: str): bool {
+    f, err := std::fopen(filename, "wb")
+    if err.code != 0 {
+        printf("Error opening file for write: %s\n", err.msg)
+        return false
+    }
+
+    chars := []char(content)
+    n, writeErr := std::fwrite(f, chars)
+    std::fclose(f)
+
+    if writeErr.code != 0 {
+        printf("Error writing to file: %s\n", writeErr.msg)
+        return false
+    }
+    return true
+}
+
+fn readFile(filename: str): (str, bool) {
+    f, err := std::fopen(filename, "rb")
+    if err.code != 0 {
+        printf("Error opening file for read: %s\n", err.msg)
+        return "", false
+    }
+
+    data, readErr := std::freadall(f)
+    std::fclose(f)
+
+    if readErr.code != 0 {
+        printf("Error reading file: %s\n", readErr.msg)
+        return "", false
+    }
+
+    return str(data), true
+}
+
+fn countLines(text: str): int {
+    if len(text) == 0 {
+        return 0
+    }
+    lines := 0
+    for i := 0; i < len(text); i++ {
+        if text[i] == '\n' {
+            lines++
+        }
+    }
+    return lines
+}
+
+fn main() {
+    filename := "notes.txt"
+    payload := "Umka Scripting Language\nFast, statically typed, embeddable\nEnjoying exercises!\n"
+
+    printf("Writing %d bytes to %s...\n", len(payload), filename)
+    ok := writeFile(filename, payload)
+    if !ok {
+        return
+    }
+
+    printf("Reading back from %s...\n", filename)
+    content, readOk := readFile(filename)
+    if !readOk {
+        return
+    }
+
+    printf("--- File Content ---\n%s", content)
+    printf("Line count: %d\n", countLines(content))
+
+    // Cleanup
+    std::remove(filename)
+    printf("Temporary file cleaned up.\n")
+}

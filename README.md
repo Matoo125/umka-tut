@@ -1,13 +1,34 @@
 # Umka Exercises
 
-This repository contains 10 small [Umka](https://github.com/vtereshkov/umka-lang) exercises focused on basic language features such as output, input, loops, conditionals, recursion, and formatted printing.
+This repository contains 24 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), and heap/weak pointers.
 
 ## Requirements
 
 - `umka` installed and available on `PATH`
 - `bash` for running the test script
 
-## Run an Exercise
+## Interactive Mode (`umkalings`)
+
+Inspired by `rustlings`, this repository includes an interactive runner with automatic watch mode, verification progress bars, and exercise hints:
+
+```bash
+# Continuous watch mode: tests exercises as you save edits
+./umkalings watch
+
+# Verify all exercises and see progress
+./umkalings verify
+
+# Run and test a single exercise
+./umkalings run 13_todo_list
+
+# Display a hint for an exercise
+./umkalings hint 14_word_frequency
+
+# List all exercises with status
+./umkalings list
+```
+
+## Run an Exercise Manually
 
 Run any exercise directly with:
 
@@ -20,11 +41,12 @@ For exercises that expect input, pipe values into the program:
 ```bash
 printf '5\n' | umka 07_factorial.um
 printf '4\n' | umka 05_multiplication_table.um
+printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 ```
 
-## Run the Tests
+## Run the Test Scripts
 
-The repository includes an automated test script for all exercises:
+You can also run the automated bash test scripts:
 
 ```bash
 ./test_exercises.sh
@@ -36,7 +58,7 @@ If the script is not executable in your environment, run:
 bash test_exercises.sh
 ```
 
-The test script checks exact output for deterministic exercises and uses pattern-based checks for the timer exercise, since elapsed time depends on runtime timing.
+The test script checks exact output for deterministic exercises and uses pattern-based checks for the timer and dialogue exercises.
 
 ## Exercises
 
@@ -52,6 +74,20 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `08_sum_to_n.um` | Sum to N | Accumulation with loops and input validation |
 | `09_temperature_converter.um` | Temperature Converter | Branching and real-number calculations |
 | `10_countdown.um` | Countdown | Reverse loops and simple control flow |
+| `11_dialogue.um` | Dialogue Tree | Multi-node branching state machine and dialogue flow |
+| `12_guessing_game.um` | Guessing Game | Random numbers (`std::rand`), loops, and command line arguments |
+| `13_todo_list.um` | To-Do List | Dynamic arrays, structs, `append()`, `delete()`, and task management |
+| `14_word_frequency.um` | Word Frequency Counter | Hash maps (`map[str]int`), `validkey()`, and `keys()` |
+| `15_rpn_calculator.um` | RPN Calculator | Custom stack data structures, receiver methods, and token parsing |
+| `16_interfaces_shapes.um` | Polymorphic Shapes Interface | Interfaces, method sets, dynamic dispatch, and interface polymorphism |
+| `17_type_switch.um` | Type Switch and Any | `any` (`interface{}`), `switch v := type(x)`, and runtime type recovery |
+| `18_embedded_interfaces.um` | Embedded Interfaces | Interface composition/embedding (`Reader`, `Writer`, `ReadWriter`) |
+| `19_fibers_coroutines.um` | Fibers & Coroutines | Cooperative multitasking, `make(fiber, fn)`, `resume()`, and lifecycle |
+| `20_file_io.um` | File I/O & Content Processing | `std::fopen`, `std::fwrite`, `std::freadall`, and error checking |
+| `21_vector_matrix.um` | 3D Vector & Matrix Math | Standard module `mat.um`, dot/cross products, norms, and transforms |
+| `22_functional_programming.um` | Functional Programming | Standard module `fnc.um`, closures, lambda capture, `transform`, `filter`, `reduce` |
+| `23_unicode_utf8.um` | Unicode & UTF-8 Decoding | Standard module `utf8.um`, runes, byte vs character length, code points |
+| `24_linked_list_weak_ptrs.um` | Linked Lists & Weak Pointers | Heap allocation (`new()`), pointers (`^Node`), and breaking cycles (`weak ^Node`) |
 
 ## Umka Documentation
 

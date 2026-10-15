@@ -1,0 +1,20 @@
+// Exercise 23: Unicode and UTF-8 Decoding
+// Practices: utf8.um standard library module, rune decoding, code points, and multi-byte character inspection
+
+import "utf8.um"
+
+fn main() {
+    text := "Hello, 世界! 🌍"
+    byteLen := len(text)
+    runeLen := utf8::runeCount(text)
+
+    printf("Original Text: %s\n", text)
+    printf("Byte Length:   %d\n", byteLen)
+    printf("Rune Length:   %d\n", runeLen)
+    printf("\nDecoded Code Points:\n")
+
+    runes := utf8::decode(text)
+    for i, r in runes {
+        printf("[%02d] U+%04X | %d bytes | Char: %s\n", i, r, r.size(), r.encode())
+    }
+}

@@ -1,0 +1,32 @@
+// Exercise 17: Type Switch and Any
+// Practices: any (interface{}), type switch with `switch v := type(x)`, and explicit runtime type recovery
+
+fn describe(item: any) {
+    switch val := type(item) {
+        case int:
+            printf("Integer: %lld (doubled = %lld)\n", val, val * 2)
+        case real:
+            printf("Real: %.2f (half = %.2f)\n", val, val / 2.0)
+        case str:
+            printf("String: \"%s\" (length = %d)\n", val, len(val))
+        case bool:
+            printf("Boolean: %v (negated = %v)\n", val, !val)
+        default:
+            printf("Unknown type\n")
+    }
+}
+
+fn main() {
+    items := []any{
+        100,
+        45.5,
+        "Umka Scripting",
+        true,
+        false
+    }
+
+    printf("Inspecting Items via Type Switch:\n")
+    for i, it in items {
+        describe(it)
+    }
+}

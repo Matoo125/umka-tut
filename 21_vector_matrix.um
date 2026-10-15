@@ -1,0 +1,36 @@
+// Exercise 21: 3D Vector and Matrix Math
+// Practices: mat.um standard library module, receiver methods on arrays, dot/cross products, and matrix transformations
+
+import "mat.um"
+
+fn printVec(name: str, v: mat::Vec) {
+    printf("%s: [%.2f, %.2f, %.2f]\n", name, v[0], v[1], v[2])
+}
+
+fn main() {
+    u := mat::Vec{1.0, 2.0, 3.0}
+    v := mat::Vec{4.0, 5.0, 6.0}
+
+    printf("Vector Math:\n")
+    printVec("u", u)
+    printVec("v", v)
+
+    add := u.add(v)
+    sub := u.sub(v)
+    dot := u.dot(v)
+    cross := u.cross(v)
+    normU := u.norm()
+    normV := v.norm()
+
+    printVec("u + v", add)
+    printVec("u - v", sub)
+    printf("u . v: %.2f\n", dot)
+    printVec("u x v", cross)
+    printf("|u|: %.4f\n", normU)
+    printf("|v|: %.4f\n", normV)
+
+    printf("\nMatrix Transformation:\n")
+    id := mat::identity()
+    transformed := id.mulv(u)
+    printVec("I * u", transformed)
+}

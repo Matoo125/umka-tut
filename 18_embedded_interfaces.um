@@ -1,0 +1,61 @@
+// Exercise 18: Stream Readers, Writers, and Embedded Interfaces
+// Practices: multiple interfaces, interface composition/embedding, and stream abstraction
+
+type Reader = interface {
+    read(): str
+}
+
+type Writer = interface {
+    write(msg: str)
+}
+
+type ReadWriter = interface {
+    Reader
+    Writer
+}
+
+// MemoryBuffer implements Reader, Writer, and therefore ReadWriter
+type MemoryBuffer = struct {
+    data: str
+}
+
+fn (b: ^MemoryBuffer) read(): str {
+    return b.data
+}
+
+fn (b: ^MemoryBuffer) write(msg: str) {
+    b.data += msg
+}
+
+// PrefixedWriter wraps another Writer to prepend a prefix
+type PrefixedWriter = struct {
+    prefix: str
+    target: Writer
+}
+
+fn (pw: ^PrefixedWriter) write(msg: str) {
+    pw.target.write(pw.prefix + msg)
+}
+
+fn writeLog(w: Writer, msg: str) {
+    w.write(msg + "\n")
+}
+
+fn printBuffer(r: Reader) {
+    printf("--- Buffer Output ---\n%s---------------------\n", r.read())
+}
+
+fn main() {
+    var buf: MemoryBuffer
+
+    // Use interface polymorphism with embedded interfaces
+    var rw: ReadWriter = &buf
+
+    writeLog(rw, "INFO: System started")
+    writeLog(rw, "INFO: Loading modules...")
+
+    logger := PrefixedWriter{prefix: "[APP] ", target: rw}
+    writeLog(&logger, "Ready for user requests.")
+
+    printBuffer(rw)
+}

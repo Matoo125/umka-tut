@@ -1,0 +1,35 @@
+// Exercise 22: Functional Programming with Closures and fnc.um
+// Practices: closures, lambda capture, fnc::Array, transform (map), filter, and reduce
+
+import "fnc.um"
+
+fn main() {
+    numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    threshold := 5
+
+    // Closures
+    isGreaterThanThreshold := fn (x: any): bool |threshold| {
+        return int(x) > threshold
+    }
+
+    square := fn (x: any): any {
+        val := int(x)
+        return val * val
+    }
+
+    sum := fn (acc, x: any): any {
+        return int(acc) + int(x)
+    }
+
+    // Pipeline: Filter (> 5) -> Transform (square) -> Reduce (sum)
+    arr := fnc::Array(numbers)
+    filtered := arr.filter(isGreaterThanThreshold)
+    squared := filtered.transform(square)
+    totalSum := int(squared.reduce(sum))
+
+    printf("Input: %v\n", numbers)
+    printf("Threshold: > %d\n", threshold)
+    printf("Filtered: %v\n", filtered)
+    printf("Squared: %v\n", squared)
+    printf("Total Sum of Squares: %lld\n", totalSum)
+}

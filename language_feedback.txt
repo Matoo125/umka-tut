@@ -1,71 +1,93 @@
 
 
-1. Pascal style to syntax
+1. Pascal style `to` range syntax for loops
 ```um
 for i := 0 to 10 {
 ```
-
-current 
+Current syntax requires C-style headers:
 ```um
 for i := 0; i <= 10; i++ {
 ```
 
-2. Allow a simple print('string')
+2. Allow a simple print('string') / print without formatting specifiers
+Currently, `printf` requires format strings (or percent escapes) and there is no simple `print(x)`.
 
-3. Improve module imports
-While building a modular dialogue engine, I ran into what appears to be a restriction of one `import` per file.
-That makes larger programs awkward to organize.
-
-Desired:
+3. Multiple single `import` statements or cleaner syntax
+While Umka supports grouped imports via `import (...)`:
 ```um
-import "engine.um"
-import "story.um"
-import "std.um"
+import (
+    "std.um"
+    "utf8.um"
+)
 ```
+Having consecutive top-level `import "a.um"` and `import "b.um"` statements triggers a parse error because only one `import` clause is expected at file start. Allowing consecutive `import` clauses would feel more natural to developers coming from Go / Python.
 
-4. Add basic string slicing
-Parsing text files is much harder without substring syntax.
+4. Add slice operator `s[1:4]` syntax for strings and dynamic arrays
+Currently, slicing requires the built-in function `slice(s, 1, 4)`. A bracket slice syntax `s[1:4]` or `arr[1:4]` would be much more idiomatic.
 
-Desired:
-```um
-s := "abcdef"
-part := s[1:4]   // "bcd"
-```
-
-5. Add string split helpers to the standard library
-For any parser or config loader, `split()` is a basic need.
-Right now even simple line-based formats require manual character-by-character parsing.
-
+5. Add string `split()`, `trim()`, and `join()` helpers to the standard library
+For parsers, CLI scripts, or config loaders, `split()`, `trim()`, and `join()` are essential primitives. Currently, developers have to manually parse characters in loops.
 Desired:
 ```um
 parts := std::split("a|b|c", "|")
 lines := std::split(text, "\n")
+cleaned := std::trim("  hello  ")
+merged := std::join(parts, ",")
 ```
 
-6. Add higher-level file reading helpers
-`fopen` + `freadall` works, but a simple one-shot file read helper would make scripts and tools much easier to write.
-
+6. Add higher-level file reading / writing helpers
+`fopen` + `freadall` works, but a simple one-shot file read/write helper would make scripts much easier to write.
 Desired:
 ```um
 text, err := std::readfile("story.txt")
+err := std::writefile("output.txt", text)
 ```
 
 7. Add stronger parsing/conversion helpers
-It would help to have official helpers for converting strings to integers, reals, and booleans in a more discoverable way.
-There is `atoi`, but this is not obvious from the language surface when writing scripts.
-
-Desired:
+Provide standard conversion functions:
 ```um
 x := std::atoi("42")
 y := std::atof("3.14")
 b := std::atob("true")
 ```
+Currently developers have to rely on `sscanf(str, "%d", &x)` or `sscanf(str, "%lf", &y)`, which requires declaring pointer targets and checking return counts.
 
-8. Better docs or examples for text parsing and file-based tools
-Umka seems capable enough for small engines and tooling, but the path is not very discoverable.
-Examples for:
-- reading a file into memory
+8. Map membership operator (`k in map`)
+Currently, checking for map keys must be done using `validkey(map, key)`. The `in` keyword exists for `for k in map`, but `if key in map` produces an incompatible types error. Supporting `if key in map` would be much more readable and intuitive.
+
+9. Allow `break` / `continue` with multi-case conditions or switch expressions
+Umka `switch` supports integer, string, and type switches, but adding expressions or comma-separated case values (`case 1, 2, 3:`) would reduce boilerplate.
+
+10. Allow `else if` on newline or formatting flexibility
+In Umka grammar, `} else if` must be tightly placed or else an implicit semicolon can cause `} expected but else found` if line breaks are placed between `}` and `else`. More lenient semicolon insertion around `else` would prevent subtle syntax errors.
+
+11. Better docs or examples for text parsing, collections, and file-based tools
+Umka is very capable (with maps, dynamic arrays, fibers, and structs), but discovery is challenging. Examples for:
+- reading files into memory
 - parsing line-based formats
-- organizing multi-file projects
-- working with modules
-would make a big difference.
+- map usage (`keys()`, `validkey()`, `delete()`)
+- dynamic array manipulation (`append()`, `delete()`, `sort()`)
+- organizing multi-file projects with `import (...)`
+would make learning and adopting the language much smoother.
+
+12. Go-style type switch syntax sugar
+Currently, type switching requires:
+```um
+switch val := type(item) {
+    case int: ...
+}
+```
+In Go and TypeScript, developers are accustomed to `switch val := item.(type)`. The keyword `type(item)` is functional and clean, but error messages when writing `item.(type)` could offer a friendlier hint suggesting `switch val := type(item)`.
+
+13. First-class fiber values or generator `yield` syntax
+Fibers in Umka currently pass data back through global variables or pointers, because `resume()` takes no value arguments and returns void:
+```um
+yieldedValue = x
+resume() // inside fiber
+```
+Adding `resume(fib, val)` and `yield(val)` with direct return values would make generators dramatically cleaner and thread-safe / fiber-safe without global mutable state.
+
+14. Automatic fiber cancellation on scope exit
+If an infinite generator fiber is abandoned midway without running to completion, exiting `main` triggers:
+`Runtime error: Cannot destroy a busy fiber`
+Currently, the program must explicitly signal the fiber loop to terminate before program exit. An automatic fiber cancellation/teardown on destruction would avoid crashing when generators are only partially consumed.

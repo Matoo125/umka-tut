@@ -1,0 +1,278 @@
+#!/usr/bin/env python3
+"""
+umkalings: An interactive exercise runner and learning environment for Umka.
+Inspired by rustlings.
+"""
+
+import sys
+import os
+import json
+import time
+import subprocess
+import re
+from pathlib import Path
+
+# Terminal ANSI colors
+RESET = "\033[0m"
+BOLD = "\033[1m"
+GREEN = "\033[32m"
+RED = "\033[31m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+CYAN = "\033[36m"
+MAGENTA = "\033[35m"
+
+ROOT_DIR = Path(__file__).resolve().parent
+MANIFEST_PATH = ROOT_DIR / "exercises.json"
+NOT_DONE_MARKER = "// I AM NOT DONE"
+
+def check_umka():
+    res = subprocess.run(["which", "umka"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if res.returncode != 0:
+        print(f"{RED}{BOLD}Error: 'umka' executable was not found on PATH.{RESET}")
+        print("Please install Umka or add its directory to your PATH.")
+        sys.exit(1)
+
+def load_exercises():
+    if not MANIFEST_PATH.exists():
+        print(f"{RED}Manifest not found at {MANIFEST_PATH}{RESET}")
+        sys.exit(1)
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def render_progress_bar(completed, total, width=32):
+    fraction = completed / total if total > 0 else 0
+    filled = int(width * fraction)
+    bar = "=" * filled + (">" if filled < width else "") + " " * (width - filled - (1 if filled < width else 0))
+    percent = int(fraction * 100)
+    return f"[{bar}] {percent}% ({completed}/{total})"
+
+def test_exercise(ex):
+    path = ROOT_DIR / ex["path"]
+    if not path.exists():
+        return False, f"File {ex['path']} does not exist."
+
+    # Check for "I AM NOT DONE" marker
+    try:
+        content = path.read_text(encoding="utf-8")
+        if NOT_DONE_MARKER in content:
+            return False, f"File contains '{NOT_DONE_MARKER}'. Remove it when you are ready to test!"
+    except Exception as e:
+        return False, f"Could not read file: {e}"
+
+    # Syntax / compile check first
+    compile_cmd = ["umka", "-check", str(path)]
+    c_res = subprocess.run(compile_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if c_res.returncode != 0:
+        err = c_res.stdout or c_res.stderr
+        return False, f"Compilation failed:\n{err.strip()}"
+
+    # Execution check
+    run_cmd = ["umka", str(path)]
+    if "args" in ex:
+        run_cmd.extend(ex["args"])
+
+    inp = ex.get("input", "")
+    try:
+        r_res = subprocess.run(run_cmd, input=inp, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=5)
+    except subprocess.TimeoutExpired:
+        return False, "Execution timed out (did it get stuck waiting for input or in an infinite loop?)"
+
+    if r_res.returncode != 0:
+        err = r_res.stdout or r_res.stderr
+        return False, f"Runtime error (exit code {r_res.returncode}):\n{err.strip()}"
+
+    actual = r_res.stdout
+    mode = ex.get("mode", "exact")
+
+    if mode == "exact":
+        expected = ex.get("expected", "")
+        if actual.strip() != expected.strip():
+            return False, f"Output mismatch!\n{YELLOW}--- Expected ---{RESET}\n{expected.strip()}\n{YELLOW}--- Actual ---{RESET}\n{actual.strip()}"
+    elif mode == "regex":
+        patterns = ex.get("patterns", [])
+        for pat in patterns:
+            if not re.search(pat, actual):
+                return False, f"Output did not match expected pattern: {YELLOW}{pat}{RESET}\n{YELLOW}--- Actual ---{RESET}\n{actual.strip()}"
+
+    return True, ""
+
+def cmd_verify(exercises):
+    print(f"\n{BOLD}{CYAN}=== Umkalings Verification Suite ==={RESET}\n")
+    passed = 0
+    failed_ex = None
+    first_failure_reason = ""
+
+    for ex in exercises:
+        ok, reason = test_exercise(ex)
+        if ok:
+            print(f" {GREEN}✓{RESET} {BOLD}{ex['id']}{RESET} ({ex['name']})")
+            passed += 1
+        else:
+            print(f" {RED}✗{RESET} {BOLD}{ex['id']}{RESET} ({ex['name']})")
+            if not failed_ex:
+                failed_ex = ex
+                first_failure_reason = reason
+
+    total = len(exercises)
+    print("\n" + "=" * 50)
+    print(f"Progress: {render_progress_bar(passed, total)}")
+
+    if failed_ex:
+        print(f"\n{RED}{BOLD}Exercise '{failed_ex['id']}' failed!{RESET}")
+        print(f"\n{first_failure_reason}\n")
+        print(f"Run {BOLD}./umkalings hint {failed_ex['id']}{RESET} for a hint.\n")
+        sys.exit(1)
+    else:
+        print(f"\n{GREEN}{BOLD}🎉 Congratulations! All {total} exercises passed! 🎉{RESET}\n")
+
+def cmd_run(exercises, target_id):
+    target = None
+    for ex in exercises:
+        if ex["id"] == target_id or ex["path"] == target_id:
+            target = ex
+            break
+
+    if not target:
+        print(f"{RED}Exercise '{target_id}' not found.{RESET}")
+        sys.exit(1)
+
+    print(f"{CYAN}{BOLD}Testing {target['name']} ({target['path']})...{RESET}")
+    ok, reason = test_exercise(target)
+    if ok:
+        print(f"{GREEN}{BOLD}PASS: {target['name']} completed successfully!{RESET}")
+    else:
+        print(f"{RED}{BOLD}FAIL: {target['name']}{RESET}")
+        print(reason)
+        print(f"\nHint: run {BOLD}./umkalings hint {target['id']}{RESET}")
+
+def cmd_hint(exercises, target_id):
+    for ex in exercises:
+        if ex["id"] == target_id or ex["path"] == target_id:
+            print(f"\n{BOLD}{YELLOW}💡 Hint for {ex['name']} ({ex['path']}):{RESET}")
+            print(f"{ex.get('hint', 'No hint available for this exercise.')}\n")
+            return
+    print(f"{RED}Exercise '{target_id}' not found.{RESET}")
+
+def cmd_list(exercises):
+    print(f"\n{BOLD}{'ID':<25} {'NAME':<28} {'STATUS':<10}{RESET}")
+    print("-" * 65)
+    for ex in exercises:
+        ok, _ = test_exercise(ex)
+        status = f"{GREEN}Completed{RESET}" if ok else f"{YELLOW}Pending{RESET}"
+        print(f"{ex['id']:<25} {ex['name']:<28} {status}")
+    print()
+
+def cmd_watch(exercises):
+    print(f"\n{CYAN}{BOLD}Starting umkalings watch mode...{RESET}")
+    print("Editing any exercise file will automatically trigger re-testing.")
+    print("Press Ctrl+C to exit.\n")
+
+    mtimes = {}
+
+    def get_file_mtimes():
+        res = {}
+        for ex in exercises:
+            p = ROOT_DIR / ex["path"]
+            if p.exists():
+                res[p] = p.stat().st_mtime
+        return res
+
+    current_idx = 0
+    mtimes = get_file_mtimes()
+
+    while True:
+        # Find first failing exercise
+        failing_ex = None
+        failing_reason = ""
+        passed = 0
+
+        for ex in exercises:
+            ok, reason = test_exercise(ex)
+            if ok:
+                passed += 1
+            elif not failing_ex:
+                failing_ex = ex
+                failing_reason = reason
+
+        os.system("clear")
+        print(f"{BOLD}{MAGENTA}--- Umkalings Watcher ---{RESET}")
+        print(f"Progress: {render_progress_bar(passed, len(exercises))}\n")
+
+        if not failing_ex:
+            print(f"{GREEN}{BOLD}🎉 Awesome! All exercises are solved! 🎉{RESET}")
+            print("Make changes to any file to trigger tests again.")
+        else:
+            print(f"Current exercise: {CYAN}{BOLD}{failing_ex['name']}{RESET} ({failing_ex['path']})")
+            print(f"\n{RED}{failing_reason}{RESET}\n")
+            print(f"{YELLOW}Hint:{RESET} {failing_ex.get('hint', '')}")
+            print(f"\n{BOLD}Watching for changes in {failing_ex['path']}...{RESET}")
+
+        # Sleep and monitor file modifications
+        while True:
+            time.sleep(0.5)
+            new_mtimes = get_file_mtimes()
+            if any(new_mtimes.get(k) != mtimes.get(k) for k in new_mtimes):
+                mtimes = new_mtimes
+                break
+
+def print_help():
+    help_text = f"""
+{BOLD}{CYAN}umkalings{RESET} - Interactive Umka exercise tutor
+
+{BOLD}USAGE:{RESET}
+    ./umkalings <COMMAND>
+
+{BOLD}COMMANDS:{RESET}
+    {GREEN}watch{RESET}       Continuously test exercises as you edit files
+    {GREEN}verify{RESET}      Run all exercise tests and print progress
+    {GREEN}run <id>{RESET}    Run and test a single exercise
+    {GREEN}hint <id>{RESET}   Display a hint for a specific exercise
+    {GREEN}list{RESET}        List all available exercises and completion status
+    {GREEN}help{RESET}        Show this help message
+
+{BOLD}EXAMPLES:{RESET}
+    ./umkalings watch
+    ./umkalings verify
+    ./umkalings run 13_todo_list
+    ./umkalings hint 14_word_frequency
+"""
+    print(help_text)
+
+def main():
+    check_umka()
+    exercises = load_exercises()
+
+    if len(sys.argv) < 2:
+        print_help()
+        sys.exit(0)
+
+    cmd = sys.argv[1].lower()
+    if cmd == "verify":
+        cmd_verify(exercises)
+    elif cmd == "watch":
+        try:
+            cmd_watch(exercises)
+        except KeyboardInterrupt:
+            print(f"\n{YELLOW}Stopped watching.{RESET}")
+    elif cmd == "run":
+        if len(sys.argv) < 3:
+            print(f"{RED}Please specify an exercise ID, e.g.: ./umkalings run 01_hello_world{RESET}")
+            sys.exit(1)
+        cmd_run(exercises, sys.argv[2])
+    elif cmd == "hint":
+        if len(sys.argv) < 3:
+            print(f"{RED}Please specify an exercise ID, e.g.: ./umkalings hint 01_hello_world{RESET}")
+            sys.exit(1)
+        cmd_hint(exercises, sys.argv[2])
+    elif cmd == "list":
+        cmd_list(exercises)
+    elif cmd in ("-h", "--help", "help"):
+        print_help()
+    else:
+        print(f"{RED}Unknown command: {cmd}{RESET}")
+        print_help()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

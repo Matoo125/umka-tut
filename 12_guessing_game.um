@@ -1,11 +1,9 @@
+// Exercise 12: Guessing Game
+// Practices: loops, conditionals, user input, and std::rand / std::srand
+
 import "std.um"
 
-fn main() {
-    // Seed the random number generator
-    std::srand(trunc(std::clock() * 1000))
-
-    // Generate a random number between 1 and 100
-    target := int32(std::rand() % 100 + 1)
+fn runGame(target: int32) {
     var guess: int32
     attempts := int32(0)
 
@@ -26,4 +24,20 @@ fn main() {
             printf("Correct! You guessed the number in %d attempts.\n", attempts)
         }
     }
+}
+
+fn main() {
+    // If a command-line argument is passed, use it as a deterministic target (useful for tests)
+    var target: int32
+    target = 0
+    if std::argc() > 1 {
+        sscanf(std::argv(1), "%d", &target)
+    }
+
+    if target <= 0 {
+        std::srand(trunc(std::clock() * 1000))
+        target = int32(std::rand() % 100 + 1)
+    }
+
+    runGame(target)
 }

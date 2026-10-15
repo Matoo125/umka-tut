@@ -1,0 +1,233 @@
+[
+  {
+    "id": "01_hello_world",
+    "name": "Hello World",
+    "path": "01_hello_world.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Hello Umka!",
+    "hint": "Check the main function syntax: fn main() { printf(\"Hello Umka!\\n\") }."
+  },
+  {
+    "id": "02_fib",
+    "name": "Fibonacci",
+    "path": "02_fib.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55",
+    "hint": "Fibonacci requires recursion or loop iteration. fib(0) = 0, fib(1) = 1, fib(n) = fib(n-1) + fib(n-2)."
+  },
+  {
+    "id": "03_add_two_numbers",
+    "name": "Add Two Numbers",
+    "path": "03_add_two_numbers.um",
+    "mode": "exact",
+    "input": "1\n2\n",
+    "expected": "Enter first number: Enter second number: Result: 3.000000",
+    "hint": "Use scanf(\"%lf\", &a) to read real numbers from stdin and print the sum."
+  },
+  {
+    "id": "04_timer",
+    "name": "Interactive Timer",
+    "path": "04_timer.um",
+    "mode": "regex",
+    "input": "L\nR\nL\nS\n",
+    "patterns": [
+      "Timer started!",
+      "Press: L = lapse, R = reverse, S = stop",
+      "Command: Elapsed time:",
+      "Command: Reverse mode: ON",
+      "Command: Final time:",
+      "Timer stopped."
+    ],
+    "hint": "Use std::clock() from std.um to compute elapsed intervals between user commands."
+  },
+  {
+    "id": "05_multiplication_table",
+    "name": "Multiplication Table",
+    "path": "05_multiplication_table.um",
+    "mode": "exact",
+    "input": "4\n",
+    "expected": "Enter table size:    1   2   3   4\n   2   4   6   8\n   3   6   9  12\n   4   8  12  16",
+    "hint": "Use nested for loops with %4d format specifier for aligned column printing."
+  },
+  {
+    "id": "06_table_art",
+    "name": "Table Art",
+    "path": "06_table_art.um",
+    "mode": "exact",
+    "input": "5\n4\n",
+    "expected": "Enter table width: Enter table height: +---+\n|   |\n|   |\n+---+",
+    "hint": "Print the top and bottom borders using '+' and '-', and the middle rows using '|' and spaces."
+  },
+  {
+    "id": "07_factorial",
+    "name": "Factorial",
+    "path": "07_factorial.um",
+    "mode": "exact",
+    "input": "5\n",
+    "expected": "Enter a non-negative integer: 5! = 120",
+    "hint": "Loop from 1 to n multiplying the accumulator, or return an error message if n < 0."
+  },
+  {
+    "id": "08_sum_to_n",
+    "name": "Sum to N",
+    "path": "08_sum_to_n.um",
+    "mode": "exact",
+    "input": "10\n",
+    "expected": "Enter a positive integer: Sum from 1 to 10 = 55",
+    "hint": "Accumulate values from 1 up to N using a for loop: for i := 1; i <= n; i++."
+  },
+  {
+    "id": "09_temperature_converter",
+    "name": "Temperature Converter",
+    "path": "09_temperature_converter.um",
+    "mode": "exact",
+    "input": "CtoF\n25\n",
+    "expected": "Choose conversion (CtoF or FtoC): Enter temperature value: Result: 77.00",
+    "hint": "Formula: F = C * 9.0 / 5.0 + 32.0; C = (F - 32.0) * 5.0 / 9.0."
+  },
+  {
+    "id": "10_countdown",
+    "name": "Countdown",
+    "path": "10_countdown.um",
+    "mode": "exact",
+    "input": "5\n",
+    "expected": "Enter countdown start: 5\n4\n3\n2\n1\n0\nLift off!",
+    "hint": "Count downwards using a for loop: for i := start; i >= 0; i-- and conclude with 'Lift off!'."
+  },
+  {
+    "id": "11_dialogue",
+    "name": "Dialogue Engine",
+    "path": "11_dialogue.um",
+    "mode": "regex",
+    "input": "1\n1\n1\n1\n1\n",
+    "patterns": [
+      "City Gate",
+      "Ending: You earned a warm welcome."
+    ],
+    "hint": "State machines in Umka can be organized using enums or constants for node IDs."
+  },
+  {
+    "id": "12_guessing_game",
+    "name": "Guessing Game",
+    "path": "12_guessing_game.um",
+    "mode": "exact",
+    "args": ["42"],
+    "input": "10\n60\n42\n",
+    "expected": "Welcome to the Guessing Game!\nI'm thinking of a number between 1 and 100.\nCan you guess it?\n\nEnter your guess: Too low! Try again.\nEnter your guess: Too high! Try again.\nEnter your guess: Correct! You guessed the number in 3 attempts.",
+    "hint": "Read guesses in a loop until guess == target. Pass fixed argument for deterministic tests."
+  },
+  {
+    "id": "13_todo_list",
+    "name": "To-Do List",
+    "path": "13_todo_list.um",
+    "mode": "exact",
+    "input": "1\nBuyMilk\n4\n0\n",
+    "expected": "To-Do List Manager\nCommands: 1 = Add, 2 = Complete, 3 = Delete, 4 = List, 0 = Exit\nCommand: Task title: Added task 1: BuyMilk\nCommand: Tasks:\n1. [ ] BuyMilk\nCommand: Goodbye!",
+    "hint": "Use dynamic array slices `[]Task`, `make([]Task, 0)`, `append()`, and `delete()`."
+  },
+  {
+    "id": "14_word_frequency",
+    "name": "Word Frequency Counter",
+    "path": "14_word_frequency.um",
+    "mode": "regex",
+    "input": "",
+    "patterns": [
+      "Word counts \\(9 unique words, 15 total\\):",
+      "to\\s*:\\s*4",
+      "be\\s*:\\s*3"
+    ],
+    "hint": "Use `make(map[str]int)` to count occurrences, and `validkey(map, word)` to check existence."
+  },
+  {
+    "id": "15_rpn_calculator",
+    "name": "RPN Calculator",
+    "path": "15_rpn_calculator.um",
+    "mode": "exact",
+    "input": "5\n3\n4\n+\n2\n*\n",
+    "expected": "RPN Calculator\nEnter number of tokens: Enter 5 tokens separated by whitespace:\nResult: 14.0000",
+    "hint": "Define a struct `RpnStack` with receiver methods `push()` and `pop()`, then evaluate tokens."
+  },
+  {
+    "id": "16_interfaces_shapes",
+    "name": "Polymorphic Shapes Interface",
+    "path": "16_interfaces_shapes.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Shape Measurements:\nRectangle  -> Area:  20.00, Perimeter:  18.00\nCircle     -> Area:  28.27, Perimeter:  18.85",
+    "hint": "Declare `type Shape = interface { ... }` and implement methods with pointer receivers `fn (r: ^Rectangle)`."
+  },
+  {
+    "id": "17_type_switch",
+    "name": "Type Switch and Any",
+    "path": "17_type_switch.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Inspecting Items via Type Switch:\nInteger: 100 (doubled = 200)\nReal: 45.50 (half = 22.75)\nString: \"Umka Scripting\" (length = 14)\nBoolean: true (negated = false)\nBoolean: false (negated = true)",
+    "hint": "Use `switch val := type(item) { case int: ... case str: ... }` on interface/any values."
+  },
+  {
+    "id": "18_embedded_interfaces",
+    "name": "Embedded Interfaces & Wrappers",
+    "path": "18_embedded_interfaces.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "--- Buffer Output ---\nINFO: System started\nINFO: Loading modules...\n[APP] Ready for user requests.\n---------------------",
+    "hint": "Embed interfaces like `type ReadWriter = interface { Reader; Writer }`."
+  },
+  {
+    "id": "19_fibers_coroutines",
+    "name": "Fibers & Coroutine Generators",
+    "path": "19_fibers_coroutines.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Fibonacci Sequence via Coroutine Fiber:\nFib[0] = 0\nFib[1] = 1\nFib[2] = 1\nFib[3] = 2\nFib[4] = 3\nFib[5] = 5\nFib[6] = 8\nFib[7] = 13\nFib[8] = 21\nFib[9] = 34\n\nSquares via Finite Coroutine Fiber:\nSquare #1 = 1\nSquare #2 = 4\nSquare #3 = 9\nSquare #4 = 16\nSquare #5 = 25\nGenerator completed.",
+    "hint": "Create fibers with `make(fiber, fn)`, yield with `resume()`, and check `valid(fib)`."
+  },
+  {
+    "id": "20_file_io",
+    "name": "File I/O and Content Processing",
+    "path": "20_file_io.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Writing 79 bytes to notes.txt...\nReading back from notes.txt...\n--- File Content ---\nUmka Scripting Language\nFast, statically typed, embeddable\nEnjoying exercises!\nLine count: 3\nTemporary file cleaned up.",
+    "hint": "Use `std::fopen(filename, \"wb\")`, `std::fwrite`, `std::freadall`, and `std::fclose`."
+  },
+  {
+    "id": "21_vector_matrix",
+    "name": "3D Vector & Matrix Math",
+    "path": "21_vector_matrix.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Vector Math:\nu: [1.00, 2.00, 3.00]\nv: [4.00, 5.00, 6.00]\nu + v: [5.00, 7.00, 9.00]\nu - v: [-3.00, -3.00, -3.00]\nu . v: 32.00\nu x v: [-3.00, 6.00, -3.00]\n|u|: 3.7417\n|v|: 8.7750\n\nMatrix Transformation:\nI * u: [1.00, 2.00, 3.00]",
+    "hint": "Import \"mat.um\" to use `mat::Vec` and `mat::Mat` methods (`add`, `sub`, `dot`, `cross`)."
+  },
+  {
+    "id": "22_functional_programming",
+    "name": "Functional Closures & fnc.um",
+    "path": "22_functional_programming.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Input: [1 2 3 4 5 6 7 8 9 10]\nThreshold: > 5\nFiltered: [6 7 8 9 10]\nSquared: [36 49 64 81 100]\nTotal Sum of Squares: 330",
+    "hint": "Wrap slices with `fnc::Array(numbers)` and use `.filter()`, `.transform()`, and `.reduce()`."
+  },
+  {
+    "id": "23_unicode_utf8",
+    "name": "Unicode & UTF-8 Decoding",
+    "path": "23_unicode_utf8.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Original Text: Hello, 世界! 🌍\nByte Length:   19\nRune Length:   12\n\nDecoded Code Points:\n[00] U+0048 | 1 bytes | Char: H\n[01] U+0065 | 1 bytes | Char: e\n[02] U+006C | 1 bytes | Char: l\n[03] U+006C | 1 bytes | Char: l\n[04] U+006F | 1 bytes | Char: o\n[05] U+002C | 1 bytes | Char: ,\n[06] U+0020 | 1 bytes | Char:  \n[07] U+4E16 | 3 bytes | Char: 世\n[08] U+754C | 3 bytes | Char: 界\n[09] U+0021 | 1 bytes | Char: !\n[10] U+0020 | 1 bytes | Char:  \n[11] U+1F30D | 4 bytes | Char: 🌍",
+    "hint": "Import \"utf8.um\" and use `utf8::decode()`, `utf8::runeCount()`, and `r.encode()`."
+  },
+  {
+    "id": "24_linked_list_weak_ptrs",
+    "name": "Linked Lists & Weak Pointers",
+    "path": "24_linked_list_weak_ptrs.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Doubly Linked List with Weak Backlinks (Size = 4):\nForward:  [ 10 20 30 40 ]\nBackward: [ 40 30 20 10 ]",
+    "hint": "Use `new(Node, ...)` for heap allocation, and `weak ^Node` for back-references to avoid cycles."
+  }
+]

@@ -1,0 +1,61 @@
+// Exercise 24: Linked Lists and Weak Pointers
+// Practices: heap allocation (`new()`), pointers (`^Node`), doubly-linked structures, and breaking cycles with `weak ^Node`
+
+type Node = struct {
+    value: int
+    next: ^Node
+    prev: weak ^Node
+}
+
+type DoublyLinkedList = struct {
+    head: ^Node
+    tail: ^Node
+    size: int
+}
+
+fn (list: ^DoublyLinkedList) append(val: int) {
+    newNode := new(Node, Node{value: val, next: null, prev: null})
+
+    if list.head == null {
+        list.head = newNode
+        list.tail = newNode
+    } else {
+        newNode.prev = list.tail
+        list.tail.next = newNode
+        list.tail = newNode
+    }
+    list.size++
+}
+
+fn (list: ^DoublyLinkedList) printForward() {
+    printf("Forward:  [ ")
+    curr := list.head
+    for curr != null {
+        printf("%d ", curr.value)
+        curr = curr.next
+    }
+    printf("]\n")
+}
+
+fn (list: ^DoublyLinkedList) printBackward() {
+    printf("Backward: [ ")
+    curr := list.tail
+    for curr != null {
+        printf("%d ", curr.value)
+        curr = curr.prev
+    }
+    printf("]\n")
+}
+
+fn main() {
+    var list: DoublyLinkedList
+
+    list.append(10)
+    list.append(20)
+    list.append(30)
+    list.append(40)
+
+    printf("Doubly Linked List with Weak Backlinks (Size = %d):\n", list.size)
+    list.printForward()
+    list.printBackward()
+}

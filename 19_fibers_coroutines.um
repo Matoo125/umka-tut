@@ -1,0 +1,61 @@
+// Exercise 19: Fibers and Coroutine Generators
+// Practices: fibers (`make(fiber, fn)`), cooperative multitasking, `resume()`, and `valid(fib)`
+
+var yieldedValue: int
+var hasValue: bool
+var keepRunning: bool
+
+fn fibonacciGenerator() {
+    a := 0
+    b := 1
+
+    for keepRunning {
+        yieldedValue = a
+        hasValue = true
+        resume() // Yield control back to caller
+
+        next := a + b
+        a = b
+        b = next
+    }
+}
+
+fn generateSquares() {
+    for i := 1; i <= 5; i++ {
+        yieldedValue = i * i
+        hasValue = true
+        resume()
+    }
+}
+
+fn main() {
+    printf("Fibonacci Sequence via Coroutine Fiber:\n")
+    keepRunning = true
+    fib := make(fiber, fibonacciGenerator)
+
+    for i := 0; i < 10; i++ {
+        hasValue = false
+        resume(fib)
+        if hasValue {
+            printf("Fib[%d] = %d\n", i, yieldedValue)
+        }
+    }
+
+    // Gracefully finish the generator loop so the fiber can be destroyed
+    keepRunning = false
+    resume(fib)
+
+    printf("\nSquares via Finite Coroutine Fiber:\n")
+    sqFib := make(fiber, generateSquares)
+
+    idx := 1
+    for valid(sqFib) {
+        hasValue = false
+        resume(sqFib)
+        if valid(sqFib) && hasValue {
+            printf("Square #%d = %d\n", idx, yieldedValue)
+            idx++
+        }
+    }
+    printf("Generator completed.\n")
+}
