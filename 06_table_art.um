@@ -1,19 +1,31 @@
+// =============================================================================
+// Exercise 06: Table Art
+// Concepts: Modular function definitions, character loops, boundary conditions
+// Run:      printf '5\n4\n' | umka 06_table_art.um
+// =============================================================================
+
 fn drawTable(width: int, height: int) {
     // Top border
     printf("+")
-    for i := 1; i <= width - 2; i++ { printf("-") }
+    for i := 1; i <= width - 2; i++ {
+        printf("-")
+    }
     printf("+\n")
 
     // Middle rows
     for row := 1; row <= height - 2; row++ {
         printf("|")
-        for col := 1; col <= width - 2; col++ { printf(" ") }
+        for col := 1; col <= width - 2; col++ {
+            printf(" ")
+        }
         printf("|\n")
     }
 
     // Bottom border
     printf("+")
-    for i := 1; i <= width - 2; i++ { printf("-") }
+    for i := 1; i <= width - 2; i++ {
+        printf("-")
+    }
     printf("+\n")
 }
 

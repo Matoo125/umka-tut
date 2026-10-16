@@ -1,9 +1,14 @@
+// =============================================================================
 // Exercise 19: Fibers and Coroutine Generators
-// Practices: fibers (`make(fiber, fn)`), cooperative multitasking, `resume()`, and `valid(fib)`
+// Concepts: Fibers (`make(fiber, fn)`), cooperative multitasking, yielding (`resume()`), lifecycle
+// Run:      umka 19_fibers_coroutines.um
+// =============================================================================
 
-var yieldedValue: int
-var hasValue: bool
-var keepRunning: bool
+var (
+    yieldedValue: int
+    hasValue: bool
+    keepRunning: bool
+)
 
 fn fibonacciGenerator() {
     a := 0

@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 14: Word Frequency Counter
-// Practices: maps, string slicing/iteration, validkey, len, and map lookup
+// Concepts: Hash maps (`map[str]int`), `validkey`, `keys()`, character predicates, string tokenization
+// Run:      umka 14_word_frequency.um
+// =============================================================================
 
 import "std.um"
 

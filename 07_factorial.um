@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 07: Factorial
+// Concepts: Iterative loops, multiplicative accumulator, non-negative validation
+// Run:      printf '5\n' | umka 07_factorial.um
+// =============================================================================
+
 fn main() {
     var n: int32
     var result: int32 = 1

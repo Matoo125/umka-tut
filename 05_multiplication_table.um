@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 05: Multiplication Table
+// Concepts: Nested `for` loops, field width specifiers (`%4d`), input validation
+// Run:      printf '4\n' | umka 05_multiplication_table.um
+// =============================================================================
+
 fn main() {
     var size: int32
 

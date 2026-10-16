@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 22: Functional Programming with Closures and fnc.um
-// Practices: closures, lambda capture, fnc::Array, transform (map), filter, and reduce
+// Concepts: Standard library `fnc.um`, closures, variable capture (`|threshold|`), `transform`, `filter`, `reduce`
+// Run:      umka 22_functional_programming.um
+// =============================================================================
 
 import "fnc.um"
 
@@ -7,7 +10,7 @@ fn main() {
     numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
     threshold := 5
 
-    // Closures
+    // Closures with explicit variable capture
     isGreaterThanThreshold := fn (x: any): bool |threshold| {
         return int(x) > threshold
     }

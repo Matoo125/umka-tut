@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 12: Guessing Game
-// Practices: loops, conditionals, user input, and std::rand / std::srand
+// Concepts: Random number generation (`std::rand`), command line args (`std::argc`/`argv`), `for` loop game loop
+// Run:      umka 12_guessing_game.um [optional-target-for-testing]
+// =============================================================================
 
 import "std.um"
 

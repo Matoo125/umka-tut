@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 20: File I/O and Content Processing
-// Practices: std::fopen, std::fwrite, std::freadall, std::fclose, std::remove, and file error handling
+// Concepts: `std::fopen`, `std::fwrite`, `std::freadall`, `std::fclose`, `std::remove`, file error handling
+// Run:      umka 20_file_io.um
+// =============================================================================
 
 import "std.um"
 

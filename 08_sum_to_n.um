@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 08: Sum to N
+// Concepts: Numeric accumulation, input validation, for loop bounds
+// Run:      printf '10\n' | umka 08_sum_to_n.um
+// =============================================================================
+
 fn main() {
     var n: int32
     var sum: int32

@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 23: Unicode and UTF-8 Decoding
-// Practices: utf8.um standard library module, rune decoding, code points, and multi-byte character inspection
+// Concepts: Standard library `utf8.um`, `Rune` code points, byte vs rune length, `encode()`
+// Run:      umka 23_unicode_utf8.um
+// =============================================================================
 
 import "utf8.um"
 

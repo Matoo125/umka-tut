@@ -1,15 +1,26 @@
+// =============================================================================
 // Exercise 16: Polymorphic Shapes Interface
-// Practices: interface declaration, struct receiver methods, and dynamic dispatch
+// Concepts: Interface declaration (`type I = interface`), method sets, dynamic dispatch
+// Run:      umka 16_interfaces_shapes.um
+// =============================================================================
 
-type Shape = interface {
-    name(): str
-    area(): real
-    perimeter(): real
-}
+type (
+    Shape = interface {
+        name(): str
+        area(): real
+        perimeter(): real
+    }
 
-type Rectangle = struct {
-    width, height: real
-}
+    Rectangle = struct {
+        width, height: real
+    }
+
+    Circle = struct {
+        radius: real
+    }
+)
+
+// --- Rectangle Methods ---
 
 fn (r: ^Rectangle) name(): str {
     return "Rectangle"
@@ -23,9 +34,7 @@ fn (r: ^Rectangle) perimeter(): real {
     return 2.0 * (r.width + r.height)
 }
 
-type Circle = struct {
-    radius: real
-}
+// --- Circle Methods ---
 
 fn (c: ^Circle) name(): str {
     return "Circle"
@@ -40,6 +49,8 @@ fn (c: ^Circle) perimeter(): real {
     const pi = 3.14159
     return 2.0 * pi * c.radius
 }
+
+// --- Polymorphic Dispatch ---
 
 fn printShapeSummary(s: Shape) {
     printf("%-10s -> Area: %6.2f, Perimeter: %6.2f\n", s.name(), s.area(), s.perimeter())

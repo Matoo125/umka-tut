@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 01: Hello World
+// Concepts: Program entry point (`fn main`), standard output (`printf`)
+// Run:      umka 01_hello_world.um
+// =============================================================================
+
 fn main() {
     printf("Hello Umka!\n")
 }

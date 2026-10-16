@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 15: Reverse Polish Notation (RPN) Calculator
-// Practices: stack data structure, receiver methods, error handling, sscanf, and tokens
+// Concepts: Stack data structures, struct receiver methods, multi-value returns, token parsing
+// Run:      umka 15_rpn_calculator.um
+// =============================================================================
 
 import "std.um"
 

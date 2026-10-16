@@ -1,9 +1,15 @@
+// =============================================================================
+// Exercise 04: Interactive Timer
+// Concepts: Standard library `std.um`, `std::clock()`, state toggle, and input loop
+// Run:      umka 04_timer.um
+// =============================================================================
+
 import "std.um"
 
 fn main() {
     startTime := std::clock()
-    reversed := false        // false = counting forward, true = counting backward
-    var elapsed: real        // in seconds
+    reversed := false // false = forward, true = backward
+    var elapsed: real // seconds
     var input: str
 
     printf("Timer started!\n")

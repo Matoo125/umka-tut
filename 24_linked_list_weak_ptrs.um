@@ -1,17 +1,24 @@
+// =============================================================================
 // Exercise 24: Linked Lists and Weak Pointers
-// Practices: heap allocation (`new()`), pointers (`^Node`), doubly-linked structures, and breaking cycles with `weak ^Node`
+// Concepts: Dynamic allocation (`new()`), pointers (`^Node`), cycles, weak backlinks (`weak ^Node`)
+// Run:      umka 24_linked_list_weak_ptrs.um
+// =============================================================================
 
-type Node = struct {
-    value: int
-    next: ^Node
-    prev: weak ^Node
-}
+type (
+    Node = struct {
+        value: int
+        next: ^Node
+        prev: weak ^Node
+    }
 
-type DoublyLinkedList = struct {
-    head: ^Node
-    tail: ^Node
-    size: int
-}
+    DoublyLinkedList = struct {
+        head: ^Node
+        tail: ^Node
+        size: int
+    }
+)
+
+// --- List Operations ---
 
 fn (list: ^DoublyLinkedList) append(val: int) {
     newNode := new(Node, Node{value: val, next: null, prev: null})

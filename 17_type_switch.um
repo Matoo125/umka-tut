@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 17: Type Switch and Any
-// Practices: any (interface{}), type switch with `switch v := type(x)`, and explicit runtime type recovery
+// Concepts: `any` alias (`interface{}`), `switch val := type(item)`, runtime type recovery
+// Run:      umka 17_type_switch.um
+// =============================================================================
 
 fn describe(item: any) {
     switch val := type(item) {

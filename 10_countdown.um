@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 10: Countdown
+// Concepts: Decrementing loops (`i--`), loop boundaries, final sentinel action
+// Run:      printf '5\n' | umka 10_countdown.um
+// =============================================================================
+
 fn main() {
     var start: int32
 

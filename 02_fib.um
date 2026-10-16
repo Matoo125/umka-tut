@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 02: Fibonacci
+// Concepts: Recursive function definitions, base cases, and loop iteration
+// Run:      umka 02_fib.um
+// =============================================================================
+
 fn fib(n: int): int {
     if n <= 1 {
         return n
@@ -10,4 +16,3 @@ fn main() {
         printf("%d\n", fib(i))
     }
 }
-

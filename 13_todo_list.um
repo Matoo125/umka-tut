@@ -1,5 +1,8 @@
-// Exercise 13: To-Do List
-// Practices: structs, dynamic arrays, append, delete, loops, and formatted printing
+// =============================================================================
+// Exercise 13: To-Do List Manager
+// Concepts: Structs, dynamic arrays, slice operations (`append`, `delete`), record manipulation
+// Run:      umka 13_todo_list.um
+// =============================================================================
 
 import "std.um"
 

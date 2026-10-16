@@ -1,23 +1,37 @@
+// =============================================================================
 // Exercise 18: Stream Readers, Writers, and Embedded Interfaces
-// Practices: multiple interfaces, interface composition/embedding, and stream abstraction
+// Concepts: Interface composition/embedding (`Reader; Writer`), decorator pattern, stream wrappers
+// Run:      umka 18_embedded_interfaces.um
+// =============================================================================
 
-type Reader = interface {
-    read(): str
-}
+type (
+    Reader = interface {
+        read(): str
+    }
 
-type Writer = interface {
-    write(msg: str)
-}
+    Writer = interface {
+        write(msg: str)
+    }
 
-type ReadWriter = interface {
-    Reader
-    Writer
-}
+    // Composed interface embedding both Reader and Writer
+    ReadWriter = interface {
+        Reader
+        Writer
+    }
 
-// MemoryBuffer implements Reader, Writer, and therefore ReadWriter
-type MemoryBuffer = struct {
-    data: str
-}
+    // MemoryBuffer implements Reader, Writer, and therefore ReadWriter
+    MemoryBuffer = struct {
+        data: str
+    }
+
+    // PrefixedWriter wraps an underlying Writer to prepend a prefix
+    PrefixedWriter = struct {
+        prefix: str
+        target: Writer
+    }
+)
+
+// --- MemoryBuffer Methods ---
 
 fn (b: ^MemoryBuffer) read(): str {
     return b.data
@@ -27,15 +41,13 @@ fn (b: ^MemoryBuffer) write(msg: str) {
     b.data += msg
 }
 
-// PrefixedWriter wraps another Writer to prepend a prefix
-type PrefixedWriter = struct {
-    prefix: str
-    target: Writer
-}
+// --- PrefixedWriter Wrapper ---
 
 fn (pw: ^PrefixedWriter) write(msg: str) {
     pw.target.write(pw.prefix + msg)
 }
+
+// --- High-level Operations ---
 
 fn writeLog(w: Writer, msg: str) {
     w.write(msg + "\n")

@@ -1,5 +1,8 @@
+// =============================================================================
 // Exercise 21: 3D Vector and Matrix Math
-// Practices: mat.um standard library module, receiver methods on arrays, dot/cross products, and matrix transformations
+// Concepts: Standard library `mat.um`, array receiver methods, dot/cross products, matrix transforms
+// Run:      umka 21_vector_matrix.um
+// =============================================================================
 
 import "mat.um"
 

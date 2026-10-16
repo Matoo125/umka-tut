@@ -1,3 +1,9 @@
+// =============================================================================
+// Exercise 09: Temperature Converter
+// Concepts: String comparison, branching conditionals (`if/else`), floating point math
+// Run:      printf 'CtoF\n25\n' | umka 09_temperature_converter.um
+// =============================================================================
+
 fn main() {
     var choice: str
     var value: real32
