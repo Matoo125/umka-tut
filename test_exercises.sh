@@ -337,7 +337,14 @@ run_exact_test \
     "" \
     $'Source Expression: 3 + 5 * ( 2 + 4 )\nAST Infix Tree:    (3 + (5 * (2 + 4)))\nEvaluated Result:  33.00'
 
+run_exact_test \
+    "32 trie prefix tree" \
+    "32_trie_prefix_tree.um" \
+    "" \
+    $'Inserting words into Trie:\n  + apple\n  + app\n  + application\n  + apt\n  + banana\n  + bat\n\nMembership Queries:\n  contains("app") = true\n  contains("apple") = true\n  contains("appl") = false\n\nPrefix Search:\n  startsWith("ap") = true\n  startsWith("cat") = false\n\nAutocomplete for \'app\':\n  -> app\n  -> apple\n  -> application'
+
 echo "All $pass_count tests passed."
+
 
 
 

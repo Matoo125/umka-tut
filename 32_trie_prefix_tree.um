@@ -1,0 +1,153 @@
+// =============================================================================
+// Exercise 32: Trie (Prefix Tree) & Autocomplete
+// Concepts: Multi-way tree heap allocation (`new()`), fixed-size child arrays
+//           (`[26]^TrieNode`), character indexing, prefix matching, and recursive
+//           depth-first word collection for autocomplete.
+// Run:      umka 32_trie_prefix_tree.um
+// =============================================================================
+
+import "std.um"
+
+type (
+    TrieNode = struct {
+        isEndOfWord: bool
+        children: [26]^TrieNode
+    }
+
+    Trie = struct {
+        root: ^TrieNode
+    }
+)
+
+// Allocates and initializes a new Trie node with null children
+fn newTrieNode(): ^TrieNode {
+    node := new(TrieNode)
+    node.isEndOfWord = false
+    for i := 0; i < 26; i++ {
+        node.children[i] = null
+    }
+    return node
+}
+
+// Inserts a lowercase word into the Trie
+fn (t: ^Trie) insert(word: str) {
+    if t.root == null {
+        t.root = newTrieNode()
+    }
+
+    curr := t.root
+    for i := 0; i < len(word); i++ {
+        ch := word[i]
+        if ch >= 'a' && ch <= 'z' {
+            idx := int(ch) - int('a')
+            if curr.children[idx] == null {
+                curr.children[idx] = newTrieNode()
+            }
+            curr = curr.children[idx]
+        }
+    }
+    curr.isEndOfWord = true
+}
+
+// Checks if the exact word exists in the Trie
+fn (t: ^Trie) contains(word: str): bool {
+    if t.root == null { return false }
+    curr := t.root
+    for i := 0; i < len(word); i++ {
+        ch := word[i]
+        if ch >= 'a' && ch <= 'z' {
+            idx := int(ch) - int('a')
+            if curr.children[idx] == null {
+                return false
+            }
+            curr = curr.children[idx]
+        } else {
+            return false
+        }
+    }
+    return curr.isEndOfWord
+}
+
+// Checks if any word starts with the given prefix
+fn (t: ^Trie) startsWith(prefix: str): bool {
+    if t.root == null { return false }
+    curr := t.root
+    for i := 0; i < len(prefix); i++ {
+        ch := prefix[i]
+        if ch >= 'a' && ch <= 'z' {
+            idx := int(ch) - int('a')
+            if curr.children[idx] == null {
+                return false
+            }
+            curr = curr.children[idx]
+        } else {
+            return false
+        }
+    }
+    return true
+}
+
+// Recursively collects all words descending from a given prefix node
+fn collectWords(node: ^TrieNode, prefix: str, results: ^[]str) {
+    if node == null { return }
+    if node.isEndOfWord {
+        results^ = append(results^, prefix)
+    }
+
+    for i := 0; i < 26; i++ {
+        if node.children[i] != null {
+            childChar := char(int('a') + i)
+            collectWords(node.children[i], prefix + str(childChar), results)
+        }
+    }
+}
+
+// Returns a list of all words sharing the given prefix
+fn (t: ^Trie) autocomplete(prefix: str): []str {
+    results := make([]str, 0)
+    if t.root == null { return results }
+
+    curr := t.root
+    for i := 0; i < len(prefix); i++ {
+        ch := prefix[i]
+        if ch >= 'a' && ch <= 'z' {
+            idx := int(ch) - int('a')
+            if curr.children[idx] == null {
+                return results
+            }
+            curr = curr.children[idx]
+        } else {
+            return results
+        }
+    }
+
+    collectWords(curr, prefix, &results)
+    return results
+}
+
+fn main() {
+    t := Trie{root: newTrieNode()}
+
+    words := [6]str{"apple", "app", "application", "apt", "banana", "bat"}
+    printf("Inserting words into Trie:\n")
+    for i := 0; i < len(words); i++ {
+        printf("  + %s\n", words[i])
+        t.insert(words[i])
+    }
+
+    printf("\nMembership Queries:\n")
+    queries := [3]str{"app", "apple", "appl"}
+    for i := 0; i < len(queries); i++ {
+        printf("  contains(\"%s\") = %s\n", queries[i], t.contains(queries[i]) ? "true" : "false")
+    }
+
+    printf("\nPrefix Search:\n")
+    printf("  startsWith(\"ap\") = %s\n", t.startsWith("ap") ? "true" : "false")
+    printf("  startsWith(\"cat\") = %s\n", t.startsWith("cat") ? "true" : "false")
+
+    printf("\nAutocomplete for 'app':\n")
+    completions := t.autocomplete("app")
+    for i := 0; i < len(completions); i++ {
+        printf("  -> %s\n", completions[i])
+    }
+}

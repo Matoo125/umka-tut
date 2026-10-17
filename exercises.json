@@ -292,8 +292,18 @@
     "input": "",
     "expected": "Source Expression: 3 + 5 * ( 2 + 4 )\nAST Infix Tree:    (3 + (5 * (2 + 4)))\nEvaluated Result:  33.00",
     "hint": "Build an AST with `^Node` pointers using recursive-descent functions (`parseExpr`, `parseTerm`, `parsePrimary`)."
+  },
+  {
+    "id": "32_trie_prefix_tree",
+    "name": "Trie (Prefix Tree) & Autocomplete",
+    "path": "32_trie_prefix_tree.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Inserting words into Trie:\n  + apple\n  + app\n  + application\n  + apt\n  + banana\n  + bat\n\nMembership Queries:\n  contains(\"app\") = true\n  contains(\"apple\") = true\n  contains(\"appl\") = false\n\nPrefix Search:\n  startsWith(\"ap\") = true\n  startsWith(\"cat\") = false\n\nAutocomplete for 'app':\n  -> app\n  -> apple\n  -> application",
+    "hint": "Represent each trie node with `isEndOfWord: bool` and a fixed-size child pointer array `children: [26]^TrieNode`."
   }
 ]
+
 
 
 
