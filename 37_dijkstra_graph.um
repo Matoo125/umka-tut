@@ -1,0 +1,144 @@
+// =============================================================================
+// Exercise 37: Graph Representation & Dijkstra's Shortest Path
+// Concepts: Adjacency list graph model (`map[str][]Edge`), edge weighting,
+//           greedy vertex relaxation, distance table tracking, and optimal route
+//           backtracking.
+// Run:      umka 37_dijkstra_graph.um
+// =============================================================================
+
+import "std.um"
+
+const INF = 1000000000
+
+type (
+    Edge = struct {
+        to: str
+        weight: int
+    }
+
+    Graph = struct {
+        adj: map[str][]Edge
+        vertices: []str
+    }
+)
+
+// Registers a vertex in the adjacency map and vertex array if not present
+fn (g: ^Graph) addVertex(v: str) {
+    if !validkey(g.adj, v) {
+        g.adj[v] = make([]Edge, 0)
+        g.vertices = append(g.vertices, v)
+    }
+}
+
+// Adds a directed weighted edge from source to target
+fn (g: ^Graph) addEdge(from: str, to: str, weight: int) {
+    g.addVertex(from)
+    g.addVertex(to)
+    g.adj[from] = append(g.adj[from], Edge{to: to, weight: weight})
+}
+
+// Executes Dijkstra's algorithm to compute minimum cost and reconstruct optimal route
+fn (g: ^Graph) findShortestPath(start: str, target: str) {
+    dist := make(map[str]int)
+    prev := make(map[str]str)
+    visited := make(map[str]bool)
+
+    for i := 0; i < len(g.vertices); i++ {
+        v := g.vertices[i]
+        dist[v] = INF
+        visited[v] = false
+    }
+    dist[start] = 0
+
+    for step := 0; step < len(g.vertices); step++ {
+        // Find unvisited vertex with smallest tentative distance
+        minDist := INF
+        u := ""
+
+        for i := 0; i < len(g.vertices); i++ {
+            v := g.vertices[i]
+            if !visited[v] && dist[v] < minDist {
+                minDist = dist[v]
+                u = v
+            }
+        }
+
+        if u == "" || u == target {
+            break
+        }
+
+        visited[u] = true
+        edges := g.adj[u]
+
+        for i := 0; i < len(edges); i++ {
+            e := edges[i]
+            if !visited[e.to] {
+                alt := dist[u] + e.weight
+                if alt < dist[e.to] {
+                    dist[e.to] = alt
+                    prev[e.to] = u
+                }
+            }
+        }
+    }
+
+    printf("Shortest Path from %s to %s:\n", start, target)
+    if dist[target] == INF {
+        printf("  No path exists.\n")
+        return
+    }
+
+    // Reconstruct path by tracing predecessor pointers backwards
+    path := make([]str, 0)
+    curr := target
+    for curr != "" {
+        path = append(path, curr)
+        if curr == start { break }
+        if validkey(prev, curr) {
+            curr = prev[curr]
+        } else {
+            break
+        }
+    }
+
+    // Reverse path into forward chronological order
+    for i := 0; i < len(path) / 2; i++ {
+        j := len(path) - 1 - i
+        tmp := path[i]
+        path[i] = path[j]
+        path[j] = tmp
+    }
+
+    printf("  Route: ")
+    for i := 0; i < len(path); i++ {
+        printf("%s", path[i])
+        if i < len(path) - 1 {
+            printf(" -> ")
+        }
+    }
+    printf("\n  Total Cost: %d\n", dist[target])
+}
+
+fn main() {
+    g := Graph{
+        adj: make(map[str][]Edge),
+        vertices: make([]str, 0)
+    }
+
+    // Directed graph setup:
+    // A -> B (4), A -> C (2)
+    // C -> B (1), B -> D (5), C -> D (8), C -> E (10)
+    // B -> E (2), E -> D (1)
+    g.addEdge("A", "B", 4)
+    g.addEdge("A", "C", 2)
+    g.addEdge("C", "B", 1)
+    g.addEdge("B", "D", 5)
+    g.addEdge("C", "D", 8)
+    g.addEdge("C", "E", 10)
+    g.addEdge("B", "E", 2)
+    g.addEdge("E", "D", 1)
+
+    printf("=== Dijkstra's Shortest Path Algorithm ===\n")
+    g.findShortestPath("A", "D")
+    g.findShortestPath("C", "E")
+}

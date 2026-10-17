@@ -367,7 +367,14 @@ run_exact_test \
     "" \
     $'=== Markdown Source ===\n# Umka Language\nUmka is a **statically typed** embeddable scripting language.\n## Features\n- Clean Go-like syntax\n- Fast execution with `bytecode` VM\n- Built-in array and hash map collections\n> Simplicity is prerequisite for reliability.\n\n=== Compiled HTML Output ===\n<h1>Umka Language</h1>\n<p>Umka is a <strong>statically typed</strong> embeddable scripting language.</p>\n<h2>Features</h2>\n<ul>\n  <li>Clean Go-like syntax</li>\n  <li>Fast execution with <code>bytecode</code> VM</li>\n  <li>Built-in array and hash map collections</li>\n</ul>\n<blockquote>Simplicity is prerequisite for reliability.</blockquote>'
 
+run_exact_test \
+    "37 dijkstra graph" \
+    "37_dijkstra_graph.um" \
+    "" \
+    $'=== Dijkstra\'s Shortest Path Algorithm ===\nShortest Path from A to D:\n  Route: A -> C -> B -> E -> D\n  Total Cost: 6\nShortest Path from C to E:\n  Route: C -> B -> E\n  Total Cost: 3'
+
 echo "All $pass_count tests passed."
+
 
 
 
