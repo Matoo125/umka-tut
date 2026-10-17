@@ -313,7 +313,14 @@ run_exact_test \
     "" \
     $'=== Dispatching Events ===\n[Auth Service] User logged in: alice\n[Audit Log] Event \'user:login\' triggered with payload: \'alice\'\n[Auth Service] User logged out: alice\n[Audit Log] Event \'user:logout\' triggered with payload: \'alice\''
 
+run_exact_test \
+    "28 state machine" \
+    "28_state_machine.um" \
+    "" \
+    $'=== Finite State Machine Simulation ===\nInitial State: Idle\nTransition: Idle --(Connect)--> Connecting\nIgnored:    Connecting --(Connect)--> [Invalid in this state]\nTransition: Connecting --(Success)--> Connected\nTransition: Connected --(Disconnect)--> Disconnected\nTransition: Disconnected --(Reset)--> Idle'
+
 echo "All $pass_count tests passed."
+
 
 
 

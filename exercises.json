@@ -256,8 +256,18 @@
     "input": "",
     "expected": "=== Dispatching Events ===\n[Auth Service] User logged in: alice\n[Audit Log] Event 'user:login' triggered with payload: 'alice'\n[Auth Service] User logged out: alice\n[Audit Log] Event 'user:logout' triggered with payload: 'alice'",
     "hint": "Define a function type `type EventHandler = fn(event: str, data: str)` and map topics to slices of handlers."
+  },
+  {
+    "id": "28_state_machine",
+    "name": "Finite State Machine (FSM)",
+    "path": "28_state_machine.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Finite State Machine Simulation ===\nInitial State: Idle\nTransition: Idle --(Connect)--> Connecting\nIgnored:    Connecting --(Connect)--> [Invalid in this state]\nTransition: Connecting --(Success)--> Connected\nTransition: Connected --(Disconnect)--> Disconnected\nTransition: Disconnected --(Reset)--> Idle",
+    "hint": "Define `State = enum` and `Event = enum`, then validate transitions inside a receiver method."
   }
 ]
+
 
 
 
