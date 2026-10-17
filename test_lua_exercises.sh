@@ -361,7 +361,14 @@ run_exact_test \
     "" \
     $'=== Circular Ring Buffer (Capacity = 4) ===\nEnqueue 10, 20, 30:\nRingBuffer (size=3/4, head=0, tail=3): [ 10 20 30 ]\nDequeue one item: 10\nRingBuffer (size=2/4, head=1, tail=3): [ 20 30 ]\nEnqueue 40, 50 (wraps around):\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nAttempt overflow enqueue 60: rejected (buffer full)\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nDraining all items:\nPopped: 20\nPopped: 30\nPopped: 40\nPopped: 50\nRingBuffer (size=0/4, head=1, tail=1): [ ]'
 
+run_exact_test \
+    "36 markdown compiler" \
+    "36_markdown_compiler.lua" \
+    "" \
+    $'=== Markdown Source ===\n# Umka Language\nUmka is a **statically typed** embeddable scripting language.\n## Features\n- Clean Go-like syntax\n- Fast execution with `bytecode` VM\n- Built-in array and hash map collections\n> Simplicity is prerequisite for reliability.\n\n=== Compiled HTML Output ===\n<h1>Umka Language</h1>\n<p>Umka is a <strong>statically typed</strong> embeddable scripting language.</p>\n<h2>Features</h2>\n<ul>\n  <li>Clean Go-like syntax</li>\n  <li>Fast execution with <code>bytecode</code> VM</li>\n  <li>Built-in array and hash map collections</li>\n</ul>\n<blockquote>Simplicity is prerequisite for reliability.</blockquote>'
+
 echo "All $pass_count Lua tests passed."
+
 
 
 

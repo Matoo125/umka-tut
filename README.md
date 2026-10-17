@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 35 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, and circular ring buffers.
+This repository contains 36 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, and Markdown-to-HTML compilers.
 
 ## Requirements
 
@@ -52,10 +52,10 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
-# Test Umka exercises (all 35 exercises)
+# Test Umka exercises (all 36 exercises)
 ./test_exercises.sh
 
-# Test Lua reimplementations (all 35 exercises in lua/)
+# Test Lua reimplementations (all 36 exercises in lua/)
 ./test_lua_exercises.sh
 ```
 
@@ -107,8 +107,10 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `33_lru_cache.um` | LRU Cache | Dual-structure map + doubly linked list, weak back-pointers, O(1) eviction |
 | `34_rle_compressor.um` | RLE Byte Compressor | Byte buffers (`[]uint8`), run scanning, chunk limits, lossless decompression |
 | `35_ring_buffer.um` | Circular Ring Buffer | Fixed-capacity queue, modular arithmetic `(i+1)%cap`, overflow rejection |
+| `36_markdown_compiler.um` | Markdown Compiler | Two-pass block/inline parsing, list grouping state machine, HTML emission |
 
 ## Umka Documentation
+
 
 
 

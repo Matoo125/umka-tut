@@ -1,0 +1,130 @@
+// =============================================================================
+// Exercise 36: Markdown to HTML Compiler
+// Concepts: Line-by-line block parsing, prefix detection, list grouping state
+//           machines, character-by-character inline scanner, and HTML generation.
+// Run:      umka 36_markdown_compiler.um
+// =============================================================================
+
+import "std.um"
+
+// Returns true if string s begins with the specified prefix
+fn startsWith(s: str, prefix: str): bool {
+    if len(s) < len(prefix) { return false }
+    return slice(s, 0, len(prefix)) == prefix
+}
+
+// Scans text character by character to convert **bold** and `code` inline tokens
+fn formatInline(text: str): str {
+    out := ""
+    inBold := false
+    inCode := false
+
+    i := 0
+    for i < len(text) {
+        // Check for ** (bold)
+        if i + 1 < len(text) && text[i] == '*' && text[i + 1] == '*' && !inCode {
+            if inBold {
+                out += "</strong>"
+                inBold = false
+            } else {
+                out += "<strong>"
+                inBold = true
+            }
+            i += 2
+        } else if text[i] == '`' && !inBold {
+            if inCode {
+                out += "</code>"
+                inCode = false
+            } else {
+                out += "<code>"
+                inCode = true
+            }
+            i++
+        } else {
+            out += str(text[i])
+            i++
+        }
+    }
+    return out
+}
+
+// Compiles a multi-line Markdown document into clean HTML
+fn compileMarkdown(source: str): str {
+    lines := make([]str, 0)
+    curLine := ""
+    for i := 0; i < len(source); i++ {
+        if source[i] == '\n' {
+            lines = append(lines, curLine)
+            curLine = ""
+        } else if source[i] != '\r' {
+            curLine += str(source[i])
+        }
+    }
+    if len(curLine) > 0 {
+        lines = append(lines, curLine)
+    }
+
+    html := ""
+    inList := false
+
+    for i := 0; i < len(lines); i++ {
+        line := lines[i]
+
+        if len(line) == 0 {
+            if inList {
+                html += "</ul>\n"
+                inList = false
+            }
+            continue
+        }
+
+        if startsWith(line, "### ") {
+            if inList { html += "</ul>\n"; inList = false }
+            content := slice(line, 4, len(line))
+            html += "<h3>" + formatInline(content) + "</h3>\n"
+        } else if startsWith(line, "## ") {
+            if inList { html += "</ul>\n"; inList = false }
+            content := slice(line, 3, len(line))
+            html += "<h2>" + formatInline(content) + "</h2>\n"
+        } else if startsWith(line, "# ") {
+            if inList { html += "</ul>\n"; inList = false }
+            content := slice(line, 2, len(line))
+            html += "<h1>" + formatInline(content) + "</h1>\n"
+        } else if startsWith(line, "> ") {
+            if inList { html += "</ul>\n"; inList = false }
+            content := slice(line, 2, len(line))
+            html += "<blockquote>" + formatInline(content) + "</blockquote>\n"
+        } else if startsWith(line, "- ") {
+            if !inList {
+                html += "<ul>\n"
+                inList = true
+            }
+            content := slice(line, 2, len(line))
+            html += "  <li>" + formatInline(content) + "</li>\n"
+        } else {
+            if inList { html += "</ul>\n"; inList = false }
+            html += "<p>" + formatInline(line) + "</p>\n"
+        }
+    }
+
+    if inList {
+        html += "</ul>\n"
+        inList = false
+    }
+
+    return html
+}
+
+fn main() {
+    md := "# Umka Language\n" +
+          "Umka is a **statically typed** embeddable scripting language.\n" +
+          "## Features\n" +
+          "- Clean Go-like syntax\n" +
+          "- Fast execution with `bytecode` VM\n" +
+          "- Built-in array and hash map collections\n" +
+          "> Simplicity is prerequisite for reliability.\n"
+
+    printf("=== Markdown Source ===\n%s\n", md)
+    compiled := compileMarkdown(md)
+    printf("=== Compiled HTML Output ===\n%s", compiled)
+}
