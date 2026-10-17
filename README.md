@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 32 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, and prefix tries for autocomplete.
+This repository contains 33 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, and LRU caches.
 
 ## Requirements
 
@@ -52,10 +52,10 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
-# Test Umka exercises (all 32 exercises)
+# Test Umka exercises (all 33 exercises)
 ./test_exercises.sh
 
-# Test Lua reimplementations (all 32 exercises in lua/)
+# Test Lua reimplementations (all 33 exercises in lua/)
 ./test_lua_exercises.sh
 ```
 
@@ -104,8 +104,10 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `30_csv_parser.um` | CSV Parser & Filter | Delimiter parsing, quote escapement, 2D tabular representation, and column filtering |
 | `31_ast_evaluator.um` | Expression Parser & AST | Recursive-descent operator precedence, heap AST trees (`^Node`), and recursive evaluation |
 | `32_trie_prefix_tree.um` | Trie & Autocomplete | Prefix trees, 26-way child pointers (`[26]^TrieNode`), and recursive word collection |
+| `33_lru_cache.um` | LRU Cache | Dual-structure map + doubly linked list, weak back-pointers, O(1) eviction |
 
 ## Umka Documentation
+
 
 
 

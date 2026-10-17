@@ -343,7 +343,14 @@ run_exact_test \
     "" \
     $'Inserting words into Trie:\n  + apple\n  + app\n  + application\n  + apt\n  + banana\n  + bat\n\nMembership Queries:\n  contains("app") = true\n  contains("apple") = true\n  contains("appl") = false\n\nPrefix Search:\n  startsWith("ap") = true\n  startsWith("cat") = false\n\nAutocomplete for \'app\':\n  -> app\n  -> apple\n  -> application'
 
+run_exact_test \
+    "33 lru cache" \
+    "33_lru_cache.lua" \
+    "" \
+    $'=== LRU Cache Simulation (Capacity = 3) ===\nCache (size=3, cap=3): [ c:300 b:200 a:100 ]\nAccessing \'a\': 100\nCache (size=3, cap=3): [ a:100 c:300 b:200 ]\nInserting \'d\': 400 (triggers eviction)\nCache (size=3, cap=3): [ d:400 a:100 c:300 ]\nQuerying evicted \'b\': -1\nQuerying present \'c\': 300'
+
 echo "All $pass_count Lua tests passed."
+
 
 
 
