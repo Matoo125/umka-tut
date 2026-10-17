@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 30 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, and CSV tabular parsing/query filters.
+This repository contains 31 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, and arithmetic expression AST evaluators.
 
 ## Requirements
 
@@ -49,10 +49,10 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
-# Test Umka exercises (all 30 exercises)
+# Test Umka exercises (all 31 exercises)
 ./test_exercises.sh
 
-# Test Lua reimplementations (all 30 exercises in lua/)
+# Test Lua reimplementations (all 31 exercises in lua/)
 ./test_lua_exercises.sh
 ```
 
@@ -99,8 +99,10 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `28_state_machine.um` | Finite State Machine (FSM) | Enums (`State`, `Event`), deterministic transitions, validation logic, and action handlers |
 | `29_min_heap.um` | Priority Queue / Min-Heap | Binary heap indexing `(i-1)/2`, sift-up, sift-down, logarithmic priority queue operations |
 | `30_csv_parser.um` | CSV Parser & Filter | Delimiter parsing, quote escapement, 2D tabular representation, and column filtering |
+| `31_ast_evaluator.um` | Expression Parser & AST | Recursive-descent operator precedence, heap AST trees (`^Node`), and recursive evaluation |
 
 ## Umka Documentation
+
 
 
 

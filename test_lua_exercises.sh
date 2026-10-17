@@ -331,7 +331,14 @@ run_exact_test \
     "" \
     $'CSV Table Loaded (3 columns, 4 rows)\n--- Engineering Staff ---\n- Alice (Salary: $95000)\n- Charlie (Salary: $105000)'
 
+run_exact_test \
+    "31 ast evaluator" \
+    "31_ast_evaluator.lua" \
+    "" \
+    $'Source Expression: 3 + 5 * ( 2 + 4 )\nAST Infix Tree:    (3 + (5 * (2 + 4)))\nEvaluated Result:  33.00'
+
 echo "All $pass_count Lua tests passed."
+
 
 
 

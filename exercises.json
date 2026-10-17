@@ -283,8 +283,18 @@
     "input": "",
     "expected": "CSV Table Loaded (3 columns, 4 rows)\n--- Engineering Staff ---\n- Alice (Salary: $95000)\n- Charlie (Salary: $105000)",
     "hint": "Loop over characters with an `inQuotes` boolean flag to parse CSV rows without splitting inside quoted values."
+  },
+  {
+    "id": "31_ast_evaluator",
+    "name": "Expression Parser & AST Evaluator",
+    "path": "31_ast_evaluator.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Source Expression: 3 + 5 * ( 2 + 4 )\nAST Infix Tree:    (3 + (5 * (2 + 4)))\nEvaluated Result:  33.00",
+    "hint": "Build an AST with `^Node` pointers using recursive-descent functions (`parseExpr`, `parseTerm`, `parsePrimary`)."
   }
 ]
+
 
 
 
