@@ -346,6 +346,15 @@
     "input": "",
     "expected": "=== Dijkstra's Shortest Path Algorithm ===\nShortest Path from A to D:\n  Route: A -> C -> B -> E -> D\n  Total Cost: 6\nShortest Path from C to E:\n  Route: C -> B -> E\n  Total Cost: 3",
     "hint": "Build an adjacency list `map[str][]Edge`, relax unvisited nodes greedily, and trace `prev` pointers back to source."
+  },
+  {
+    "id": "38_stack_vm",
+    "name": "Stack-Based Bytecode VM",
+    "path": "38_stack_vm.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Stack-Based Bytecode VM ===\nRunning Program 1: (7 + 3) * 4 - 5\nResult: 35\nRunning Program 2: Triangular sum of 5\nResult: 15\nVM execution completed successfully.",
+    "hint": "Model instructions with opcode enums and operands, maintaining operand stack `sp` and instruction pointer `ip`."
   }
 ]
 

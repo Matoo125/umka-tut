@@ -373,6 +373,12 @@ run_exact_test \
     "" \
     $'=== Dijkstra\'s Shortest Path Algorithm ===\nShortest Path from A to D:\n  Route: A -> C -> B -> E -> D\n  Total Cost: 6\nShortest Path from C to E:\n  Route: C -> B -> E\n  Total Cost: 3'
 
+run_exact_test \
+    "38 stack vm" \
+    "38_stack_vm.um" \
+    "" \
+    $'=== Stack-Based Bytecode VM ===\nRunning Program 1: (7 + 3) * 4 - 5\nResult: 35\nRunning Program 2: Triangular sum of 5\nResult: 15\nVM execution completed successfully.'
+
 echo "All $pass_count tests passed."
 
 

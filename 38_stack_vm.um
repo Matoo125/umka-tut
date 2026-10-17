@@ -1,0 +1,234 @@
+// 38_stack_vm.um - Stack-Based Bytecode Virtual Machine in Umka
+
+import (
+	"std.um"
+)
+
+type (
+	Opcode = enum {
+		OP_PUSH
+		OP_ADD
+		OP_SUB
+		OP_MUL
+		OP_DIV
+		OP_CMP_EQ
+		OP_CMP_LT
+		OP_JMP
+		OP_JNZ
+		OP_DUP
+		OP_OVER
+		OP_SWAP
+		OP_DROP
+		OP_PRINT
+		OP_HALT
+	}
+
+	Instr = struct {
+		op: Opcode
+		arg: int
+	}
+
+	VM = struct {
+		stack: [128]int
+		sp: int
+		ip: int
+		running: bool
+	}
+)
+
+fn (vm: ^VM) push(val: int) {
+	if vm.sp >= 128 {
+		std::println("Error: Stack overflow")
+		vm.running = false
+		return
+	}
+	vm.stack[vm.sp] = val
+	vm.sp++
+}
+
+fn (vm: ^VM) pop(): int {
+	if vm.sp <= 0 {
+		std::println("Error: Stack underflow")
+		vm.running = false
+		return 0
+	}
+	vm.sp--
+	return vm.stack[vm.sp]
+}
+
+fn (vm: ^VM) run(program: []Instr) {
+	vm.sp = 0
+	vm.ip = 0
+	vm.running = true
+
+	for vm.running && vm.ip >= 0 && vm.ip < len(program) {
+		inst := program[vm.ip]
+		vm.ip++
+
+		switch inst.op {
+		case Opcode.OP_PUSH:
+			vm.push(inst.arg)
+
+		case Opcode.OP_ADD:
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a + b)
+
+		case Opcode.OP_SUB:
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a - b)
+
+		case Opcode.OP_MUL:
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a * b)
+
+		case Opcode.OP_DIV:
+			b := vm.pop()
+			a := vm.pop()
+			if b == 0 {
+				std::println("Error: Division by zero")
+				vm.running = false
+			} else {
+				vm.push(a / b)
+			}
+
+		case Opcode.OP_CMP_EQ:
+			b := vm.pop()
+			a := vm.pop()
+			if a == b {
+				vm.push(1)
+			} else {
+				vm.push(0)
+			}
+
+		case Opcode.OP_CMP_LT:
+			b := vm.pop()
+			a := vm.pop()
+			if a < b {
+				vm.push(1)
+			} else {
+				vm.push(0)
+			}
+
+		case Opcode.OP_JMP:
+			vm.ip = inst.arg
+
+		case Opcode.OP_JNZ:
+			cond := vm.pop()
+			if cond != 0 {
+				vm.ip = inst.arg
+			}
+
+		case Opcode.OP_DUP:
+			val := vm.pop()
+			vm.push(val)
+			vm.push(val)
+
+		case Opcode.OP_OVER:
+			// Stack: [..., a, b] -> [..., a, b, a]
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a)
+			vm.push(b)
+			vm.push(a)
+
+		case Opcode.OP_SWAP:
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(b)
+			vm.push(a)
+
+		case Opcode.OP_DROP:
+			vm.pop()
+
+		case Opcode.OP_PRINT:
+			val := vm.pop()
+			printf("Result: %d\n", val)
+
+		case Opcode.OP_HALT:
+			vm.running = false
+
+		default:
+			printf("Error: Unknown opcode %d\n", int(inst.op))
+			vm.running = false
+		}
+	}
+}
+
+fn main() {
+	std::println("=== Stack-Based Bytecode VM ===")
+
+	// Program 1: Arithmetic Expression Evaluation
+	// Computes: (7 + 3) * 4 - 5 = 35
+	std::println("Running Program 1: (7 + 3) * 4 - 5")
+	p1 := []Instr{
+		Instr{op: Opcode.OP_PUSH,  arg: 7},
+		Instr{op: Opcode.OP_PUSH,  arg: 3},
+		Instr{op: Opcode.OP_ADD,   arg: 0},
+		Instr{op: Opcode.OP_PUSH,  arg: 4},
+		Instr{op: Opcode.OP_MUL,   arg: 0},
+		Instr{op: Opcode.OP_PUSH,  arg: 5},
+		Instr{op: Opcode.OP_SUB,   arg: 0},
+		Instr{op: Opcode.OP_PRINT, arg: 0},
+		Instr{op: Opcode.OP_HALT,  arg: 0}
+	}
+
+	vm := VM{}
+	vm.run(p1)
+
+	// Program 2: Triangular sum of 5: 5 + 4 + 3 + 2 + 1 = 15
+	// Initial state:
+	// 0: PUSH 0      -> stack: [0] (acc)
+	// 1: PUSH 5      -> stack: [0, 5] (acc, n)
+	// Loop check (index 2):
+	// 2: DUP         -> stack: [acc, n, n]
+	// 3: JNZ 5       -> if n != 0 jump to body at index 5. Pops top n, leaves [acc, n]
+	// 4: JMP 13      -> if n == 0 jump to exit at index 13.
+	// Loop body (index 5):
+	// 5: SWAP        -> stack: [n, acc]
+	// 6: OVER        -> stack: [n, acc, n]
+	// 7: ADD         -> stack: [n, acc + n]
+	// 8: SWAP        -> stack: [acc + n, n]
+	// 9: PUSH 1      -> stack: [acc + n, n, 1]
+	// 10: SUB        -> stack: [acc + n, n - 1]
+	// 11: JMP 2      -> loop back to index 2
+	// Exit (index 12 or 13? Let's count indices):
+	// 0: PUSH 0
+	// 1: PUSH 5
+	// 2: DUP
+	// 3: JNZ 5
+	// 4: JMP 12
+	// 5: SWAP
+	// 6: OVER
+	// 7: ADD
+	// 8: SWAP
+	// 9: PUSH 1
+	// 10: SUB
+	// 11: JMP 2
+	// 12: DROP       -> drop counter n (which is 0), leaves [acc]
+	// 13: PRINT      -> prints acc
+	// 14: HALT
+	std::println("Running Program 2: Triangular sum of 5")
+	p2 := []Instr{
+		Instr{op: Opcode.OP_PUSH,  arg: 0},
+		Instr{op: Opcode.OP_PUSH,  arg: 5},
+		Instr{op: Opcode.OP_DUP,   arg: 0},
+		Instr{op: Opcode.OP_JNZ,   arg: 5},
+		Instr{op: Opcode.OP_JMP,   arg: 12},
+		Instr{op: Opcode.OP_SWAP,  arg: 0},
+		Instr{op: Opcode.OP_OVER,  arg: 0},
+		Instr{op: Opcode.OP_ADD,   arg: 0},
+		Instr{op: Opcode.OP_SWAP,  arg: 0},
+		Instr{op: Opcode.OP_PUSH,  arg: 1},
+		Instr{op: Opcode.OP_SUB,   arg: 0},
+		Instr{op: Opcode.OP_JMP,   arg: 2},
+		Instr{op: Opcode.OP_DROP,  arg: 0},
+		Instr{op: Opcode.OP_PRINT, arg: 0},
+		Instr{op: Opcode.OP_HALT,  arg: 0}
+	}
+
+	vm.run(p2)
+	std::println("VM execution completed successfully.")
+}
