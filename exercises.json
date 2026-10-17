@@ -238,6 +238,16 @@
     "input": "",
     "expected": "Parsed 4 JSON properties:\n  author     : \"Vasiliy\"\n  embedded   : true\n  lang       : \"Umka\"\n  version    : 1.60",
     "hint": "Build a recursive descent parser using `map[str]Value` and tagged union structs."
+  },
+  {
+    "id": "26_binary_packet",
+    "name": "Binary Packet Header & Checksum",
+    "path": "26_binary_packet.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Header Unpacked:\n  Magic:      0x554D4B41\n  Version:    1\n  Flags:      0x0003\n  PayloadLen: 4 bytes\n  Checksum:   0xC2BA81B6\n  Valid:      true",
+    "hint": "Use big-endian bit shifts (`<<`, `>>`, `|`) on `[]uint8` byte buffers to pack and unpack structures."
   }
 ]
+
 

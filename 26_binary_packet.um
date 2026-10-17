@@ -1,0 +1,91 @@
+// =============================================================================
+// Exercise 26: Binary Packet Header Packer & Parser
+// Concepts: Byte buffers (`[]uint8`), bitwise shifting (`<<`, `>>`, `|`, `&`),
+//           endianness serialization, and checksum verification.
+// Run:      umka 26_binary_packet.um
+// =============================================================================
+
+import "std.um"
+
+type (
+    PacketHeader = struct {
+        magic: uint32
+        version: uint16
+        flags: uint16
+        payloadLen: uint32
+        checksum: uint32
+    }
+)
+
+// Computes a 32-bit polynomial hash checksum across a slice of bytes
+fn computeChecksum(bytes: []uint8): uint32 {
+    sum := uint32(0)
+    for i := 0; i < len(bytes); i++ {
+        sum = (sum * 31 + uint32(bytes[i])) & 0xFFFFFFFF
+    }
+    return sum
+}
+
+// Read big-endian 16-bit integer
+fn readUint16BE(b: []uint8, offset: int): uint16 {
+    return uint16((uint(b[offset]) << 8) | uint(b[offset + 1]))
+}
+
+// Read big-endian 32-bit integer
+fn readUint32BE(b: []uint8, offset: int): uint32 {
+    return uint32((uint(b[offset]) << 24) |
+                  (uint(b[offset + 1]) << 16) |
+                  (uint(b[offset + 2]) << 8) |
+                  uint(b[offset + 3]))
+}
+
+// Write big-endian 16-bit integer
+fn writeUint16BE(b: ^[]uint8, offset: int, val: uint16) {
+    b^[offset] = uint8((val >> 8) & 0xFF)
+    b^[offset + 1] = uint8(val & 0xFF)
+}
+
+// Write big-endian 32-bit integer
+fn writeUint32BE(b: ^[]uint8, offset: int, val: uint32) {
+    b^[offset] = uint8((val >> 24) & 0xFF)
+    b^[offset + 1] = uint8((val >> 16) & 0xFF)
+    b^[offset + 2] = uint8((val >> 8) & 0xFF)
+    b^[offset + 3] = uint8(val & 0xFF)
+}
+
+fn main() {
+    // 16-byte fixed header buffer
+    buf := make([]uint8, 16)
+
+    // Pack header: Magic "UMKA" (0x554D4B41), Ver 1, Flags 0x0003, Payload 4 bytes
+    writeUint32BE(&buf, 0, 0x554D4B41)
+    writeUint16BE(&buf, 4, 1)
+    writeUint16BE(&buf, 6, 0x0003)
+    writeUint32BE(&buf, 8, 4)
+
+    // Calculate checksum of the first 12 bytes and store in the last 4 bytes
+    headerSlice := slice(buf, 0, 12)
+    cs := computeChecksum(headerSlice)
+    writeUint32BE(&buf, 12, cs)
+
+    // Unpack header from byte buffer into struct
+    hdr := PacketHeader{
+        magic: readUint32BE(buf, 0),
+        version: readUint16BE(buf, 4),
+        flags: readUint16BE(buf, 6),
+        payloadLen: readUint32BE(buf, 8),
+        checksum: readUint32BE(buf, 12),
+    }
+
+    // Verify integrity
+    expectedCs := computeChecksum(slice(buf, 0, 12))
+    isValid := (expectedCs == hdr.checksum)
+
+    printf("Header Unpacked:\n")
+    printf("  Magic:      0x%08X\n", hdr.magic)
+    printf("  Version:    %d\n", hdr.version)
+    printf("  Flags:      0x%04X\n", hdr.flags)
+    printf("  PayloadLen: %d bytes\n", hdr.payloadLen)
+    printf("  Checksum:   0x%08X\n", hdr.checksum)
+    printf("  Valid:      %s\n", isValid ? "true" : "false")
+}

@@ -301,5 +301,12 @@ run_exact_test \
     "" \
     $'Parsed 4 JSON properties:\n  author     : "Vasiliy"\n  embedded   : true\n  lang       : "Umka"\n  version    : 1.60'
 
+run_exact_test \
+    "26 binary packet" \
+    "26_binary_packet.lua" \
+    "" \
+    $'Header Unpacked:\n  Magic:      0x554D4B41\n  Version:    1\n  Flags:      0x0003\n  PayloadLen: 4 bytes\n  Checksum:   0xC2BA81B6\n  Valid:      true'
+
 echo "All $pass_count Lua tests passed."
+
 
