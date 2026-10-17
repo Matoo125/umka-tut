@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 24 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), and heap/weak pointers.
+This repository contains 25 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, and recursive-descent lexers/parsers.
 
 ## Requirements
 
@@ -49,10 +49,10 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
-# Test Umka exercises (all 24 exercises)
+# Test Umka exercises (all 25 exercises)
 ./test_exercises.sh
 
-# Test Lua reimplementations (all 24 exercises in lua/)
+# Test Lua reimplementations (all 25 exercises in lua/)
 ./test_lua_exercises.sh
 ```
 
@@ -93,8 +93,10 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `22_functional_programming.um` | Functional Programming | Standard module `fnc.um`, closures, lambda capture, `transform`, `filter`, `reduce` |
 | `23_unicode_utf8.um` | Unicode & UTF-8 Decoding | Standard module `utf8.um`, runes, byte vs character length, code points |
 | `24_linked_list_weak_ptrs.um` | Linked Lists & Weak Pointers | Heap allocation (`new()`), pointers (`^Node`), and breaking cycles (`weak ^Node`) |
+| `25_json_parser.um` | JSON Lexer & Parser | Recursive-descent parsing, tokenization, tagged unions, and JSON AST representation |
 
 ## Umka Documentation
+
 
 - Main project: <https://github.com/vtereshkov/umka-lang>
 - Language documentation: <https://github.com/vtereshkov/umka-lang/blob/master/doc/lang.md>

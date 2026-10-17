@@ -295,4 +295,11 @@ run_exact_test \
     "" \
     $'Doubly Linked List with Weak Backlinks (Size = 4):\nForward:  [ 10 20 30 40 ]\nBackward: [ 40 30 20 10 ]'
 
+run_exact_test \
+    "25 json parser" \
+    "25_json_parser.lua" \
+    "" \
+    $'Parsed 4 JSON properties:\n  author     : "Vasiliy"\n  embedded   : true\n  lang       : "Umka"\n  version    : 1.60'
+
 echo "All $pass_count Lua tests passed."
+

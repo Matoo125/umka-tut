@@ -229,5 +229,15 @@
     "input": "",
     "expected": "Doubly Linked List with Weak Backlinks (Size = 4):\nForward:  [ 10 20 30 40 ]\nBackward: [ 40 30 20 10 ]",
     "hint": "Use `new(Node, ...)` for heap allocation, and `weak ^Node` for back-references to avoid cycles."
+  },
+  {
+    "id": "25_json_parser",
+    "name": "JSON Lexer & Parser",
+    "path": "25_json_parser.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Parsed 4 JSON properties:\n  author     : \"Vasiliy\"\n  embedded   : true\n  lang       : \"Umka\"\n  version    : 1.60",
+    "hint": "Build a recursive descent parser using `map[str]Value` and tagged union structs."
   }
 ]
+
