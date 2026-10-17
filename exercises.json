@@ -247,7 +247,17 @@
     "input": "",
     "expected": "Header Unpacked:\n  Magic:      0x554D4B41\n  Version:    1\n  Flags:      0x0003\n  PayloadLen: 4 bytes\n  Checksum:   0xC2BA81B6\n  Valid:      true",
     "hint": "Use big-endian bit shifts (`<<`, `>>`, `|`) on `[]uint8` byte buffers to pack and unpack structures."
+  },
+  {
+    "id": "27_event_bus",
+    "name": "Event Bus & Pub-Sub Dispatcher",
+    "path": "27_event_bus.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Dispatching Events ===\n[Auth Service] User logged in: alice\n[Audit Log] Event 'user:login' triggered with payload: 'alice'\n[Auth Service] User logged out: alice\n[Audit Log] Event 'user:logout' triggered with payload: 'alice'",
+    "hint": "Define a function type `type EventHandler = fn(event: str, data: str)` and map topics to slices of handlers."
   }
 ]
+
 
 

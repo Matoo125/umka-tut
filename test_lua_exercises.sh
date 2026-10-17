@@ -307,6 +307,13 @@ run_exact_test \
     "" \
     $'Header Unpacked:\n  Magic:      0x554D4B41\n  Version:    1\n  Flags:      0x0003\n  PayloadLen: 4 bytes\n  Checksum:   0xC2BA81B6\n  Valid:      true'
 
+run_exact_test \
+    "27 event bus" \
+    "27_event_bus.lua" \
+    "" \
+    $'=== Dispatching Events ===\n[Auth Service] User logged in: alice\n[Audit Log] Event \'user:login\' triggered with payload: \'alice\'\n[Auth Service] User logged out: alice\n[Audit Log] Event \'user:logout\' triggered with payload: \'alice\''
+
 echo "All $pass_count Lua tests passed."
+
 
 
