@@ -49,13 +49,18 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
+# Test Umka exercises (all 24 exercises)
 ./test_exercises.sh
+
+# Test Lua reimplementations (all 24 exercises in lua/)
+./test_lua_exercises.sh
 ```
 
-If the script is not executable in your environment, run:
+If the scripts are not executable in your environment, run:
 
 ```bash
 bash test_exercises.sh
+bash test_lua_exercises.sh
 ```
 
 The test script checks exact output for deterministic exercises and uses pattern-based checks for the timer and dialogue exercises.
