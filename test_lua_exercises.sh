@@ -355,7 +355,14 @@ run_exact_test \
     "" \
     $'=== Run-Length Encoding (RLE) Stream Compressor ===\nOriginal size:     17 bytes\nCompressed size:   8 bytes\nSpace saved:       52.9%\nCompressed stream: [ (5 x 0xAA) (3 x 0xBB) (8 x 0xCC) (1 x 0xDD) ]\nVerification:      PASS (Exact byte match)'
 
+run_exact_test \
+    "35 ring buffer" \
+    "35_ring_buffer.lua" \
+    "" \
+    $'=== Circular Ring Buffer (Capacity = 4) ===\nEnqueue 10, 20, 30:\nRingBuffer (size=3/4, head=0, tail=3): [ 10 20 30 ]\nDequeue one item: 10\nRingBuffer (size=2/4, head=1, tail=3): [ 20 30 ]\nEnqueue 40, 50 (wraps around):\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nAttempt overflow enqueue 60: rejected (buffer full)\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nDraining all items:\nPopped: 20\nPopped: 30\nPopped: 40\nPopped: 50\nRingBuffer (size=0/4, head=1, tail=1): [ ]'
+
 echo "All $pass_count Lua tests passed."
+
 
 
 
