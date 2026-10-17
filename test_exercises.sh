@@ -319,7 +319,14 @@ run_exact_test \
     "" \
     $'=== Finite State Machine Simulation ===\nInitial State: Idle\nTransition: Idle --(Connect)--> Connecting\nIgnored:    Connecting --(Connect)--> [Invalid in this state]\nTransition: Connecting --(Success)--> Connected\nTransition: Connected --(Disconnect)--> Disconnected\nTransition: Disconnected --(Reset)--> Idle'
 
+run_exact_test \
+    "29 min heap" \
+    "29_min_heap.um" \
+    "" \
+    $'Pushing values into Min-Heap:\nPush 45\nPush 12\nPush 89\nPush 3\nPush 27\nPush 18\nPush 5\n\nPopping in sorted priority order:\nPop 3\nPop 5\nPop 12\nPop 18\nPop 27\nPop 45\nPop 89'
+
 echo "All $pass_count tests passed."
+
 
 
 

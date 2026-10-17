@@ -265,8 +265,18 @@
     "input": "",
     "expected": "=== Finite State Machine Simulation ===\nInitial State: Idle\nTransition: Idle --(Connect)--> Connecting\nIgnored:    Connecting --(Connect)--> [Invalid in this state]\nTransition: Connecting --(Success)--> Connected\nTransition: Connected --(Disconnect)--> Disconnected\nTransition: Disconnected --(Reset)--> Idle",
     "hint": "Define `State = enum` and `Event = enum`, then validate transitions inside a receiver method."
+  },
+  {
+    "id": "29_min_heap",
+    "name": "Priority Queue / Binary Min-Heap",
+    "path": "29_min_heap.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "Pushing values into Min-Heap:\nPush 45\nPush 12\nPush 89\nPush 3\nPush 27\nPush 18\nPush 5\n\nPopping in sorted priority order:\nPop 3\nPop 5\nPop 12\nPop 18\nPop 27\nPop 45\nPop 89",
+    "hint": "Store elements in a dynamic array `[]int` with `(i-1)/2` parent and `2*i+1` / `2*i+2` child indexing."
   }
 ]
+
 
 
 

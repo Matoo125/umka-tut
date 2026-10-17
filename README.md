@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 28 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, and finite state machines (FSM).
+This repository contains 29 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), and binary min-heaps (priority queues).
 
 ## Requirements
 
@@ -49,10 +49,10 @@ printf '10\n60\n42\n' | umka 12_guessing_game.um 42
 You can also run the automated bash test scripts:
 
 ```bash
-# Test Umka exercises (all 28 exercises)
+# Test Umka exercises (all 29 exercises)
 ./test_exercises.sh
 
-# Test Lua reimplementations (all 28 exercises in lua/)
+# Test Lua reimplementations (all 29 exercises in lua/)
 ./test_lua_exercises.sh
 ```
 
@@ -97,8 +97,10 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `26_binary_packet.um` | Binary Packet Header | Byte arrays (`[]uint8`), bit shifts (`<<`, `>>`), endianness, and checksum integrity |
 | `27_event_bus.um` | Event Bus & Pub-Sub | Function types (`fn(event, data)`), callback slices, event registries, and decoupled dispatching |
 | `28_state_machine.um` | Finite State Machine (FSM) | Enums (`State`, `Event`), deterministic transitions, validation logic, and action handlers |
+| `29_min_heap.um` | Priority Queue / Min-Heap | Binary heap indexing `(i-1)/2`, sift-up, sift-down, logarithmic priority queue operations |
 
 ## Umka Documentation
+
 
 
 

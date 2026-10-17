@@ -1,0 +1,87 @@
+// =============================================================================
+// Exercise 29: Priority Queue / Binary Min-Heap
+// Concepts: Binary heap array representation, parent/child index arithmetic
+//           (`(i-1)/2`, `2*i+1`, `2*i+2`), sift-up insertion, sift-down deletion,
+//           and logarithmic O(log N) priority order retrieval.
+// Run:      umka 29_min_heap.um
+// =============================================================================
+
+import "std.um"
+
+type (
+    MinHeap = struct {
+        data: []int
+    }
+)
+
+// Insert value and restore heap property by sifting up
+fn (h: ^MinHeap) push(val: int) {
+    h.data = append(h.data, val)
+    idx := len(h.data) - 1
+
+    for idx > 0 {
+        parent := (idx - 1) / 2
+        if h.data[idx] < h.data[parent] {
+            tmp := h.data[idx]
+            h.data[idx] = h.data[parent]
+            h.data[parent] = tmp
+            idx = parent
+        } else {
+            break
+        }
+    }
+}
+
+// Extract minimum element and restore heap property by sifting down
+fn (h: ^MinHeap) pop(): int {
+    if len(h.data) == 0 {
+        return -1
+    }
+
+    minVal := h.data[0]
+    lastIdx := len(h.data) - 1
+    h.data[0] = h.data[lastIdx]
+    h.data = delete(h.data, lastIdx)
+
+    idx := 0
+    n := len(h.data)
+    for idx < n {
+        smallest := idx
+        left := 2 * idx + 1
+        right := 2 * idx + 2
+
+        if left < n && h.data[left] < h.data[smallest] {
+            smallest = left
+        }
+        if right < n && h.data[right] < h.data[smallest] {
+            smallest = right
+        }
+
+        if smallest != idx {
+            tmp := h.data[idx]
+            h.data[idx] = h.data[smallest]
+            h.data[smallest] = tmp
+            idx = smallest
+        } else {
+            break
+        }
+    }
+
+    return minVal
+}
+
+fn main() {
+    h := MinHeap{data: make([]int, 0)}
+    values := [7]int{45, 12, 89, 3, 27, 18, 5}
+
+    printf("Pushing values into Min-Heap:\n")
+    for i := 0; i < len(values); i++ {
+        printf("Push %d\n", values[i])
+        h.push(values[i])
+    }
+
+    printf("\nPopping in sorted priority order:\n")
+    for len(h.data) > 0 {
+        printf("Pop %d\n", h.pop())
+    }
+}
