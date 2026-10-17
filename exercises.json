@@ -274,8 +274,18 @@
     "input": "",
     "expected": "Pushing values into Min-Heap:\nPush 45\nPush 12\nPush 89\nPush 3\nPush 27\nPush 18\nPush 5\n\nPopping in sorted priority order:\nPop 3\nPop 5\nPop 12\nPop 18\nPop 27\nPop 45\nPop 89",
     "hint": "Store elements in a dynamic array `[]int` with `(i-1)/2` parent and `2*i+1` / `2*i+2` child indexing."
+  },
+  {
+    "id": "30_csv_parser",
+    "name": "CSV Table Parser & Query Filter",
+    "path": "30_csv_parser.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "CSV Table Loaded (3 columns, 4 rows)\n--- Engineering Staff ---\n- Alice (Salary: $95000)\n- Charlie (Salary: $105000)",
+    "hint": "Loop over characters with an `inQuotes` boolean flag to parse CSV rows without splitting inside quoted values."
   }
 ]
+
 
 
 
