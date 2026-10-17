@@ -24,6 +24,9 @@ Inspired by `rustlings`, this repository includes an interactive runner with aut
 # Display a hint for an exercise
 ./umkalings hint 14_word_frequency
 
+# Show complete deep-dive architectural explanation
+./umkalings explain 32_trie_prefix_tree
+
 # List all exercises with status
 ./umkalings list
 ```

@@ -150,9 +150,39 @@ def cmd_hint(exercises, target_id):
     for ex in exercises:
         if ex["id"] == target_id or ex["path"] == target_id:
             print(f"\n{BOLD}{YELLOW}💡 Hint for {ex['name']} ({ex['path']}):{RESET}")
-            print(f"{ex.get('hint', 'No hint available for this exercise.')}\n")
+            print(f"{ex.get('hint', 'No hint available for this exercise.')}")
+            print(f"\nFor full deep-dive explanation, run: {BOLD}./umkalings explain {ex['id']}{RESET}\n")
             return
     print(f"{RED}Exercise '{target_id}' not found.{RESET}")
+
+def cmd_explain(exercises, target_id):
+    target = None
+    for ex in exercises:
+        if ex["id"] == target_id or ex["path"] == target_id:
+            target = ex
+            break
+
+    if not target:
+        print(f"{RED}Exercise '{target_id}' not found.{RESET}")
+        return
+
+    doc_file = ROOT_DIR / "docs" / "explanations" / f"{target['id']}.md"
+    print(f"\n{BOLD}{CYAN}📖 Deep-Dive Explanation: {target['name']} ({target['path']}){RESET}\n")
+    if doc_file.exists():
+        content = doc_file.read_text(encoding="utf-8")
+        # Pretty render headers
+        for line in content.splitlines():
+            if line.startswith("# "):
+                continue # Skip top title
+            elif line.startswith("### "):
+                print(f"{BOLD}{MAGENTA}{line[4:]}{RESET}")
+            elif line.startswith("- **"):
+                print(f"  {CYAN}•{RESET} {line[2:]}")
+            else:
+                print(f"  {line}")
+        print()
+    else:
+        print(f"{target.get('hint', 'No explanation document found.')}\n")
 
 def cmd_list(exercises):
     print(f"\n{BOLD}{'ID':<25} {'NAME':<28} {'STATUS':<10}{RESET}")
@@ -162,6 +192,7 @@ def cmd_list(exercises):
         status = f"{GREEN}Completed{RESET}" if ok else f"{YELLOW}Pending{RESET}"
         print(f"{ex['id']:<25} {ex['name']:<28} {status}")
     print()
+
 
 def cmd_watch(exercises):
     print(f"\n{CYAN}{BOLD}Starting umkalings watch mode...{RESET}")
@@ -228,6 +259,7 @@ def print_help():
     {GREEN}verify{RESET}      Run all exercise tests and print progress
     {GREEN}run <id>{RESET}    Run and test a single exercise
     {GREEN}hint <id>{RESET}   Display a hint for a specific exercise
+    {GREEN}explain <id>{RESET}  Show complete deep-dive architectural explanation
     {GREEN}list{RESET}        List all available exercises and completion status
     {GREEN}help{RESET}        Show this help message
 
@@ -236,6 +268,7 @@ def print_help():
     ./umkalings verify
     ./umkalings run 13_todo_list
     ./umkalings hint 14_word_frequency
+    ./umkalings explain 32_trie_prefix_tree
 """
     print(help_text)
 
@@ -265,6 +298,11 @@ def main():
             print(f"{RED}Please specify an exercise ID, e.g.: ./umkalings hint 01_hello_world{RESET}")
             sys.exit(1)
         cmd_hint(exercises, sys.argv[2])
+    elif cmd == "explain":
+        if len(sys.argv) < 3:
+            print(f"{RED}Please specify an exercise ID, e.g.: ./umkalings explain 32_trie_prefix_tree{RESET}")
+            sys.exit(1)
+        cmd_explain(exercises, sys.argv[2])
     elif cmd == "list":
         cmd_list(exercises)
     elif cmd in ("-h", "--help", "help"):
