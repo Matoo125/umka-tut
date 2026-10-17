@@ -349,7 +349,14 @@ run_exact_test \
     "" \
     $'=== LRU Cache Simulation (Capacity = 3) ===\nCache (size=3, cap=3): [ c:300 b:200 a:100 ]\nAccessing \'a\': 100\nCache (size=3, cap=3): [ a:100 c:300 b:200 ]\nInserting \'d\': 400 (triggers eviction)\nCache (size=3, cap=3): [ d:400 a:100 c:300 ]\nQuerying evicted \'b\': -1\nQuerying present \'c\': 300'
 
+run_exact_test \
+    "34 rle compressor" \
+    "34_rle_compressor.um" \
+    "" \
+    $'=== Run-Length Encoding (RLE) Stream Compressor ===\nOriginal size:     17 bytes\nCompressed size:   8 bytes\nSpace saved:       52.9%\nCompressed stream: [ (5 x 0xAA) (3 x 0xBB) (8 x 0xCC) (1 x 0xDD) ]\nVerification:      PASS (Exact byte match)'
+
 echo "All $pass_count tests passed."
+
 
 
 

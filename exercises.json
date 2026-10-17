@@ -310,8 +310,18 @@
     "input": "",
     "expected": "=== LRU Cache Simulation (Capacity = 3) ===\nCache (size=3, cap=3): [ c:300 b:200 a:100 ]\nAccessing 'a': 100\nCache (size=3, cap=3): [ a:100 c:300 b:200 ]\nInserting 'd': 400 (triggers eviction)\nCache (size=3, cap=3): [ d:400 a:100 c:300 ]\nQuerying evicted 'b': -1\nQuerying present 'c': 300",
     "hint": "Combine `map[str]^Node` for O(1) lookup with doubly-linked list `head`/`tail` pointers and `weak ^Node` for `prev`."
+  },
+  {
+    "id": "34_rle_compressor",
+    "name": "Run-Length Encoding (RLE) Stream Compressor",
+    "path": "34_rle_compressor.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Run-Length Encoding (RLE) Stream Compressor ===\nOriginal size:     17 bytes\nCompressed size:   8 bytes\nSpace saved:       52.9%\nCompressed stream: [ (5 x 0xAA) (3 x 0xBB) (8 x 0xCC) (1 x 0xDD) ]\nVerification:      PASS (Exact byte match)",
+    "hint": "Iterate through bytes tracking run counts up to 255 and output pairs of [uint8(count), byteValue]."
   }
 ]
+
 
 
 
