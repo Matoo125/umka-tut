@@ -436,6 +436,15 @@
     "input": "",
     "expected": "=== Bytecode Assembler & Disassembler ===\nAssembly Source:\n  PUSH 10\n  PUSH 0\nloop:\n  SWAP\n  DUP\n  JNZ body\n  JMP exit\nbody:\n  PUSH 1\n  SUB\n  SWAP\n  PUSH 2\n  ADD\n  JMP loop\nexit:\n  SWAP\n  PRINT\n  HALT\n\nPass 1: Symbol Table Generated:\n  'loop' -> offset 2\n  'body' -> offset 6\n  'exit' -> offset 12\n\nPass 2: Assembled 15 Instructions (30 bytes)\n\nDisassembly of Binary Bytecode:\n  0000: PUSH  10\n  0001: PUSH  0\n  0002: SWAP  0\n  0003: DUP   0\n  0004: JNZ   6\n  0005: JMP   12\n  0006: PUSH  1\n  0007: SUB   0\n  0008: SWAP  0\n  0009: PUSH  2\n  0010: ADD   0\n  0011: JMP   2\n  0012: SWAP  0\n  0013: PRINT 0\n  0014: HALT  0\n\nAssembly and disassembly roundtrip completed successfully.",
     "hint": "Collect label offsets in Pass 1, assemble instructions and resolve jump targets in Pass 2, then disassemble."
+  },
+  {
+    "id": "48_tarjan_scc",
+    "name": "Tarjan's Strongly Connected Components",
+    "path": "48_tarjan_scc.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Tarjan's Strongly Connected Components (SCC) ===\nGraph: 8 vertices, 10 directed edges\nEdges:\n  0 -> 1, 1 -> 2, 2 -> 0\n  2 -> 3, 3 -> 4, 4 -> 3\n  4 -> 5, 5 -> 6, 6 -> 7, 7 -> 5\n\nExecuting Tarjan's Single-Pass DFS...\n\nIdentified 3 Strongly Connected Components:\n  SCC #1: [ 7 6 5 ] (Size: 3)\n  SCC #2: [ 4 3 ] (Size: 2)\n  SCC #3: [ 2 1 0 ] (Size: 3)\n\nAll vertices accounted for across 3 disjoint SCC components.\nTarjan's SCC analysis completed successfully.",
+    "hint": "Track discovery ids, low-link values, and a stack during single-pass DFS to isolate strongly connected components."
   }
 ]
 
