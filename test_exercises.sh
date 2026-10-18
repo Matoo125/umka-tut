@@ -379,6 +379,12 @@ run_exact_test \
     "" \
     $'=== Stack-Based Bytecode VM ===\nRunning Program 1: (7 + 3) * 4 - 5\nResult: 35\nRunning Program 2: Triangular sum of 5\nResult: 15\nVM execution completed successfully.'
 
+run_exact_test \
+    "39 image convolution" \
+    "39_image_convolution.um" \
+    "" \
+    $'=== 2D Image Convolution & Kernel Filter ===\nSource Image (5x5):\n   0   0   0   0   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0   0   0   0   0\nSource Image (ASCII):\n          \n  - - -   \n  - - -   \n  - - -   \n          \n\nLaplacian Edge Detection (5x5):\n   0   0   0   0   0\n   0 255 255 255   0\n   0 255   0 255   0\n   0 255 255 255   0\n   0   0   0   0   0\nLaplacian Edge Detection (ASCII):\n          \n  # # #   \n  #   #   \n  # # #   \n          \n\nBox Blur (3x3) (5x5):\n  22  44  66  44  22\n  44  88 133  88  44\n  66 133 200 133  66\n  44  88 133  88  44\n  22  44  66  44  22\nBox Blur (3x3) (ASCII):\n    .     \n  . : .   \n. : - : . \n  . : .   \n    .     \n\nConvolution pipeline completed successfully.'
+
 echo "All $pass_count tests passed."
 
 

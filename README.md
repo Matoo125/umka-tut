@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 38 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, and stack-based bytecode virtual machines.
+This repository contains 39 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, and 2D discrete image kernel convolutions.
 
 ## Requirements
 
@@ -110,6 +110,7 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `36_markdown_compiler.um` | Markdown Compiler | Two-pass block/inline parsing, list grouping state machine, HTML emission |
 | `37_dijkstra_graph.um` | Dijkstra Graph Pathfinding | Adjacency lists, shortest-path relaxation, and predecessor backtracking |
 | `38_stack_vm.um` | Stack-Based Bytecode VM | Opcode dispatch, operand stack, Forth stack primitives (`DUP`, `OVER`, `SWAP`, `DROP`), and conditional branching |
+| `39_image_convolution.um` | 2D Image Convolution & Kernel Filter | Spatial convolution, boundary clamping, Laplacian edge detection, and ASCII shading |
 
 ## Umka Documentation
 
