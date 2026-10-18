@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 40 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, and Bloom filters backed by bitsets.
+This repository contains 41 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, and Huffman compression trees.
 
 ## Requirements
 
@@ -112,6 +112,7 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `38_stack_vm.um` | Stack-Based Bytecode VM | Opcode dispatch, operand stack, Forth stack primitives (`DUP`, `OVER`, `SWAP`, `DROP`), and conditional branching |
 | `39_image_convolution.um` | 2D Image Convolution & Kernel Filter | Spatial convolution, boundary clamping, Laplacian edge detection, and ASCII shading |
 | `40_bloom_filter.um` | Bloom Filter & BitSet | Packed bit arrays, bitwise arithmetic (`|`, `&`, `~`), and probabilistic membership hashing |
+| `41_huffman_coding.um` | Huffman Coding & Compression | Frequency tables, greedy binary tree construction (`^HuffNode`), and variable-length bitstream encoding |
 
 ## Umka Documentation
 

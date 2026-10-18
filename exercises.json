@@ -373,6 +373,15 @@
     "input": "",
     "expected": "=== Bloom Filter & BitSet ===\nFilter capacity: 64 bits, 3 hash functions\nAdding elements:\n  + \"umka\"\n  + \"lua\"\n  + \"compiler\"\n  + \"interpreter\"\n\nBitSet Visualization:\n[00010011 00000010 00000000 01000010 00101000 00001000 10000000 10000000]\nBits set: 11 / 64 (17.2% fill rate)\n\nQuerying Membership:\n  contains(\"umka\"       ) -> true  (expected: true)\n  contains(\"lua\"        ) -> true  (expected: true)\n  contains(\"compiler\"   ) -> true  (expected: true)\n  contains(\"interpreter\") -> true  (expected: true)\n  contains(\"python\"     ) -> false (expected: false)\n  contains(\"rust\"       ) -> false (expected: false)\n  contains(\"javascript\" ) -> false (expected: false)\n\nBloom filter verification passed with zero false negatives.",
     "hint": "Pack bits into word arrays with bitwise operations and query multiple independent hash offsets."
+  },
+  {
+    "id": "41_huffman_coding",
+    "name": "Huffman Coding & Compression",
+    "path": "41_huffman_coding.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Huffman Coding & Compression ===\nInput text: \"abracadabra\"\nOriginal size: 11 characters (88 bits at 8 bits/char)\n\nCharacter Frequencies:\n  'a': 5\n  'b': 2\n  'r': 2\n  'c': 1\n  'd': 1\n\nHuffman Prefix Codes:\n  'a' -> 0\n  'b' -> 110\n  'r' -> 111\n  'c' -> 100\n  'd' -> 101\n\nEncoded Bitstream:\n01101110100010101101110\nEncoded length: 23 bits (73.9% space saved)\n\nDecoded String:\n\"abracadabra\"\n\nVerification: PASS (Decoded matches original exactly)",
+    "hint": "Count frequencies, greedily merge minimal trees, extract binary prefix codes, and traverse bits to decode."
   }
 ]
 
