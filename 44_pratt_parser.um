@@ -1,0 +1,276 @@
+// 44_pratt_parser.um - Pratt Parser (Top-Down Operator Precedence) in Umka
+
+import (
+	"std.um"
+)
+
+type (
+	TokenType = enum {
+		TOK_INT
+		TOK_PLUS
+		TOK_MINUS
+		TOK_MUL
+		TOK_DIV
+		TOK_POWER
+		TOK_LPAREN
+		TOK_RPAREN
+		TOK_EOF
+	}
+
+	Token = struct {
+		tokType: TokenType
+		val: int
+	}
+
+	NodeKind = enum {
+		NODE_NUM
+		NODE_UNARY
+		NODE_BINARY
+	}
+
+	Node = struct {
+		kind: NodeKind
+		val: int
+		op: TokenType
+		left: ^Node
+		right: ^Node
+	}
+
+	Parser = struct {
+		tokens: []Token
+		pos: int
+	}
+)
+
+fn (p: ^Parser) peek(): Token {
+	if p.pos < len(p.tokens) {
+		return p.tokens[p.pos]
+	}
+	return Token{tokType: TokenType.TOK_EOF, val: 0}
+}
+
+fn (p: ^Parser) next(): Token {
+	tok := p.peek()
+	if p.pos < len(p.tokens) {
+		p.pos++
+	}
+	return tok
+}
+
+// Binding powers:
+// Precedence:
+// None / EOF / RPAREN: 0
+// PLUS, MINUS: 10
+// MUL, DIV: 20
+// POWER: 30
+fn getLbp(t: Token): int {
+	switch t.tokType {
+	case TokenType.TOK_PLUS, TokenType.TOK_MINUS:
+		return 10
+	case TokenType.TOK_MUL, TokenType.TOK_DIV:
+		return 20
+	case TokenType.TOK_POWER:
+		return 30
+	default:
+		return 0
+	}
+	return 0
+}
+
+fn (p: ^Parser) parseExpr(rbp: int): ^Node {
+	tok := p.next()
+
+	// Null Denotation (nud)
+	var left: ^Node = null
+
+	switch tok.tokType {
+	case TokenType.TOK_INT:
+		node := new(Node)
+		node.kind = NodeKind.NODE_NUM
+		node.val = tok.val
+		left = node
+
+	case TokenType.TOK_MINUS:
+		// Unary minus with high prefix binding power (e.g. 40)
+		operand := p.parseExpr(40)
+		node := new(Node)
+		node.kind = NodeKind.NODE_UNARY
+		node.op = TokenType.TOK_MINUS
+		node.left = operand
+		left = node
+
+	case TokenType.TOK_LPAREN:
+		expr := p.parseExpr(0)
+		closeParen := p.next()
+		if closeParen.tokType != TokenType.TOK_RPAREN {
+			std::println("Error: Expected ')'")
+		}
+		left = expr
+
+	default:
+		printf("Error: Unexpected token %d in nud\n", int(tok.tokType))
+		return null
+	}
+
+	// Left Denotation (led) loop
+	for rbp < getLbp(p.peek()) {
+		opTok := p.next()
+		node := new(Node)
+		node.kind = NodeKind.NODE_BINARY
+		node.op = opTok.tokType
+		node.left = left
+
+		// In standard Pratt parsing:
+		// For left-associative operators, we recurse with rbp = lbp
+		// For right-associative operators, we recurse with rbp = lbp - 1
+		nextRbp := getLbp(opTok)
+		if opTok.tokType == TokenType.TOK_POWER {
+			nextRbp--
+		}
+
+		node.right = p.parseExpr(nextRbp)
+		left = node
+	}
+
+	return left
+}
+
+fn intPow(base, exp: int): int {
+	res := 1
+	for i := 0; i < exp; i++ {
+		res *= base
+	}
+	return res
+}
+
+fn eval(n: ^Node): int {
+	if n == null {
+		return 0
+	}
+
+	switch n.kind {
+	case NodeKind.NODE_NUM:
+		return n.val
+
+	case NodeKind.NODE_UNARY:
+		v := eval(n.left)
+		if n.op == TokenType.TOK_MINUS {
+			return -v
+		}
+		return v
+
+	case NodeKind.NODE_BINARY:
+		l := eval(n.left)
+		r := eval(n.right)
+		switch n.op {
+		case TokenType.TOK_PLUS:
+			return l + r
+		case TokenType.TOK_MINUS:
+			return l - r
+		case TokenType.TOK_MUL:
+			return l * r
+		case TokenType.TOK_DIV:
+			if r == 0 {
+				std::println("Error: Division by zero")
+				return 0
+			}
+			return l / r
+		case TokenType.TOK_POWER:
+			return intPow(l, r)
+		default:
+			return 0
+		}
+	}
+	return 0
+}
+
+fn printInfix(n: ^Node): str {
+	if n == null {
+		return ""
+	}
+	switch n.kind {
+	case NodeKind.NODE_NUM:
+		return sprintf("%d", n.val)
+	case NodeKind.NODE_UNARY:
+		return sprintf("(-%s)", printInfix(n.left))
+	case NodeKind.NODE_BINARY:
+		opStr := ""
+		switch n.op {
+		case TokenType.TOK_PLUS:  opStr = "+"
+		case TokenType.TOK_MINUS: opStr = "-"
+		case TokenType.TOK_MUL:   opStr = "*"
+		case TokenType.TOK_DIV:   opStr = "/"
+		case TokenType.TOK_POWER: opStr = "^"
+		default:                  opStr = "?"
+		}
+		return sprintf("(%s %s %s)", printInfix(n.left), opStr, printInfix(n.right))
+	}
+	return ""
+}
+
+fn tokenize(s: str): []Token {
+	tokens := make([]Token, 0)
+	i := 0
+	for i < len(s) {
+		ch := s[i]
+		if ch == ' ' || ch == '\t' || ch == '\n' {
+			i++
+			continue
+		}
+
+		if ch >= '0' && ch <= '9' {
+			num := 0
+			for i < len(s) && s[i] >= '0' && s[i] <= '9' {
+				num = num * 10 + (int(s[i]) - int('0'))
+				i++
+			}
+			tokens = append(tokens, Token{tokType: TokenType.TOK_INT, val: num})
+			continue
+		}
+
+		switch ch {
+		case '+': tokens = append(tokens, Token{tokType: TokenType.TOK_PLUS, val: 0})
+		case '-': tokens = append(tokens, Token{tokType: TokenType.TOK_MINUS, val: 0})
+		case '*': tokens = append(tokens, Token{tokType: TokenType.TOK_MUL, val: 0})
+		case '/': tokens = append(tokens, Token{tokType: TokenType.TOK_DIV, val: 0})
+		case '^': tokens = append(tokens, Token{tokType: TokenType.TOK_POWER, val: 0})
+		case '(': tokens = append(tokens, Token{tokType: TokenType.TOK_LPAREN, val: 0})
+		case ')': tokens = append(tokens, Token{tokType: TokenType.TOK_RPAREN, val: 0})
+		default:
+			printf("Unknown character '%c'\n", ch)
+		}
+		i++
+	}
+
+	tokens = append(tokens, Token{tokType: TokenType.TOK_EOF, val: 0})
+	return tokens
+}
+
+fn parseAndRun(exprStr: str) {
+	tokens := tokenize(exprStr)
+	parser := Parser{tokens: tokens, pos: 0}
+	ast := parser.parseExpr(0)
+	result := eval(ast)
+	treeStr := printInfix(ast)
+	printf("Expression: %s\n", exprStr)
+	printf("  AST:    %s\n", treeStr)
+	printf("  Result: %d\n", result)
+}
+
+fn main() {
+	std::println("=== Pratt Parser (Top-Down Operator Precedence) ===")
+
+	// 1. Standard precedence
+	parseAndRun("3 + 4 * 2")
+	std::println("")
+
+	// 2. Right-associative exponentiation: 2 ^ 3 ^ 2 = 2 ^ (3 ^ 2) = 2 ^ 9 = 512
+	parseAndRun("2 ^ 3 ^ 2")
+	std::println("")
+
+	// 3. Unary minus and grouping: -5 + (10 - 2) * 3 = -5 + 24 = 19
+	parseAndRun("-5 + (10 - 2) * 3")
+	std::println("")
+
+	std::println("Pratt parsing and evaluation completed successfully.")
+}

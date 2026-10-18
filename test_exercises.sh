@@ -409,6 +409,12 @@ run_exact_test \
     "" \
     $'=== Mark-and-Sweep Garbage Collector Simulation ===\nAllocating 6 heap objects:\n  + Object 1 (Root A) -> refs [2]\n  + Object 2          -> refs [3]\n  + Object 3          -> refs []\n  + Object 4 (Root B) -> refs []\n  + Object 5 (Cycle)  -> refs [6]\n  + Object 6 (Cycle)  -> refs [5]\n\nActive Root Set: [ 1 4 ]\nHeap state before GC: 6 objects allocated\n\n--- Triggering Garbage Collection ---\n[Mark Phase]\n  Marked live root 1 and transitively: 2, 3\n  Marked live root 4\n[Sweep Phase]\n  Reclaiming dead object 5 (Cycle garbage)\n  Reclaiming dead object 6 (Cycle garbage)\n\nHeap state after GC: 4 objects active, 2 reclaimed\nLive objects: [ 1 2 3 4 ]\nGarbage collection cycle completed successfully.'
 
+run_exact_test \
+    "44 pratt parser" \
+    "44_pratt_parser.um" \
+    "" \
+    $'=== Pratt Parser (Top-Down Operator Precedence) ===\nExpression: 3 + 4 * 2\n  AST:    (3 + (4 * 2))\n  Result: 11\n\nExpression: 2 ^ 3 ^ 2\n  AST:    (2 ^ (3 ^ 2))\n  Result: 512\n\nExpression: -5 + (10 - 2) * 3\n  AST:    ((-5) + ((10 - 2) * 3))\n  Result: 19\n\nPratt parsing and evaluation completed successfully.'
+
 echo "All $pass_count tests passed."
 
 
