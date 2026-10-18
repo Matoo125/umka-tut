@@ -398,6 +398,12 @@ run_exact_test \
     "" \
     $'=== Huffman Coding & Compression ===\nInput text: "abracadabra"\nOriginal size: 11 characters (88 bits at 8 bits/char)\n\nCharacter Frequencies:\n  \'a\': 5\n  \'b\': 2\n  \'r\': 2\n  \'c\': 1\n  \'d\': 1\n\nHuffman Prefix Codes:\n  \'a\' -> 0\n  \'b\' -> 110\n  \'r\' -> 111\n  \'c\' -> 100\n  \'d\' -> 101\n\nEncoded Bitstream:\n01101110100010101101110\nEncoded length: 23 bits (73.9% space saved)\n\nDecoded String:\n"abracadabra"\n\nVerification: PASS (Decoded matches original exactly)'
 
+run_exact_test \
+    "42 astar pathfinding" \
+    "42_astar_pathfinding.lua" \
+    "" \
+    $'=== A* Grid Pathfinding ===\nSource Grid:\n########\n#S.....#\n#.###..#\n#...#..#\n#...#..#\n#..##..#\n#.....E#\n########\n\nA* Search: Path found! Length: 10 steps\n\nSolved Grid:\n########\n#S.....#\n#*###..#\n#*..#..#\n#*..#..#\n#*.##..#\n#*****E#\n########\n\nPath Coordinates:\n  (1,1) -> (1,2) -> (1,3) -> (1,4) -> (1,5) -> (1,6) -> (2,6) -> (3,6) -> (4,6) -> (5,6) -> (6,6)\n\nPathfinding completed successfully.'
+
 echo "All $pass_count Lua tests passed."
 
 
