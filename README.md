@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 42 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, Huffman compression trees, and A* grid pathfinding.
+This repository contains 43 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, Huffman compression trees, A* grid pathfinding, and mark-and-sweep garbage collector simulations.
 
 ## Requirements
 
@@ -114,6 +114,7 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `40_bloom_filter.um` | Bloom Filter & BitSet | Packed bit arrays, bitwise arithmetic (`|`, `&`, `~`), and probabilistic membership hashing |
 | `41_huffman_coding.um` | Huffman Coding & Compression | Frequency tables, greedy binary tree construction (`^HuffNode`), and variable-length bitstream encoding |
 | `42_astar_pathfinding.um` | A* Grid Pathfinding | Manhattan distance heuristic $f = g + h$, 2D obstacle navigation, and ASCII path mapping |
+| `43_gc_mark_sweep.um` | Mark-and-Sweep Garbage Collector | Root set discovery, cyclic graph handling, recursive mark tracing, and dead object sweep |
 
 ## Umka Documentation
 

@@ -391,6 +391,15 @@
     "input": "",
     "expected": "=== A* Grid Pathfinding ===\nSource Grid:\n########\n#S.....#\n#.###..#\n#...#..#\n#...#..#\n#..##..#\n#.....E#\n########\n\nA* Search: Path found! Length: 10 steps\n\nSolved Grid:\n########\n#S.....#\n#*###..#\n#*..#..#\n#*..#..#\n#*.##..#\n#*****E#\n########\n\nPath Coordinates:\n  (1,1) -> (1,2) -> (1,3) -> (1,4) -> (1,5) -> (1,6) -> (2,6) -> (3,6) -> (4,6) -> (5,6) -> (6,6)\n\nPathfinding completed successfully.",
     "hint": "Explore neighbors using f = g + h with Manhattan distance, track cameFrom back-pointers, and reconstruct the path."
+  },
+  {
+    "id": "43_gc_mark_sweep",
+    "name": "Mark-and-Sweep Garbage Collector",
+    "path": "43_gc_mark_sweep.um",
+    "mode": "exact",
+    "input": "",
+    "expected": "=== Mark-and-Sweep Garbage Collector Simulation ===\nAllocating 6 heap objects:\n  + Object 1 (Root A) -> refs [2]\n  + Object 2          -> refs [3]\n  + Object 3          -> refs []\n  + Object 4 (Root B) -> refs []\n  + Object 5 (Cycle)  -> refs [6]\n  + Object 6 (Cycle)  -> refs [5]\n\nActive Root Set: [ 1 4 ]\nHeap state before GC: 6 objects allocated\n\n--- Triggering Garbage Collection ---\n[Mark Phase]\n  Marked live root 1 and transitively: 2, 3\n  Marked live root 4\n[Sweep Phase]\n  Reclaiming dead object 5 (Cycle garbage)\n  Reclaiming dead object 6 (Cycle garbage)\n\nHeap state after GC: 4 objects active, 2 reclaimed\nLive objects: [ 1 2 3 4 ]\nGarbage collection cycle completed successfully.",
+    "hint": "Trace reachable objects recursively from the root set, then sweep unvisited nodes from the heap pool."
   }
 ]
 
