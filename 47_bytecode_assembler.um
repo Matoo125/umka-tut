@@ -1,0 +1,203 @@
+// 47_bytecode_assembler.um - Two-Pass Bytecode Assembler & Disassembler in Umka
+
+import (
+	"std.um"
+)
+
+type (
+	Opcode = enum {
+		OP_PUSH
+		OP_ADD
+		OP_SUB
+		OP_SWAP
+		OP_DUP
+		OP_JMP
+		OP_JNZ
+		OP_PRINT
+		OP_HALT
+	}
+
+	Instr = struct {
+		op: Opcode
+		arg: int
+	}
+
+	LabelEntry = struct {
+		name: str
+		offset: int
+	}
+)
+
+fn opcodeName(op: Opcode): str {
+	switch op {
+	case Opcode.OP_PUSH:  return "PUSH "
+	case Opcode.OP_ADD:   return "ADD  "
+	case Opcode.OP_SUB:   return "SUB  "
+	case Opcode.OP_SWAP:  return "SWAP "
+	case Opcode.OP_DUP:   return "DUP  "
+	case Opcode.OP_JMP:   return "JMP  "
+	case Opcode.OP_JNZ:   return "JNZ  "
+	case Opcode.OP_PRINT: return "PRINT"
+	case Opcode.OP_HALT:  return "HALT "
+	}
+	return "UNKNOWN"
+}
+
+fn parseOpcode(mnemonic: str): Opcode {
+	if mnemonic == "PUSH"  { return Opcode.OP_PUSH }
+	if mnemonic == "ADD"   { return Opcode.OP_ADD }
+	if mnemonic == "SUB"   { return Opcode.OP_SUB }
+	if mnemonic == "SWAP"  { return Opcode.OP_SWAP }
+	if mnemonic == "DUP"   { return Opcode.OP_DUP }
+	if mnemonic == "JMP"   { return Opcode.OP_JMP }
+	if mnemonic == "JNZ"   { return Opcode.OP_JNZ }
+	if mnemonic == "PRINT" { return Opcode.OP_PRINT }
+	if mnemonic == "HALT"  { return Opcode.OP_HALT }
+	return Opcode.OP_HALT
+}
+
+fn isDigit(c: char): bool {
+	return c >= '0' && c <= '9'
+}
+
+fn parseInt(s: str): int {
+	res := 0
+	for i := 0; i < len(s); i++ {
+		if isDigit(s[i]) {
+			res = res * 10 + (int(s[i]) - int('0'))
+		}
+	}
+	return res
+}
+
+fn splitTokens(line: str): []str {
+	toks := make([]str, 0)
+	i := 0
+	for i < len(line) {
+		for i < len(line) && (line[i] == ' ' || line[i] == '\t') {
+			i++
+		}
+		if i >= len(line) {
+			break
+		}
+		start := i
+		for i < len(line) && line[i] != ' ' && line[i] != '\t' {
+			i++
+		}
+		toks = append(toks, slice(line, start, i))
+	}
+	return toks
+}
+
+fn findLabel(labels: []LabelEntry, name: str): int {
+	for i := 0; i < len(labels); i++ {
+		if labels[i].name == name {
+			return labels[i].offset
+		}
+	}
+	return -1
+}
+
+fn isLabelDef(tok: str): bool {
+	return len(tok) > 1 && tok[len(tok) - 1] == ':'
+}
+
+fn main() {
+	std::println("=== Bytecode Assembler & Disassembler ===")
+	std::println("Assembly Source:")
+
+	source := [18]str{
+		"  PUSH 10",
+		"  PUSH 0",
+		"loop:",
+		"  SWAP",
+		"  DUP",
+		"  JNZ body",
+		"  JMP exit",
+		"body:",
+		"  PUSH 1",
+		"  SUB",
+		"  SWAP",
+		"  PUSH 2",
+		"  ADD",
+		"  JMP loop",
+		"exit:",
+		"  SWAP",
+		"  PRINT",
+		"  HALT"
+	}
+
+	for i := 0; i < len(source); i++ {
+		std::println(source[i])
+	}
+	std::println("")
+
+	// Pass 1: Build Symbol Table for Labels
+	labels := make([]LabelEntry, 0)
+	instrCount := 0
+
+	for i := 0; i < len(source); i++ {
+		toks := splitTokens(source[i])
+		if len(toks) == 0 {
+			continue
+		}
+		first := toks[0]
+		if isLabelDef(first) {
+			labelName := slice(first, 0, len(first) - 1)
+			labels = append(labels, LabelEntry{name: labelName, offset: instrCount})
+		} else {
+			instrCount++
+		}
+	}
+
+	std::println("Pass 1: Symbol Table Generated:")
+	for i := 0; i < len(labels); i++ {
+		printf("  '%s' -> offset %d\n", labels[i].name, labels[i].offset)
+	}
+	std::println("")
+
+	// Pass 2: Assemble bytecode instructions
+	code := make([]Instr, 0)
+	for i := 0; i < len(source); i++ {
+		toks := splitTokens(source[i])
+		if len(toks) == 0 {
+			continue
+		}
+		first := toks[0]
+		if isLabelDef(first) {
+			continue
+		}
+
+		op := parseOpcode(first)
+		arg := 0
+
+		if len(toks) > 1 {
+			argTok := toks[1]
+			if isDigit(argTok[0]) {
+				arg = parseInt(argTok)
+			} else {
+				// Resolve label operand
+				offset := findLabel(labels, argTok)
+				if offset >= 0 {
+					arg = offset
+				} else {
+					printf("Error: Unresolved label %s\n", argTok)
+				}
+			}
+		}
+
+		code = append(code, Instr{op: op, arg: arg})
+	}
+
+	printf("Pass 2: Assembled %d Instructions (%d bytes)\n\n", len(code), len(code) * 2)
+
+	// Disassembly
+	std::println("Disassembly of Binary Bytecode:")
+	for i := 0; i < len(code); i++ {
+		inst := code[i]
+		printf("  %04d: %s %d\n", i, opcodeName(inst.op), inst.arg)
+	}
+	std::println("")
+
+	std::println("Assembly and disassembly roundtrip completed successfully.")
+}

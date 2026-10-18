@@ -1,6 +1,6 @@
 # Umka Exercises
 
-This repository contains 46 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, Huffman compression trees, A* grid pathfinding, mark-and-sweep garbage collection, Pratt operator-precedence parsers, Kruskal's minimum spanning tree with disjoint sets, and LR(0)/SLR(1) shift-reduce parsing state machines.
+This repository contains 47 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, Huffman compression trees, A* grid pathfinding, mark-and-sweep garbage collection, Pratt operator-precedence parsers, Kruskal's minimum spanning tree with disjoint sets, LR(0)/SLR(1) shift-reduce parsing, and two-pass bytecode assemblers/disassemblers.
 
 ## Requirements
 
@@ -118,6 +118,7 @@ The test script checks exact output for deterministic exercises and uses pattern
 | `44_pratt_parser.um` | Pratt Operator Precedence Parser | Top-down operator precedence, binding power (`lbp`/`rbp`), prefix/infix dispatch, and right-associativity |
 | `45_dsu_kruskal.um` | Disjoint-Set Union & Kruskal's MST | Union-Find with path compression, union by rank, cycle rejection, and minimum spanning trees |
 | `46_lr_parser.um` | LR Shift-Reduce Parser | State and symbol stack synchronization, ACTION/GOTO tables, and syntax trace |
+| `47_bytecode_assembler.um` | Bytecode Assembler & Disassembler | Two-pass assembly, label resolution table, binary emission, and bytecode disassembly |
 
 ## Umka Documentation
 

@@ -428,6 +428,12 @@ run_exact_test \
     "" \
     $'=== LR Shift-Reduce Parser State Machine ===\nGrammar Rules:\n  (1) E -> E + T\n  (2) E -> T\n  (3) T -> id\n\nParsing Input: id + id + id\n\nStep  State Stack      Symbol Stack         Action\n------------------------------------------------------------\n 0    [ 0 ]            [ $ ]                Shift 2\n 1    [ 0 2 ]          [ $ id ]             Reduce (3) T -> id\n 2    [ 0 3 ]          [ $ T ]              Reduce (2) E -> T\n 3    [ 0 1 ]          [ $ E ]              Shift 4\n 4    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 5    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n 6    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n 7    [ 0 1 ]          [ $ E ]              Shift 4\n 8    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 9    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n10    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n11    [ 0 1 ]          [ $ E ]              Accept\n\nParse Result: SUCCESS (Input fully accepted by grammar)'
 
+run_exact_test \
+    "47 bytecode assembler" \
+    "47_bytecode_assembler.lua" \
+    "" \
+    $'=== Bytecode Assembler & Disassembler ===\nAssembly Source:\n  PUSH 10\n  PUSH 0\nloop:\n  SWAP\n  DUP\n  JNZ body\n  JMP exit\nbody:\n  PUSH 1\n  SUB\n  SWAP\n  PUSH 2\n  ADD\n  JMP loop\nexit:\n  SWAP\n  PRINT\n  HALT\n\nPass 1: Symbol Table Generated:\n  \'loop\' -> offset 2\n  \'body\' -> offset 6\n  \'exit\' -> offset 12\n\nPass 2: Assembled 15 Instructions (30 bytes)\n\nDisassembly of Binary Bytecode:\n  0000: PUSH  10\n  0001: PUSH  0\n  0002: SWAP  0\n  0003: DUP   0\n  0004: JNZ   6\n  0005: JMP   12\n  0006: PUSH  1\n  0007: SUB   0\n  0008: SWAP  0\n  0009: PUSH  2\n  0010: ADD   0\n  0011: JMP   2\n  0012: SWAP  0\n  0013: PRINT 0\n  0014: HALT  0\n\nAssembly and disassembly roundtrip completed successfully.'
+
 echo "All $pass_count Lua tests passed."
 
 
