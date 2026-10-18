@@ -386,6 +386,12 @@ run_exact_test \
     $'=== 2D Image Convolution & Kernel Filter ===\nSource Image (5x5):\n   0   0   0   0   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0   0   0   0   0\nSource Image (ASCII):\n          \n  - - -   \n  - - -   \n  - - -   \n          \n\nLaplacian Edge Detection (5x5):\n   0   0   0   0   0\n   0 255 255 255   0\n   0 255   0 255   0\n   0 255 255 255   0\n   0   0   0   0   0\nLaplacian Edge Detection (ASCII):\n          \n  # # #   \n  #   #   \n  # # #   \n          \n\nBox Blur (3x3) (5x5):\n  22  44  66  44  22\n  44  88 133  88  44\n  66 133 200 133  66\n  44  88 133  88  44\n  22  44  66  44  22\nBox Blur (3x3) (ASCII):\n    .     \n  . : .   \n. : - : . 
   . : .   \n    .     \n\nConvolution pipeline completed successfully.'
 
+run_exact_test \
+    "40 bloom filter" \
+    "40_bloom_filter.lua" \
+    "" \
+    $'=== Bloom Filter & BitSet ===\nFilter capacity: 64 bits, 3 hash functions\nAdding elements:\n  + "umka"\n  + "lua"\n  + "compiler"\n  + "interpreter"\n\nBitSet Visualization:\n[00010011 00000010 00000000 01000010 00101000 00001000 10000000 10000000]\nBits set: 11 / 64 (17.2% fill rate)\n\nQuerying Membership:\n  contains("umka"       ) -> true  (expected: true)\n  contains("lua"        ) -> true  (expected: true)\n  contains("compiler"   ) -> true  (expected: true)\n  contains("interpreter") -> true  (expected: true)\n  contains("python"     ) -> false (expected: false)\n  contains("rust"       ) -> false (expected: false)\n  contains("javascript" ) -> false (expected: false)\n\nBloom filter verification passed with zero false negatives.'
+
 echo "All $pass_count Lua tests passed."
 
 
