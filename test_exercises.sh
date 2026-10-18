@@ -439,6 +439,12 @@ run_exact_test \
     "" \
     $'=== Tarjan\'s Strongly Connected Components (SCC) ===\nGraph: 8 vertices, 10 directed edges\nEdges:\n  0 -> 1, 1 -> 2, 2 -> 0\n  2 -> 3, 3 -> 4, 4 -> 3\n  4 -> 5, 5 -> 6, 6 -> 7, 7 -> 5\n\nExecuting Tarjan\'s Single-Pass DFS...\n\nIdentified 3 Strongly Connected Components:\n  SCC #1: [ 7 6 5 ] (Size: 3)\n  SCC #2: [ 4 3 ] (Size: 2)\n  SCC #3: [ 2 1 0 ] (Size: 3)\n\nAll vertices accounted for across 3 disjoint SCC components.\nTarjan\'s SCC analysis completed successfully.'
 
+run_exact_test \
+    "49 register vm" \
+    "49_register_vm.um" \
+    "" \
+    $'=== Register-Based Virtual Machine ===\nRegisters: 16 (R0..R15)\nProgram: Iterative Fibonacci(10)\n\nDisassembly:\n  0: LOADI  R0, 0\n  1: LOADI  R1, 1\n  2: LOADI  R2, 10\n  3: LOADI  R3, 0\n  4: CMP    R3, R2\n  5: JEQ    12\n  6: ADD    R4, R0, R1\n  7: MOV    R0, R1\n  8: MOV    R1, R4\n  9: LOADI  R5, 1\n 10: ADD    R3, R3, R5\n 11: JMP    4\n 12: PRINT  R0\n 13: HALT\n\nExecution:\n[OUTPUT] 55\nCycles executed: 88\nFinal registers:\n  R0: 55\n  R1: 89\n  R2: 10\n  R3: 10'
+
 echo "All $pass_count tests passed."
 
 
