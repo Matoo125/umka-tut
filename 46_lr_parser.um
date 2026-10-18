@@ -1,0 +1,180 @@
+// 46_lr_parser.um - LR Shift-Reduce Parser State Machine in Umka
+
+import (
+	"std.um"
+)
+
+type (
+	ActionType = enum {
+		ACT_SHIFT
+		ACT_REDUCE
+		ACT_ACCEPT
+		ACT_ERROR
+	}
+
+	Action = struct {
+		actType: ActionType
+		val: int
+	}
+
+	Rule = struct {
+		lhs: str
+		rhsLen: int
+		desc: str
+	}
+)
+
+fn getAction(state: int, tok: str): Action {
+	// LR(0) / SLR(1) parsing table for grammar:
+	// (1) E -> E + T
+	// (2) E -> T
+	// (3) T -> id
+	//
+	// States:
+	// State 0: on 'id' -> Shift 2
+	// State 1: on '+'  -> Shift 4, on '$' -> Accept
+	// State 2: reduce (3) T -> id
+	// State 3: reduce (2) E -> T
+	// State 4: on 'id' -> Shift 2
+	// State 5: reduce (1) E -> E + T
+
+	switch state {
+	case 0:
+		if tok == "id" {
+			return Action{actType: ActionType.ACT_SHIFT, val: 2}
+		}
+	case 1:
+		if tok == "+" {
+			return Action{actType: ActionType.ACT_SHIFT, val: 4}
+		} else if tok == "$" {
+			return Action{actType: ActionType.ACT_ACCEPT, val: 0}
+		}
+	case 2:
+		return Action{actType: ActionType.ACT_REDUCE, val: 3}
+	case 3:
+		return Action{actType: ActionType.ACT_REDUCE, val: 2}
+	case 4:
+		if tok == "id" {
+			return Action{actType: ActionType.ACT_SHIFT, val: 2}
+		}
+	case 5:
+		return Action{actType: ActionType.ACT_REDUCE, val: 1}
+	}
+
+	return Action{actType: ActionType.ACT_ERROR, val: 0}
+}
+
+fn getGoto(state: int, nonTerm: str): int {
+	if state == 0 {
+		if nonTerm == "E" { return 1 }
+		if nonTerm == "T" { return 3 }
+	} else if state == 4 {
+		if nonTerm == "T" { return 5 }
+	}
+	return -1
+}
+
+fn formatStateStack(states: []int): str {
+	s := "[ "
+	for i := 0; i < len(states); i++ {
+		s += sprintf("%d ", states[i])
+	}
+	s += "]"
+	return s
+}
+
+fn formatSymbolStack(syms: []str): str {
+	s := "[ "
+	for i := 0; i < len(syms); i++ {
+		s += syms[i] + " "
+	}
+	s += "]"
+	return s
+}
+
+fn main() {
+	std::println("=== LR Shift-Reduce Parser State Machine ===")
+	std::println("Grammar Rules:")
+	std::println("  (1) E -> E + T")
+	std::println("  (2) E -> T")
+	std::println("  (3) T -> id\n")
+
+	rules := [4]Rule{
+		Rule{lhs: "S'", rhsLen: 1, desc: "S' -> E"},
+		Rule{lhs: "E",  rhsLen: 3, desc: "E -> E + T"},
+		Rule{lhs: "E",  rhsLen: 1, desc: "E -> T"},
+		Rule{lhs: "T",  rhsLen: 1, desc: "T -> id"}
+	}
+
+	inputTokens := []str{"id", "+", "id", "+", "id", "$"}
+
+	std::println("Parsing Input: id + id + id\n")
+	printf("%-4s  %-16s %-20s %s\n", "Step", "State Stack", "Symbol Stack", "Action")
+	std::println("------------------------------------------------------------")
+
+	stateStack := []int{0}
+	symbolStack := []str{"$"}
+	ip := 0
+	step := 0
+	running := true
+	success := false
+
+	for running {
+		currState := stateStack[len(stateStack) - 1]
+		currTok := inputTokens[ip]
+		act := getAction(currState, currTok)
+
+		stateStr := formatStateStack(stateStack)
+		symStr := formatSymbolStack(symbolStack)
+
+		switch act.actType {
+		case ActionType.ACT_SHIFT:
+			actDesc := sprintf("Shift %d", act.val)
+			printf("%2d    %-16s %-20s %s\n", step, stateStr, symStr, actDesc)
+			symbolStack = append(symbolStack, currTok)
+			stateStack = append(stateStack, act.val)
+			ip++
+
+		case ActionType.ACT_REDUCE:
+			ruleIdx := act.val
+			r := rules[ruleIdx]
+			actDesc := sprintf("Reduce (%d) %s", ruleIdx, r.desc)
+			printf("%2d    %-16s %-20s %s\n", step, stateStr, symStr, actDesc)
+
+			// Pop rhsLen symbols and states
+			for k := 0; k < r.rhsLen; k++ {
+				symbolStack = delete(symbolStack, len(symbolStack) - 1)
+				stateStack = delete(stateStack, len(stateStack) - 1)
+			}
+
+			// Consult GOTO table
+			topState := stateStack[len(stateStack) - 1]
+			nextState := getGoto(topState, r.lhs)
+			if nextState == -1 {
+				printf("Error: GOTO state invalid for (%d, %s)\n", topState, r.lhs)
+				running = false
+			} else {
+				symbolStack = append(symbolStack, r.lhs)
+				stateStack = append(stateStack, nextState)
+			}
+
+		case ActionType.ACT_ACCEPT:
+			printf("%2d    %-16s %-20s %s\n", step, stateStr, symStr, "Accept")
+			running = false
+			success = true
+
+		case ActionType.ACT_ERROR:
+			printf("%2d    %-16s %-20s %s\n", step, stateStr, symStr, "Syntax Error")
+			running = false
+		}
+
+		step++
+	}
+
+	std::println("")
+	if success {
+		std::println("Parse Result: SUCCESS (Input fully accepted by grammar)")
+	} else {
+		std::println("Parse Result: FAILED")
+	}
+}

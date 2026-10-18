@@ -421,6 +421,12 @@ run_exact_test \
     "" \
     $'=== Kruskal\'s Minimum Spanning Tree (MST) & Disjoint-Set ===\nGraph Vertices: 5 (A=0, B=1, C=2, D=3, E=4)\nTotal Graph Edges: 7\n\nSorted Candidate Edges:\n  (0-1, w=1)\n  (1-2, w=2)\n  (0-2, w=3)\n  (1-3, w=3)\n  (2-4, w=4)\n  (3-4, w=5)\n  (1-4, w=6)\n\nKruskal\'s MST Selection:\n  + Accepted (0-1, w=1)\n  + Accepted (1-2, w=2)\n  - Rejected (0-2, w=3) -> Cycle detected\n  + Accepted (1-3, w=3)\n  + Accepted (2-4, w=4)\n  - Rejected (3-4, w=5) -> Cycle detected\n  - Rejected (1-4, w=6) -> Cycle detected\n\nMinimum Spanning Tree Edges:\n  Edge: 0 - 1 (Weight: 1)\n  Edge: 1 - 2 (Weight: 2)\n  Edge: 1 - 3 (Weight: 3)\n  Edge: 2 - 4 (Weight: 4)\n\nTotal MST Weight: 10\nDisjoint-Set components: 1 (Fully connected)'
 
+run_exact_test \
+    "46 lr parser" \
+    "46_lr_parser.um" \
+    "" \
+    $'=== LR Shift-Reduce Parser State Machine ===\nGrammar Rules:\n  (1) E -> E + T\n  (2) E -> T\n  (3) T -> id\n\nParsing Input: id + id + id\n\nStep  State Stack      Symbol Stack         Action\n------------------------------------------------------------\n 0    [ 0 ]            [ $ ]                Shift 2\n 1    [ 0 2 ]          [ $ id ]             Reduce (3) T -> id\n 2    [ 0 3 ]          [ $ T ]              Reduce (2) E -> T\n 3    [ 0 1 ]          [ $ E ]              Shift 4\n 4    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 5    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n 6    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n 7    [ 0 1 ]          [ $ E ]              Shift 4\n 8    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 9    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n10    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n11    [ 0 1 ]          [ $ E ]              Accept\n\nParse Result: SUCCESS (Input fully accepted by grammar)'
+
 echo "All $pass_count tests passed."
 
 
