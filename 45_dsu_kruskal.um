@@ -1,0 +1,137 @@
+// 45_dsu_kruskal.um - Disjoint-Set Union & Kruskal's MST in Umka
+
+import (
+	"std.um"
+)
+
+type (
+	Edge = struct {
+		u: int
+		v: int
+		weight: int
+	}
+
+	DSU = struct {
+		parent: []int
+		rank: []int
+		components: int
+	}
+)
+
+fn createDSU(n: int): DSU {
+	dsu := DSU{
+		parent: make([]int, n),
+		rank: make([]int, n),
+		components: n
+	}
+	for i := 0; i < n; i++ {
+		dsu.parent[i] = i
+		dsu.rank[i] = 0
+	}
+	return dsu
+}
+
+fn (d: ^DSU) find(x: int): int {
+	if d.parent[x] != x {
+		// Path compression
+		d.parent[x] = d.find(d.parent[x])
+	}
+	return d.parent[x]
+}
+
+fn (d: ^DSU) union(a, b: int): bool {
+	rootA := d.find(a)
+	rootB := d.find(b)
+
+	if rootA == rootB {
+		// Already in the same component (would form a cycle)
+		return false
+	}
+
+	// Union by rank
+	if d.rank[rootA] < d.rank[rootB] {
+		d.parent[rootA] = rootB
+	} else if d.rank[rootA] > d.rank[rootB] {
+		d.parent[rootB] = rootA
+	} else {
+		d.parent[rootB] = rootA
+		d.rank[rootA]++
+	}
+
+	d.components--
+	return true
+}
+
+fn sortEdges(edges: ^[]Edge) {
+	n := len(edges^)
+	// Simple stable insertion sort for edges by weight
+	for i := 1; i < n; i++ {
+		key := edges^[i]
+		j := i - 1
+		for j >= 0 && (edges^[j].weight > key.weight ||
+			(edges^[j].weight == key.weight && (edges^[j].u > key.u ||
+			(edges^[j].u == key.u && edges^[j].v > key.v)))) {
+			edges^[j + 1] = edges^[j]
+			j--
+		}
+		edges^[j + 1] = key
+	}
+}
+
+fn main() {
+	std::println("=== Kruskal's Minimum Spanning Tree (MST) & Disjoint-Set ===")
+
+	numVertices := 5
+	printf("Graph Vertices: %d (A=0, B=1, C=2, D=3, E=4)\n", numVertices)
+
+	// Undirected edges
+	edges := []Edge{
+		Edge{u: 0, v: 1, weight: 1},
+		Edge{u: 1, v: 2, weight: 2},
+		Edge{u: 0, v: 2, weight: 3},
+		Edge{u: 1, v: 3, weight: 3},
+		Edge{u: 2, v: 4, weight: 4},
+		Edge{u: 3, v: 4, weight: 5},
+		Edge{u: 1, v: 4, weight: 6}
+	}
+
+	printf("Total Graph Edges: %d\n\n", len(edges))
+
+	sortEdges(&edges)
+
+	std::println("Sorted Candidate Edges:")
+	for i := 0; i < len(edges); i++ {
+		printf("  (%d-%d, w=%d)\n", edges[i].u, edges[i].v, edges[i].weight)
+	}
+	std::println("")
+
+	dsu := createDSU(numVertices)
+	mst := make([]Edge, 0)
+	totalWeight := 0
+
+	std::println("Kruskal's MST Selection:")
+	for i := 0; i < len(edges); i++ {
+		e := edges[i]
+		if dsu.union(e.u, e.v) {
+			mst = append(mst, e)
+			totalWeight += e.weight
+			printf("  + Accepted (%d-%d, w=%d)\n", e.u, e.v, e.weight)
+			if len(mst) == numVertices - 1 {
+				// MST is complete (V - 1 edges)
+				// We still show that remaining would be checked/skipped if needed
+			}
+		} else {
+			printf("  - Rejected (%d-%d, w=%d) -> Cycle detected\n", e.u, e.v, e.weight)
+		}
+	}
+	std::println("")
+
+	std::println("Minimum Spanning Tree Edges:")
+	for i := 0; i < len(mst); i++ {
+		printf("  Edge: %d - %d (Weight: %d)\n", mst[i].u, mst[i].v, mst[i].weight)
+	}
+	std::println("")
+
+	printf("Total MST Weight: %d\n", totalWeight)
+	printf("Disjoint-Set components: %d (Fully connected)\n", dsu.components)
+}

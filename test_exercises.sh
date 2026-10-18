@@ -415,6 +415,12 @@ run_exact_test \
     "" \
     $'=== Pratt Parser (Top-Down Operator Precedence) ===\nExpression: 3 + 4 * 2\n  AST:    (3 + (4 * 2))\n  Result: 11\n\nExpression: 2 ^ 3 ^ 2\n  AST:    (2 ^ (3 ^ 2))\n  Result: 512\n\nExpression: -5 + (10 - 2) * 3\n  AST:    ((-5) + ((10 - 2) * 3))\n  Result: 19\n\nPratt parsing and evaluation completed successfully.'
 
+run_exact_test \
+    "45 dsu kruskal" \
+    "45_dsu_kruskal.um" \
+    "" \
+    $'=== Kruskal\'s Minimum Spanning Tree (MST) & Disjoint-Set ===\nGraph Vertices: 5 (A=0, B=1, C=2, D=3, E=4)\nTotal Graph Edges: 7\n\nSorted Candidate Edges:\n  (0-1, w=1)\n  (1-2, w=2)\n  (0-2, w=3)\n  (1-3, w=3)\n  (2-4, w=4)\n  (3-4, w=5)\n  (1-4, w=6)\n\nKruskal\'s MST Selection:\n  + Accepted (0-1, w=1)\n  + Accepted (1-2, w=2)\n  - Rejected (0-2, w=3) -> Cycle detected\n  + Accepted (1-3, w=3)\n  + Accepted (2-4, w=4)\n  - Rejected (3-4, w=5) -> Cycle detected\n  - Rejected (1-4, w=6) -> Cycle detected\n\nMinimum Spanning Tree Edges:\n  Edge: 0 - 1 (Weight: 1)\n  Edge: 1 - 2 (Weight: 2)\n  Edge: 1 - 3 (Weight: 3)\n  Edge: 2 - 4 (Weight: 4)\n\nTotal MST Weight: 10\nDisjoint-Set components: 1 (Fully connected)'
+
 echo "All $pass_count tests passed."
 
 
