@@ -1,8 +1,11 @@
+// =============================================================================
 // 49_register_vm.um
 // Exercise 49: Register-Based Virtual Machine
 //
 // Demonstrates a 3-address register virtual machine with 16 registers,
 // instruction decoding, disassembly, and iterative Fibonacci calculation.
+// Run:      umka 49_register_vm.um
+// =============================================================================
 
 import (
     "std.um"

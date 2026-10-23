@@ -1,4 +1,7 @@
+// =============================================================================
 // 42_astar_pathfinding.um - A* Grid Pathfinding with Heuristics in Umka
+// Run:      umka 42_astar_pathfinding.um
+// =============================================================================
 
 import (
 	"std.um"

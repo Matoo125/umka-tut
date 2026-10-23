@@ -92,6 +92,10 @@ fn tokenize(src: str): []Token {
             tokens = append(tokens, Token{kind: TokenKind.tokString, strVal: val})
         } else if isDigit(ch) || ch == '-' {
             numStr := ""
+            if src[i] == '-' {
+                numStr += "-"
+                i++
+            }
             for i < n && (isDigit(src[i]) || src[i] == '.') {
                 numStr += str(src[i])
                 i++

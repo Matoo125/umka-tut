@@ -1,4 +1,7 @@
+// =============================================================================
 // 39_image_convolution.um - 2D Image Kernel Filter & Convolution in Umka
+// Run:      umka 39_image_convolution.um
+// =============================================================================
 
 import (
 	"std.um"

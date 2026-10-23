@@ -1,4 +1,7 @@
+// =============================================================================
 // 44_pratt_parser.um - Pratt Parser (Top-Down Operator Precedence) in Umka
+// Run:      umka 44_pratt_parser.um
+// =============================================================================
 
 import (
 	"std.um"

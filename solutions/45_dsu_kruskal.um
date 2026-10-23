@@ -1,4 +1,7 @@
+// =============================================================================
 // 45_dsu_kruskal.um - Disjoint-Set Union & Kruskal's MST in Umka
+// Run:      umka 45_dsu_kruskal.um
+// =============================================================================
 
 import (
 	"std.um"
@@ -116,10 +119,6 @@ fn main() {
 			mst = append(mst, e)
 			totalWeight += e.weight
 			printf("  + Accepted (%d-%d, w=%d)\n", e.u, e.v, e.weight)
-			if len(mst) == numVertices - 1 {
-				// MST is complete (V - 1 edges)
-				// We still show that remaining would be checked/skipped if needed
-			}
 		} else {
 			printf("  - Rejected (%d-%d, w=%d) -> Cycle detected\n", e.u, e.v, e.weight)
 		}

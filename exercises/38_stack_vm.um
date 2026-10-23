@@ -133,36 +133,21 @@ fn main() {
 	vm.run(p1)
 
 	// Program 2: Triangular sum of 5: 5 + 4 + 3 + 2 + 1 = 15
-	// Initial state:
-	// 0: PUSH 0      -> stack: [0] (acc)
-	// 1: PUSH 5      -> stack: [0, 5] (acc, n)
-	// Loop check (index 2):
-	// 2: DUP         -> stack: [acc, n, n]
-	// 3: JNZ 5       -> if n != 0 jump to body at index 5. Pops top n, leaves [acc, n]
-	// 4: JMP 13      -> if n == 0 jump to exit at index 13.
-	// Loop body (index 5):
-	// 5: SWAP        -> stack: [n, acc]
-	// 6: OVER        -> stack: [n, acc, n]
-	// 7: ADD         -> stack: [n, acc + n]
-	// 8: SWAP        -> stack: [acc + n, n]
-	// 9: PUSH 1      -> stack: [acc + n, n, 1]
-	// 10: SUB        -> stack: [acc + n, n - 1]
-	// 11: JMP 2      -> loop back to index 2
-	// Exit (index 12 or 13? Let's count indices):
-	// 0: PUSH 0
-	// 1: PUSH 5
-	// 2: DUP
-	// 3: JNZ 5
-	// 4: JMP 12
-	// 5: SWAP
-	// 6: OVER
-	// 7: ADD
-	// 8: SWAP
-	// 9: PUSH 1
-	// 10: SUB
-	// 11: JMP 2
-	// 12: DROP       -> drop counter n (which is 0), leaves [acc]
-	// 13: PRINT      -> prints acc
+	// The stack holds [acc, n]; every pass adds n to acc and counts n down.
+	//  0: PUSH 0      -> [0]                 acc
+	//  1: PUSH 5      -> [0, 5]              acc, n
+	//  2: DUP         -> [acc, n, n]         the loop check
+	//  3: JNZ 5       -> n != 0: jump to the body at 5 (pops the copy)
+	//  4: JMP 12      -> n == 0: jump to the exit
+	//  5: SWAP        -> [n, acc]            the loop body
+	//  6: OVER        -> [n, acc, n]
+	//  7: ADD         -> [n, acc + n]
+	//  8: SWAP        -> [acc + n, n]
+	//  9: PUSH 1      -> [acc + n, n, 1]
+	// 10: SUB         -> [acc + n, n - 1]
+	// 11: JMP 2       -> back to the loop check
+	// 12: DROP        -> drops n (0), leaves [acc]
+	// 13: PRINT       -> prints acc
 	// 14: HALT
 	std::println("Running Program 2: Triangular sum of 5")
 	p2 := []Instr{

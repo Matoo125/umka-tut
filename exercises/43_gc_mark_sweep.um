@@ -59,14 +59,31 @@ fn (h: ^Heap) markPhase() {
 		h.objects[i].marked = false
 	}
 
-	// Trace from all active roots
+	// Trace from all active roots, saying what each one kept alive
 	for i := 0; i < len(h.roots); i++ {
 		rootId := h.roots[i]
-		h.markObject(rootId)
-	}
+		wasMarked := make([]bool, len(h.objects))
+		for k := 0; k < len(h.objects); k++ {
+			wasMarked[k] = h.objects[k].marked
+		}
 
-	std::println("  Marked live root 1 and transitively: 2, 3")
-	std::println("  Marked live root 4")
+		h.markObject(rootId)
+
+		line := sprintf("  Marked live root %d", rootId)
+		first := true
+		for k := 0; k < len(h.objects); k++ {
+			if h.objects[k].marked && !wasMarked[k] && h.objects[k].id != rootId {
+				if first {
+					line += " and transitively: "
+					first = false
+				} else {
+					line += ", "
+				}
+				line += sprintf("%d", h.objects[k].id)
+			}
+		}
+		std::println(line)
+	}
 }
 
 fn (h: ^Heap) sweepPhase(): int {

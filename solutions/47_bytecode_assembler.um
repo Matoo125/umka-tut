@@ -1,4 +1,7 @@
+// =============================================================================
 // 47_bytecode_assembler.um - Two-Pass Bytecode Assembler & Disassembler in Umka
+// Run:      umka 47_bytecode_assembler.um
+// =============================================================================
 
 import (
 	"std.um"
