@@ -2,8 +2,8 @@
   {
     "id": "01_hello_world",
     "name": "Hello World",
-    "path": "01_hello_world.um",
-    "starter": "starters/01_hello_world.um",
+    "path": "exercises/01_hello_world.um",
+    "solution": "solutions/01_hello_world.um",
     "mode": "exact",
     "input": "",
     "expected": "Hello Umka!",
@@ -12,8 +12,8 @@
   {
     "id": "02_fib",
     "name": "Fibonacci",
-    "path": "02_fib.um",
-    "starter": "starters/02_fib.um",
+    "path": "exercises/02_fib.um",
+    "solution": "solutions/02_fib.um",
     "mode": "exact",
     "input": "",
     "expected": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55",
@@ -22,8 +22,8 @@
   {
     "id": "03_add_two_numbers",
     "name": "Add Two Numbers",
-    "path": "03_add_two_numbers.um",
-    "starter": "starters/03_add_two_numbers.um",
+    "path": "exercises/03_add_two_numbers.um",
+    "solution": "solutions/03_add_two_numbers.um",
     "mode": "exact",
     "input": "1\n2\n",
     "expected": "Enter first number: Enter second number: Result: 3.000000",
@@ -32,7 +32,8 @@
   {
     "id": "04_timer",
     "name": "Interactive Timer",
-    "path": "04_timer.um",
+    "path": "exercises/04_timer.um",
+    "solution": "solutions/04_timer.um",
     "mode": "regex",
     "input": "L\nR\nL\nS\n",
     "patterns": [
@@ -48,7 +49,8 @@
   {
     "id": "05_multiplication_table",
     "name": "Multiplication Table",
-    "path": "05_multiplication_table.um",
+    "path": "exercises/05_multiplication_table.um",
+    "solution": "solutions/05_multiplication_table.um",
     "mode": "exact",
     "input": "4\n",
     "expected": "Enter table size:    1   2   3   4\n   2   4   6   8\n   3   6   9  12\n   4   8  12  16",
@@ -57,7 +59,8 @@
   {
     "id": "06_table_art",
     "name": "Table Art",
-    "path": "06_table_art.um",
+    "path": "exercises/06_table_art.um",
+    "solution": "solutions/06_table_art.um",
     "mode": "exact",
     "input": "5\n4\n",
     "expected": "Enter table width: Enter table height: +---+\n|   |\n|   |\n+---+",
@@ -66,8 +69,8 @@
   {
     "id": "07_factorial",
     "name": "Factorial",
-    "path": "07_factorial.um",
-    "starter": "starters/07_factorial.um",
+    "path": "exercises/07_factorial.um",
+    "solution": "solutions/07_factorial.um",
     "mode": "exact",
     "input": "5\n",
     "expected": "Enter a non-negative integer: 5! = 120",
@@ -76,7 +79,8 @@
   {
     "id": "08_sum_to_n",
     "name": "Sum to N",
-    "path": "08_sum_to_n.um",
+    "path": "exercises/08_sum_to_n.um",
+    "solution": "solutions/08_sum_to_n.um",
     "mode": "exact",
     "input": "10\n",
     "expected": "Enter a positive integer: Sum from 1 to 10 = 55",
@@ -85,7 +89,8 @@
   {
     "id": "09_temperature_converter",
     "name": "Temperature Converter",
-    "path": "09_temperature_converter.um",
+    "path": "exercises/09_temperature_converter.um",
+    "solution": "solutions/09_temperature_converter.um",
     "mode": "exact",
     "input": "CtoF\n25\n",
     "expected": "Choose conversion (CtoF or FtoC): Enter temperature value: Result: 77.00",
@@ -94,7 +99,8 @@
   {
     "id": "10_countdown",
     "name": "Countdown",
-    "path": "10_countdown.um",
+    "path": "exercises/10_countdown.um",
+    "solution": "solutions/10_countdown.um",
     "mode": "exact",
     "input": "5\n",
     "expected": "Enter countdown start: 5\n4\n3\n2\n1\n0\nLift off!",
@@ -103,7 +109,8 @@
   {
     "id": "11_dialogue",
     "name": "Dialogue Engine",
-    "path": "11_dialogue.um",
+    "path": "exercises/11_dialogue.um",
+    "solution": "solutions/11_dialogue.um",
     "mode": "regex",
     "input": "1\n1\n1\n1\n1\n",
     "patterns": [
@@ -115,7 +122,8 @@
   {
     "id": "12_guessing_game",
     "name": "Guessing Game",
-    "path": "12_guessing_game.um",
+    "path": "exercises/12_guessing_game.um",
+    "solution": "solutions/12_guessing_game.um",
     "mode": "exact",
     "args": ["42"],
     "input": "10\n60\n42\n",
@@ -125,7 +133,8 @@
   {
     "id": "13_todo_list",
     "name": "To-Do List",
-    "path": "13_todo_list.um",
+    "path": "exercises/13_todo_list.um",
+    "solution": "solutions/13_todo_list.um",
     "mode": "exact",
     "input": "1\nBuyMilk\n4\n0\n",
     "expected": "To-Do List Manager\nCommands: 1 = Add, 2 = Complete, 3 = Delete, 4 = List, 0 = Exit\nCommand: Task title: Added task 1: BuyMilk\nCommand: Tasks:\n1. [ ] BuyMilk\nCommand: Goodbye!",
@@ -134,8 +143,8 @@
   {
     "id": "14_word_frequency",
     "name": "Word Frequency Counter",
-    "path": "14_word_frequency.um",
-    "starter": "starters/14_word_frequency.um",
+    "path": "exercises/14_word_frequency.um",
+    "solution": "solutions/14_word_frequency.um",
     "mode": "regex",
     "input": "",
     "patterns": [
@@ -148,7 +157,8 @@
   {
     "id": "15_rpn_calculator",
     "name": "RPN Calculator",
-    "path": "15_rpn_calculator.um",
+    "path": "exercises/15_rpn_calculator.um",
+    "solution": "solutions/15_rpn_calculator.um",
     "mode": "exact",
     "input": "5\n3\n4\n+\n2\n*\n",
     "expected": "RPN Calculator\nEnter number of tokens: Enter 5 tokens separated by whitespace:\nResult: 14.0000",
@@ -157,7 +167,8 @@
   {
     "id": "16_interfaces_shapes",
     "name": "Polymorphic Shapes Interface",
-    "path": "16_interfaces_shapes.um",
+    "path": "exercises/16_interfaces_shapes.um",
+    "solution": "solutions/16_interfaces_shapes.um",
     "mode": "exact",
     "input": "",
     "expected": "Shape Measurements:\nRectangle  -> Area:  20.00, Perimeter:  18.00\nCircle     -> Area:  28.27, Perimeter:  18.85",
@@ -166,7 +177,8 @@
   {
     "id": "17_type_switch",
     "name": "Type Switch and Any",
-    "path": "17_type_switch.um",
+    "path": "exercises/17_type_switch.um",
+    "solution": "solutions/17_type_switch.um",
     "mode": "exact",
     "input": "",
     "expected": "Inspecting Items via Type Switch:\nInteger: 100 (doubled = 200)\nReal: 45.50 (half = 22.75)\nString: \"Umka Scripting\" (length = 14)\nBoolean: true (negated = false)\nBoolean: false (negated = true)",
@@ -175,7 +187,8 @@
   {
     "id": "18_embedded_interfaces",
     "name": "Embedded Interfaces & Wrappers",
-    "path": "18_embedded_interfaces.um",
+    "path": "exercises/18_embedded_interfaces.um",
+    "solution": "solutions/18_embedded_interfaces.um",
     "mode": "exact",
     "input": "",
     "expected": "--- Buffer Output ---\nINFO: System started\nINFO: Loading modules...\n[APP] Ready for user requests.\n---------------------",
@@ -184,7 +197,8 @@
   {
     "id": "19_fibers_coroutines",
     "name": "Fibers & Coroutine Generators",
-    "path": "19_fibers_coroutines.um",
+    "path": "exercises/19_fibers_coroutines.um",
+    "solution": "solutions/19_fibers_coroutines.um",
     "mode": "exact",
     "input": "",
     "expected": "Fibonacci Sequence via Coroutine Fiber:\nFib[0] = 0\nFib[1] = 1\nFib[2] = 1\nFib[3] = 2\nFib[4] = 3\nFib[5] = 5\nFib[6] = 8\nFib[7] = 13\nFib[8] = 21\nFib[9] = 34\n\nSquares via Finite Coroutine Fiber:\nSquare #1 = 1\nSquare #2 = 4\nSquare #3 = 9\nSquare #4 = 16\nSquare #5 = 25\nGenerator completed.",
@@ -193,7 +207,8 @@
   {
     "id": "20_file_io",
     "name": "File I/O and Content Processing",
-    "path": "20_file_io.um",
+    "path": "exercises/20_file_io.um",
+    "solution": "solutions/20_file_io.um",
     "mode": "exact",
     "input": "",
     "expected": "Writing 79 bytes to notes.txt...\nReading back from notes.txt...\n--- File Content ---\nUmka Scripting Language\nFast, statically typed, embeddable\nEnjoying exercises!\nLine count: 3\nTemporary file cleaned up.",
@@ -202,7 +217,8 @@
   {
     "id": "21_vector_matrix",
     "name": "3D Vector & Matrix Math",
-    "path": "21_vector_matrix.um",
+    "path": "exercises/21_vector_matrix.um",
+    "solution": "solutions/21_vector_matrix.um",
     "mode": "exact",
     "input": "",
     "expected": "Vector Math:\nu: [1.00, 2.00, 3.00]\nv: [4.00, 5.00, 6.00]\nu + v: [5.00, 7.00, 9.00]\nu - v: [-3.00, -3.00, -3.00]\nu . v: 32.00\nu x v: [-3.00, 6.00, -3.00]\n|u|: 3.7417\n|v|: 8.7750\n\nMatrix Transformation:\nI * u: [1.00, 2.00, 3.00]",
@@ -211,7 +227,8 @@
   {
     "id": "22_functional_programming",
     "name": "Functional Closures & fnc.um",
-    "path": "22_functional_programming.um",
+    "path": "exercises/22_functional_programming.um",
+    "solution": "solutions/22_functional_programming.um",
     "mode": "exact",
     "input": "",
     "expected": "Input: [1 2 3 4 5 6 7 8 9 10]\nThreshold: > 5\nFiltered: [6 7 8 9 10]\nSquared: [36 49 64 81 100]\nTotal Sum of Squares: 330",
@@ -220,7 +237,8 @@
   {
     "id": "23_unicode_utf8",
     "name": "Unicode & UTF-8 Decoding",
-    "path": "23_unicode_utf8.um",
+    "path": "exercises/23_unicode_utf8.um",
+    "solution": "solutions/23_unicode_utf8.um",
     "mode": "exact",
     "input": "",
     "expected": "Original Text: Hello, 世界! 🌍\nByte Length:   19\nRune Length:   12\n\nDecoded Code Points:\n[00] U+0048 | 1 bytes | Char: H\n[01] U+0065 | 1 bytes | Char: e\n[02] U+006C | 1 bytes | Char: l\n[03] U+006C | 1 bytes | Char: l\n[04] U+006F | 1 bytes | Char: o\n[05] U+002C | 1 bytes | Char: ,\n[06] U+0020 | 1 bytes | Char:  \n[07] U+4E16 | 3 bytes | Char: 世\n[08] U+754C | 3 bytes | Char: 界\n[09] U+0021 | 1 bytes | Char: !\n[10] U+0020 | 1 bytes | Char:  \n[11] U+1F30D | 4 bytes | Char: 🌍",
@@ -229,7 +247,8 @@
   {
     "id": "24_linked_list_weak_ptrs",
     "name": "Linked Lists & Weak Pointers",
-    "path": "24_linked_list_weak_ptrs.um",
+    "path": "exercises/24_linked_list_weak_ptrs.um",
+    "solution": "solutions/24_linked_list_weak_ptrs.um",
     "mode": "exact",
     "input": "",
     "expected": "Doubly Linked List with Weak Backlinks (Size = 4):\nForward:  [ 10 20 30 40 ]\nBackward: [ 40 30 20 10 ]",
@@ -238,7 +257,8 @@
   {
     "id": "25_json_parser",
     "name": "JSON Lexer & Parser",
-    "path": "25_json_parser.um",
+    "path": "exercises/25_json_parser.um",
+    "solution": "solutions/25_json_parser.um",
     "mode": "exact",
     "input": "",
     "expected": "Parsed 4 JSON properties:\n  author     : \"Vasiliy\"\n  embedded   : true\n  lang       : \"Umka\"\n  version    : 1.60",
@@ -247,7 +267,8 @@
   {
     "id": "26_binary_packet",
     "name": "Binary Packet Header & Checksum",
-    "path": "26_binary_packet.um",
+    "path": "exercises/26_binary_packet.um",
+    "solution": "solutions/26_binary_packet.um",
     "mode": "exact",
     "input": "",
     "expected": "Header Unpacked:\n  Magic:      0x554D4B41\n  Version:    1\n  Flags:      0x0003\n  PayloadLen: 4 bytes\n  Checksum:   0xC2BA81B6\n  Valid:      true",
@@ -256,7 +277,8 @@
   {
     "id": "27_event_bus",
     "name": "Event Bus & Pub-Sub Dispatcher",
-    "path": "27_event_bus.um",
+    "path": "exercises/27_event_bus.um",
+    "solution": "solutions/27_event_bus.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Dispatching Events ===\n[Auth Service] User logged in: alice\n[Audit Log] Event 'user:login' triggered with payload: 'alice'\n[Auth Service] User logged out: alice\n[Audit Log] Event 'user:logout' triggered with payload: 'alice'",
@@ -265,7 +287,8 @@
   {
     "id": "28_state_machine",
     "name": "Finite State Machine (FSM)",
-    "path": "28_state_machine.um",
+    "path": "exercises/28_state_machine.um",
+    "solution": "solutions/28_state_machine.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Finite State Machine Simulation ===\nInitial State: Idle\nTransition: Idle --(Connect)--> Connecting\nIgnored:    Connecting --(Connect)--> [Invalid in this state]\nTransition: Connecting --(Success)--> Connected\nTransition: Connected --(Disconnect)--> Disconnected\nTransition: Disconnected --(Reset)--> Idle",
@@ -274,7 +297,8 @@
   {
     "id": "29_min_heap",
     "name": "Priority Queue / Binary Min-Heap",
-    "path": "29_min_heap.um",
+    "path": "exercises/29_min_heap.um",
+    "solution": "solutions/29_min_heap.um",
     "mode": "exact",
     "input": "",
     "expected": "Pushing values into Min-Heap:\nPush 45\nPush 12\nPush 89\nPush 3\nPush 27\nPush 18\nPush 5\n\nPopping in sorted priority order:\nPop 3\nPop 5\nPop 12\nPop 18\nPop 27\nPop 45\nPop 89",
@@ -283,7 +307,8 @@
   {
     "id": "30_csv_parser",
     "name": "CSV Table Parser & Query Filter",
-    "path": "30_csv_parser.um",
+    "path": "exercises/30_csv_parser.um",
+    "solution": "solutions/30_csv_parser.um",
     "mode": "exact",
     "input": "",
     "expected": "CSV Table Loaded (3 columns, 4 rows)\n--- Engineering Staff ---\n- Alice (Salary: $95000)\n- Charlie (Salary: $105000)",
@@ -292,7 +317,8 @@
   {
     "id": "31_ast_evaluator",
     "name": "Expression Parser & AST Evaluator",
-    "path": "31_ast_evaluator.um",
+    "path": "exercises/31_ast_evaluator.um",
+    "solution": "solutions/31_ast_evaluator.um",
     "mode": "exact",
     "input": "",
     "expected": "Source Expression: 3 + 5 * ( 2 + 4 )\nAST Infix Tree:    (3 + (5 * (2 + 4)))\nEvaluated Result:  33.00",
@@ -301,8 +327,8 @@
   {
     "id": "32_trie_prefix_tree",
     "name": "Trie (Prefix Tree) & Autocomplete",
-    "path": "32_trie_prefix_tree.um",
-    "starter": "starters/32_trie_prefix_tree.um",
+    "path": "exercises/32_trie_prefix_tree.um",
+    "solution": "solutions/32_trie_prefix_tree.um",
     "mode": "exact",
     "input": "",
     "expected": "Inserting words into Trie:\n  + apple\n  + app\n  + application\n  + apt\n  + banana\n  + bat\n\nMembership Queries:\n  contains(\"app\") = true\n  contains(\"apple\") = true\n  contains(\"appl\") = false\n\nPrefix Search:\n  startsWith(\"ap\") = true\n  startsWith(\"cat\") = false\n\nAutocomplete for 'app':\n  -> app\n  -> apple\n  -> application",
@@ -311,7 +337,8 @@
   {
     "id": "33_lru_cache",
     "name": "LRU Cache (Least Recently Used)",
-    "path": "33_lru_cache.um",
+    "path": "exercises/33_lru_cache.um",
+    "solution": "solutions/33_lru_cache.um",
     "mode": "exact",
     "input": "",
     "expected": "=== LRU Cache Simulation (Capacity = 3) ===\nCache (size=3, cap=3): [ c:300 b:200 a:100 ]\nAccessing 'a': 100\nCache (size=3, cap=3): [ a:100 c:300 b:200 ]\nInserting 'd': 400 (triggers eviction)\nCache (size=3, cap=3): [ d:400 a:100 c:300 ]\nQuerying evicted 'b': -1\nQuerying present 'c': 300",
@@ -320,7 +347,8 @@
   {
     "id": "34_rle_compressor",
     "name": "Run-Length Encoding (RLE) Stream Compressor",
-    "path": "34_rle_compressor.um",
+    "path": "exercises/34_rle_compressor.um",
+    "solution": "solutions/34_rle_compressor.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Run-Length Encoding (RLE) Stream Compressor ===\nOriginal size:     17 bytes\nCompressed size:   8 bytes\nSpace saved:       52.9%\nCompressed stream: [ (5 x 0xAA) (3 x 0xBB) (8 x 0xCC) (1 x 0xDD) ]\nVerification:      PASS (Exact byte match)",
@@ -329,7 +357,8 @@
   {
     "id": "35_ring_buffer",
     "name": "Circular Ring Buffer (Bounded Queue)",
-    "path": "35_ring_buffer.um",
+    "path": "exercises/35_ring_buffer.um",
+    "solution": "solutions/35_ring_buffer.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Circular Ring Buffer (Capacity = 4) ===\nEnqueue 10, 20, 30:\nRingBuffer (size=3/4, head=0, tail=3): [ 10 20 30 ]\nDequeue one item: 10\nRingBuffer (size=2/4, head=1, tail=3): [ 20 30 ]\nEnqueue 40, 50 (wraps around):\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nAttempt overflow enqueue 60: rejected (buffer full)\nRingBuffer (size=4/4, head=1, tail=1): [ 20 30 40 50 ]\nDraining all items:\nPopped: 20\nPopped: 30\nPopped: 40\nPopped: 50\nRingBuffer (size=0/4, head=1, tail=1): [ ]",
@@ -338,7 +367,8 @@
   {
     "id": "36_markdown_compiler",
     "name": "Markdown to HTML Compiler",
-    "path": "36_markdown_compiler.um",
+    "path": "exercises/36_markdown_compiler.um",
+    "solution": "solutions/36_markdown_compiler.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Markdown Source ===\n# Umka Language\nUmka is a **statically typed** embeddable scripting language.\n## Features\n- Clean Go-like syntax\n- Fast execution with `bytecode` VM\n- Built-in array and hash map collections\n> Simplicity is prerequisite for reliability.\n\n=== Compiled HTML Output ===\n<h1>Umka Language</h1>\n<p>Umka is a <strong>statically typed</strong> embeddable scripting language.</p>\n<h2>Features</h2>\n<ul>\n  <li>Clean Go-like syntax</li>\n  <li>Fast execution with <code>bytecode</code> VM</li>\n  <li>Built-in array and hash map collections</li>\n</ul>\n<blockquote>Simplicity is prerequisite for reliability.</blockquote>",
@@ -347,7 +377,8 @@
   {
     "id": "37_dijkstra_graph",
     "name": "Graph Representation & Dijkstra",
-    "path": "37_dijkstra_graph.um",
+    "path": "exercises/37_dijkstra_graph.um",
+    "solution": "solutions/37_dijkstra_graph.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Dijkstra's Shortest Path Algorithm ===\nShortest Path from A to D:\n  Route: A -> C -> B -> E -> D\n  Total Cost: 6\nShortest Path from C to E:\n  Route: C -> B -> E\n  Total Cost: 3",
@@ -356,7 +387,8 @@
   {
     "id": "38_stack_vm",
     "name": "Stack-Based Bytecode VM",
-    "path": "38_stack_vm.um",
+    "path": "exercises/38_stack_vm.um",
+    "solution": "solutions/38_stack_vm.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Stack-Based Bytecode VM ===\nRunning Program 1: (7 + 3) * 4 - 5\nResult: 35\nRunning Program 2: Triangular sum of 5\nResult: 15\nVM execution completed successfully.",
@@ -365,7 +397,8 @@
   {
     "id": "39_image_convolution",
     "name": "2D Image Convolution & Kernel Filter",
-    "path": "39_image_convolution.um",
+    "path": "exercises/39_image_convolution.um",
+    "solution": "solutions/39_image_convolution.um",
     "mode": "exact",
     "input": "",
     "expected": "=== 2D Image Convolution & Kernel Filter ===\nSource Image (5x5):\n   0   0   0   0   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0 200 200 200   0\n   0   0   0   0   0\nSource Image (ASCII):\n          \n  - - -   \n  - - -   \n  - - -   \n          \n\nLaplacian Edge Detection (5x5):\n   0   0   0   0   0\n   0 255 255 255   0\n   0 255   0 255   0\n   0 255 255 255   0\n   0   0   0   0   0\nLaplacian Edge Detection (ASCII):\n          \n  # # #   \n  #   #   \n  # # #   \n          \n\nBox Blur (3x3) (5x5):\n  22  44  66  44  22\n  44  88 133  88  44\n  66 133 200 133  66\n  44  88 133  88  44\n  22  44  66  44  22\nBox Blur (3x3) (ASCII):\n    .     \n  . : .   \n. : - : . \n  . : .   \n    .     \n\nConvolution pipeline completed successfully.",
@@ -374,7 +407,8 @@
   {
     "id": "40_bloom_filter",
     "name": "Bloom Filter & BitSet",
-    "path": "40_bloom_filter.um",
+    "path": "exercises/40_bloom_filter.um",
+    "solution": "solutions/40_bloom_filter.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Bloom Filter & BitSet ===\nFilter capacity: 64 bits, 3 hash functions\nAdding elements:\n  + \"umka\"\n  + \"lua\"\n  + \"compiler\"\n  + \"interpreter\"\n\nBitSet Visualization:\n[00010011 00000010 00000000 01000010 00101000 00001000 10000000 10000000]\nBits set: 11 / 64 (17.2% fill rate)\n\nQuerying Membership:\n  contains(\"umka\"       ) -> true  (expected: true)\n  contains(\"lua\"        ) -> true  (expected: true)\n  contains(\"compiler\"   ) -> true  (expected: true)\n  contains(\"interpreter\") -> true  (expected: true)\n  contains(\"python\"     ) -> false (expected: false)\n  contains(\"rust\"       ) -> false (expected: false)\n  contains(\"javascript\" ) -> false (expected: false)\n\nBloom filter verification passed with zero false negatives.",
@@ -383,7 +417,8 @@
   {
     "id": "41_huffman_coding",
     "name": "Huffman Coding & Compression",
-    "path": "41_huffman_coding.um",
+    "path": "exercises/41_huffman_coding.um",
+    "solution": "solutions/41_huffman_coding.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Huffman Coding & Compression ===\nInput text: \"abracadabra\"\nOriginal size: 11 characters (88 bits at 8 bits/char)\n\nCharacter Frequencies:\n  'a': 5\n  'b': 2\n  'r': 2\n  'c': 1\n  'd': 1\n\nHuffman Prefix Codes:\n  'a' -> 0\n  'b' -> 110\n  'r' -> 111\n  'c' -> 100\n  'd' -> 101\n\nEncoded Bitstream:\n01101110100010101101110\nEncoded length: 23 bits (73.9% space saved)\n\nDecoded String:\n\"abracadabra\"\n\nVerification: PASS (Decoded matches original exactly)",
@@ -392,7 +427,8 @@
   {
     "id": "42_astar_pathfinding",
     "name": "A* Grid Pathfinding",
-    "path": "42_astar_pathfinding.um",
+    "path": "exercises/42_astar_pathfinding.um",
+    "solution": "solutions/42_astar_pathfinding.um",
     "mode": "exact",
     "input": "",
     "expected": "=== A* Grid Pathfinding ===\nSource Grid:\n########\n#S.....#\n#.###..#\n#...#..#\n#...#..#\n#..##..#\n#.....E#\n########\n\nA* Search: Path found! Length: 10 steps\n\nSolved Grid:\n########\n#S.....#\n#*###..#\n#*..#..#\n#*..#..#\n#*.##..#\n#*****E#\n########\n\nPath Coordinates:\n  (1,1) -> (1,2) -> (1,3) -> (1,4) -> (1,5) -> (1,6) -> (2,6) -> (3,6) -> (4,6) -> (5,6) -> (6,6)\n\nPathfinding completed successfully.",
@@ -401,7 +437,8 @@
   {
     "id": "43_gc_mark_sweep",
     "name": "Mark-and-Sweep Garbage Collector",
-    "path": "43_gc_mark_sweep.um",
+    "path": "exercises/43_gc_mark_sweep.um",
+    "solution": "solutions/43_gc_mark_sweep.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Mark-and-Sweep Garbage Collector Simulation ===\nAllocating 6 heap objects:\n  + Object 1 (Root A) -> refs [2]\n  + Object 2          -> refs [3]\n  + Object 3          -> refs []\n  + Object 4 (Root B) -> refs []\n  + Object 5 (Cycle)  -> refs [6]\n  + Object 6 (Cycle)  -> refs [5]\n\nActive Root Set: [ 1 4 ]\nHeap state before GC: 6 objects allocated\n\n--- Triggering Garbage Collection ---\n[Mark Phase]\n  Marked live root 1 and transitively: 2, 3\n  Marked live root 4\n[Sweep Phase]\n  Reclaiming dead object 5 (Cycle garbage)\n  Reclaiming dead object 6 (Cycle garbage)\n\nHeap state after GC: 4 objects active, 2 reclaimed\nLive objects: [ 1 2 3 4 ]\nGarbage collection cycle completed successfully.",
@@ -410,7 +447,8 @@
   {
     "id": "44_pratt_parser",
     "name": "Pratt Operator Precedence Parser",
-    "path": "44_pratt_parser.um",
+    "path": "exercises/44_pratt_parser.um",
+    "solution": "solutions/44_pratt_parser.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Pratt Parser (Top-Down Operator Precedence) ===\nExpression: 3 + 4 * 2\n  AST:    (3 + (4 * 2))\n  Result: 11\n\nExpression: 2 ^ 3 ^ 2\n  AST:    (2 ^ (3 ^ 2))\n  Result: 512\n\nExpression: -5 + (10 - 2) * 3\n  AST:    ((-5) + ((10 - 2) * 3))\n  Result: 19\n\nPratt parsing and evaluation completed successfully.",
@@ -419,7 +457,8 @@
   {
     "id": "45_dsu_kruskal",
     "name": "Disjoint-Set Union & Kruskal's MST",
-    "path": "45_dsu_kruskal.um",
+    "path": "exercises/45_dsu_kruskal.um",
+    "solution": "solutions/45_dsu_kruskal.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Kruskal's Minimum Spanning Tree (MST) & Disjoint-Set ===\nGraph Vertices: 5 (A=0, B=1, C=2, D=3, E=4)\nTotal Graph Edges: 7\n\nSorted Candidate Edges:\n  (0-1, w=1)\n  (1-2, w=2)\n  (0-2, w=3)\n  (1-3, w=3)\n  (2-4, w=4)\n  (3-4, w=5)\n  (1-4, w=6)\n\nKruskal's MST Selection:\n  + Accepted (0-1, w=1)\n  + Accepted (1-2, w=2)\n  - Rejected (0-2, w=3) -> Cycle detected\n  + Accepted (1-3, w=3)\n  + Accepted (2-4, w=4)\n  - Rejected (3-4, w=5) -> Cycle detected\n  - Rejected (1-4, w=6) -> Cycle detected\n\nMinimum Spanning Tree Edges:\n  Edge: 0 - 1 (Weight: 1)\n  Edge: 1 - 2 (Weight: 2)\n  Edge: 1 - 3 (Weight: 3)\n  Edge: 2 - 4 (Weight: 4)\n\nTotal MST Weight: 10\nDisjoint-Set components: 1 (Fully connected)",
@@ -428,7 +467,8 @@
   {
     "id": "46_lr_parser",
     "name": "LR Shift-Reduce Parser",
-    "path": "46_lr_parser.um",
+    "path": "exercises/46_lr_parser.um",
+    "solution": "solutions/46_lr_parser.um",
     "mode": "exact",
     "input": "",
     "expected": "=== LR Shift-Reduce Parser State Machine ===\nGrammar Rules:\n  (1) E -> E + T\n  (2) E -> T\n  (3) T -> id\n\nParsing Input: id + id + id\n\nStep  State Stack      Symbol Stack         Action\n------------------------------------------------------------\n 0    [ 0 ]            [ $ ]                Shift 2\n 1    [ 0 2 ]          [ $ id ]             Reduce (3) T -> id\n 2    [ 0 3 ]          [ $ T ]              Reduce (2) E -> T\n 3    [ 0 1 ]          [ $ E ]              Shift 4\n 4    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 5    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n 6    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n 7    [ 0 1 ]          [ $ E ]              Shift 4\n 8    [ 0 1 4 ]        [ $ E + ]            Shift 2\n 9    [ 0 1 4 2 ]      [ $ E + id ]         Reduce (3) T -> id\n10    [ 0 1 4 5 ]      [ $ E + T ]          Reduce (1) E -> E + T\n11    [ 0 1 ]          [ $ E ]              Accept\n\nParse Result: SUCCESS (Input fully accepted by grammar)",
@@ -437,7 +477,8 @@
   {
     "id": "47_bytecode_assembler",
     "name": "Bytecode Assembler & Disassembler",
-    "path": "47_bytecode_assembler.um",
+    "path": "exercises/47_bytecode_assembler.um",
+    "solution": "solutions/47_bytecode_assembler.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Bytecode Assembler & Disassembler ===\nAssembly Source:\n  PUSH 10\n  PUSH 0\nloop:\n  SWAP\n  DUP\n  JNZ body\n  JMP exit\nbody:\n  PUSH 1\n  SUB\n  SWAP\n  PUSH 2\n  ADD\n  JMP loop\nexit:\n  SWAP\n  PRINT\n  HALT\n\nPass 1: Symbol Table Generated:\n  'loop' -> offset 2\n  'body' -> offset 6\n  'exit' -> offset 12\n\nPass 2: Assembled 15 Instructions (30 bytes)\n\nDisassembly of Binary Bytecode:\n  0000: PUSH  10\n  0001: PUSH  0\n  0002: SWAP  0\n  0003: DUP   0\n  0004: JNZ   6\n  0005: JMP   12\n  0006: PUSH  1\n  0007: SUB   0\n  0008: SWAP  0\n  0009: PUSH  2\n  0010: ADD   0\n  0011: JMP   2\n  0012: SWAP  0\n  0013: PRINT 0\n  0014: HALT  0\n\nAssembly and disassembly roundtrip completed successfully.",
@@ -446,7 +487,8 @@
   {
     "id": "48_tarjan_scc",
     "name": "Tarjan's Strongly Connected Components",
-    "path": "48_tarjan_scc.um",
+    "path": "exercises/48_tarjan_scc.um",
+    "solution": "solutions/48_tarjan_scc.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Tarjan's Strongly Connected Components (SCC) ===\nGraph: 8 vertices, 10 directed edges\nEdges:\n  0 -> 1, 1 -> 2, 2 -> 0\n  2 -> 3, 3 -> 4, 4 -> 3\n  4 -> 5, 5 -> 6, 6 -> 7, 7 -> 5\n\nExecuting Tarjan's Single-Pass DFS...\n\nIdentified 3 Strongly Connected Components:\n  SCC #1: [ 7 6 5 ] (Size: 3)\n  SCC #2: [ 4 3 ] (Size: 2)\n  SCC #3: [ 2 1 0 ] (Size: 3)\n\nAll vertices accounted for across 3 disjoint SCC components.\nTarjan's SCC analysis completed successfully.",
@@ -455,7 +497,8 @@
   {
     "id": "49_register_vm",
     "name": "Register-Based Virtual Machine",
-    "path": "49_register_vm.um",
+    "path": "exercises/49_register_vm.um",
+    "solution": "solutions/49_register_vm.um",
     "mode": "exact",
     "input": "",
     "expected": "=== Register-Based Virtual Machine ===\nRegisters: 16 (R0..R15)\nProgram: Iterative Fibonacci(10)\n\nDisassembly:\n  0: LOADI  R0, 0\n  1: LOADI  R1, 1\n  2: LOADI  R2, 10\n  3: LOADI  R3, 0\n  4: CMP    R3, R2\n  5: JEQ    12\n  6: ADD    R4, R0, R1\n  7: MOV    R0, R1\n  8: MOV    R1, R4\n  9: LOADI  R5, 1\n 10: ADD    R3, R3, R5\n 11: JMP    4\n 12: PRINT  R0\n 13: HALT\n\nExecution:\n[OUTPUT] 55\nCycles executed: 88\nFinal registers:\n  R0: 55\n  R1: 89\n  R2: 10\n  R3: 10",

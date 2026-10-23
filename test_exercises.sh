@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$ROOT_DIR"
+cd "$ROOT_DIR/solutions"
 
 if ! command -v umka >/dev/null 2>&1; then
     echo "umka is required to run the tests."
