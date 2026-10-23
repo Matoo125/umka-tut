@@ -1,0 +1,101 @@
+// =============================================================================
+// Exercise 30: CSV Table Parser & Query Filter
+// Concepts: String parsing, quote escaping state machines, dynamic 2D records
+//           (`CSVTable` with `[]CSVRow`), column lookup, and row filtering queries.
+// Task:     Split CSV lines on commas outside quotes and look up column indexes by header name
+// Run:      umka 30_csv_parser.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    CSVRow = struct {
+        fields: []str
+    }
+
+    CSVTable = struct {
+        headers: []str
+        rows: []CSVRow
+    }
+)
+
+// Parses a single CSV line while properly handling quoted fields containing commas
+fn parseCSVLine(line: str): []str {
+    fields := make([]str, 0)
+    current := ""
+    inQuotes := false
+
+    for i := 0; i < len(line); i++ {
+        ch := line[i]
+        // TODO: a '"' toggles `inQuotes` and is not copied into the field; a ','
+        //       outside quotes ends the field (append `current` to `fields`, reset
+        //       it); every other character is appended to `current`.
+        current += str(ch)
+    }
+    fields = append(fields, current)
+    return fields
+}
+
+// Loads a multi-line CSV string into headers and structured row records
+fn (tbl: ^CSVTable) load(csvContent: str) {
+    tbl.headers = make([]str, 0)
+    tbl.rows = make([]CSVRow, 0)
+
+    lines := make([]str, 0)
+    curLine := ""
+    for i := 0; i < len(csvContent); i++ {
+        if csvContent[i] == '\n' {
+            if len(curLine) > 0 {
+                lines = append(lines, curLine)
+            }
+            curLine = ""
+        } else if csvContent[i] != '\r' {
+            curLine += str(csvContent[i])
+        }
+    }
+    if len(curLine) > 0 {
+        lines = append(lines, curLine)
+    }
+
+    if len(lines) == 0 {
+        return
+    }
+
+    tbl.headers = parseCSVLine(lines[0])
+    for i := 1; i < len(lines); i++ {
+        tbl.rows = append(tbl.rows, CSVRow{fields: parseCSVLine(lines[i])})
+    }
+}
+
+// Finds the zero-based index of a column by header name (-1 if not found)
+fn (tbl: ^CSVTable) getColumnIndex(colName: str): int {
+    // TODO: return the index of the header equal to `colName`, or -1 if there is none.
+    return 0
+}
+
+fn main() {
+    csvData := "name,department,salary\n" +
+               "Alice,Engineering,95000\n" +
+               "\"Bob, Jr.\",Marketing,62000\n" +
+               "Charlie,Engineering,105000\n" +
+               "Diana,Design,78000\n"
+
+    tbl := CSVTable{}
+    tbl.load(csvData)
+
+    deptIdx := tbl.getColumnIndex("department")
+    nameIdx := tbl.getColumnIndex("name")
+    salaryIdx := tbl.getColumnIndex("salary")
+
+    printf("CSV Table Loaded (%d columns, %d rows)\n", len(tbl.headers), len(tbl.rows))
+    printf("--- Engineering Staff ---\n")
+
+    for i := 0; i < len(tbl.rows); i++ {
+        row := tbl.rows[i]
+        if row.fields[deptIdx] == "Engineering" {
+            printf("- %s (Salary: $%s)\n", row.fields[nameIdx], row.fields[salaryIdx])
+        }
+    }
+}

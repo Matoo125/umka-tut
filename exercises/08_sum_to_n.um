@@ -1,0 +1,26 @@
+// =============================================================================
+// Exercise 08: Sum to N
+// Concepts: Numeric accumulation, input validation, for loop bounds
+// Task:     Print the sum of the whole numbers from 1 to the number read
+// Run:      printf '10\n' | umka 08_sum_to_n.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    var n: int32
+    var sum: int32
+
+    printf("Enter a positive integer: ")
+    scanf("%d", &n)
+
+    if n <= 0 {
+        printf("The number must be positive.\n")
+        return
+    }
+
+    // TODO: add every whole number from 1 up to and including n to `sum`
+    //       (a for loop with `sum += i`)
+
+    printf("Sum from 1 to %d = %d\n", n, sum)
+}

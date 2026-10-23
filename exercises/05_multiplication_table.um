@@ -1,0 +1,24 @@
+// =============================================================================
+// Exercise 05: Multiplication Table
+// Concepts: Nested `for` loops, field width specifiers (`%4d`), input validation
+// Task:     Print a size x size multiplication table, each number right-aligned in 4 columns
+// Run:      printf '4\n' | umka 05_multiplication_table.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    var size: int32
+
+    printf("Enter table size: ")
+    scanf("%d", &size)
+
+    if size <= 0 {
+        printf("Table size must be positive.\n")
+        return
+    }
+
+    // TODO: print `size` rows. Each row holds `size` products row * col,
+    //       printed with "%4d" so the columns line up, and ends with a newline.
+    //       Hint: one loop for rows with another loop for columns inside it.
+}

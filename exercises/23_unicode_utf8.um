@@ -1,0 +1,30 @@
+// =============================================================================
+// Exercise 23: Unicode and UTF-8 Decoding
+// Concepts: Standard library `utf8.um`, `Rune` code points, byte vs rune length, `encode()`
+// Task:     Print the byte and rune lengths of a UTF-8 text and each decoded code point
+// Run:      umka 23_unicode_utf8.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "utf8.um"
+
+fn main() {
+    text := "Hello, 世界! 🌍"
+    byteLen := len(text)
+    // TODO: count code points (not bytes) with a function from utf8.um
+    runeLen := 0
+
+    printf("Original Text: %s\n", text)
+    printf("Byte Length:   %d\n", byteLen)
+    printf("Rune Length:   %d\n", runeLen)
+    printf("\nDecoded Code Points:\n")
+
+    runes := utf8::decode(text)
+    for i, r in runes {
+        // TODO: print "[%02d] U+%04X | %d bytes | Char: %s" for each rune:
+        //       the index, the code point r, its encoded size (r.size()) and
+        //       the character itself (r.encode())
+        printf("[%02d] ?\n", i)
+    }
+}

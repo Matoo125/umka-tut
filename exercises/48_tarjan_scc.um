@@ -1,0 +1,142 @@
+// =============================================================================
+// 48_tarjan_scc.um - Tarjan's Strongly Connected Components (SCC) in Umka
+// Task:     Finish the DFS in Tarjan's algorithm (low-link updates and SCC extraction) so all 3 components are found.
+// Run:      umka 48_tarjan_scc.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	Graph = struct {
+		n: int
+		adj: [][]int
+	}
+
+	SCC = struct {
+		components: [][]int
+		ids: []int
+		low: []int
+		onStack: []bool
+		stack: []int
+		timer: int
+	}
+)
+
+fn createGraph(n: int): Graph {
+	g := Graph{
+		n: n,
+		adj: make([][]int, n)
+	}
+	for i := 0; i < n; i++ {
+		g.adj[i] = make([]int, 0)
+	}
+	return g
+}
+
+fn (g: ^Graph) addEdge(u, v: int) {
+	g.adj[u] = append(g.adj[u], v)
+}
+
+fn min(a, b: int): int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+fn (s: ^SCC) dfs(g: ^Graph, u: int) {
+	s.ids[u] = s.timer
+	s.low[u] = s.timer
+	s.timer++
+	s.stack = append(s.stack, u)
+	s.onStack[u] = true
+
+	// TODO: visit every neighbour v of u (`g.adj[u]`):
+	//       - v not discovered yet (`s.ids[v] == -1`): recurse with
+	//         s.dfs(g, v), then low[u] = min(low[u], low[v]);
+	//       - v already on the stack (`s.onStack[v]`): it is in the same
+	//         component, so low[u] = min(low[u], ids[v]) (note: ids, not low);
+	//       - otherwise v belongs to a finished component: ignore it.
+
+	// TODO: after the neighbours, if `s.low[u] == s.ids[u]` then u is the root
+	//       of a component. Pop `s.stack` until you pop u itself (clear
+	//       `onStack` for each, collect them into a new []int) and append that
+	//       list to `s.components`.
+}
+
+fn findSCC(g: ^Graph): [][]int {
+	s := SCC{
+		components: make([][]int, 0),
+		ids: make([]int, g.n),
+		low: make([]int, g.n),
+		onStack: make([]bool, g.n),
+		stack: make([]int, 0),
+		timer: 0
+	}
+
+	for i := 0; i < g.n; i++ {
+		s.ids[i] = -1
+		s.low[i] = 0
+		s.onStack[i] = false
+	}
+
+	for i := 0; i < g.n; i++ {
+		if s.ids[i] == -1 {
+			s.dfs(g, i)
+		}
+	}
+
+	return s.components
+}
+
+fn main() {
+	std::println("=== Tarjan's Strongly Connected Components (SCC) ===")
+	std::println("Graph: 8 vertices, 10 directed edges")
+	std::println("Edges:")
+	std::println("  0 -> 1, 1 -> 2, 2 -> 0")
+	std::println("  2 -> 3, 3 -> 4, 4 -> 3")
+	std::println("  4 -> 5, 5 -> 6, 6 -> 7, 7 -> 5\n")
+
+	g := createGraph(8)
+	// Cycle 0-1-2
+	g.addEdge(0, 1)
+	g.addEdge(1, 2)
+	g.addEdge(2, 0)
+
+	// Cross edge 2 -> 3
+	g.addEdge(2, 3)
+
+	// Cycle 3-4
+	g.addEdge(3, 4)
+	g.addEdge(4, 3)
+
+	// Cross edge 4 -> 5
+	g.addEdge(4, 5)
+
+	// Cycle 5-6-7
+	g.addEdge(5, 6)
+	g.addEdge(6, 7)
+	g.addEdge(7, 5)
+
+	std::println("Executing Tarjan's Single-Pass DFS...\n")
+
+	comps := findSCC(&g)
+
+	printf("Identified %d Strongly Connected Components:\n", len(comps))
+	for i := 0; i < len(comps); i++ {
+		comp := comps[i]
+		printf("  SCC #%d: [ ", i + 1)
+		for j := 0; j < len(comp); j++ {
+			printf("%d ", comp[j])
+		}
+		printf("] (Size: %d)\n", len(comp))
+	}
+	std::println("")
+
+	printf("All vertices accounted for across %d disjoint SCC components.\n", len(comps))
+	std::println("Tarjan's SCC analysis completed successfully.")
+}

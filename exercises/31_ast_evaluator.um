@@ -1,0 +1,125 @@
+// =============================================================================
+// Exercise 31: Arithmetic Expression Parser & AST Evaluator
+// Concepts: Recursive-descent operator-precedence parsing, AST heap trees
+//           (`^Node`), recursive tree walking, infix pretty-printing, and evaluation.
+// Task:     Parse + - * / with correct precedence into an AST and evaluate it
+// Run:      umka 31_ast_evaluator.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    NodeType = enum {
+        Number
+        BinaryOp
+    }
+
+    Node = struct {
+        kind: NodeType
+        val: real
+        op: char
+        left: ^Node
+        right: ^Node
+    }
+
+    Parser = struct {
+        src: str
+        pos: int
+    }
+)
+
+// Returns current non-whitespace character without consuming it
+fn (p: ^Parser) peek(): char {
+    for p.pos < len(p.src) && p.src[p.pos] == ' ' {
+        p.pos++
+    }
+    if p.pos >= len(p.src) { return '\0' }
+    return p.src[p.pos]
+}
+
+// Consumes and returns current character
+fn (p: ^Parser) next(): char {
+    ch := p.peek()
+    if p.pos < len(p.src) { p.pos++ }
+    return ch
+}
+
+fn parseExpr(p: ^Parser): ^Node
+
+// Parses primary expressions: numbers or parenthesized subexpressions `(...)`
+fn parsePrimary(p: ^Parser): ^Node {
+    ch := p.peek()
+    if ch == '(' {
+        p.next() // consume '('
+        node := parseExpr(p)
+        if p.peek() == ')' {
+            p.next() // consume ')'
+        }
+        return node
+    }
+    if ch >= '0' && ch <= '9' {
+        p.next()
+        val := real(int(ch) - int('0'))
+        return new(Node, Node{kind: NodeType.Number, val: val, op: '\0', left: null, right: null})
+    }
+    return null
+}
+
+// Parses multiplicative terms: `*` and `/` (higher precedence)
+fn parseTerm(p: ^Parser): ^Node {
+    left := parsePrimary(p)
+    // TODO: loop while the next character (`p.peek()`) is '*' or '/': consume it
+    //       with `p.next()`, parse the right side with `parsePrimary(p)`, and
+    //       replace `left` with a new node:
+    //       `new(Node, Node{kind: NodeType.BinaryOp, val: 0.0, op: op, left: left, right: right})`.
+    return left
+}
+
+// Parses additive expressions: `+` and `-` (lower precedence)
+fn parseExpr(p: ^Parser): ^Node {
+    left := parseTerm(p)
+    // TODO: loop while the next character (`p.peek()`) is '+' or '-': consume it
+    //       with `p.next()`, parse the right side with `parseTerm(p)`, and make
+    //       the result a new BinaryOp node (as parseTerm does for * and /)
+    //       whose left is the tree so far. Left-associativity comes from
+    //       re-using `left` as the loop variable.
+    return left
+}
+
+// Evaluates the AST recursively
+fn eval(n: ^Node): real {
+    if n == null { return 0.0 }
+    if n.kind == NodeType.Number { return n.val }
+    // TODO: evaluate both subtrees (`eval(n.left)`, `eval(n.right)`), then combine
+    //       the results with `switch n.op` for '+', '-', '*', '/'. Dividing by
+    //       zero should give 0.0.
+    return 0.0
+}
+
+// Pretty-prints the AST in explicit parenthesized infix form
+fn (n: ^Node) printInfix() {
+    if n == null { return }
+    if n.kind == NodeType.Number {
+        printf("%.0f", n.val)
+    } else {
+        printf("(")
+        n.left.printInfix()
+        printf(" %c ", n.op)
+        n.right.printInfix()
+        printf(")")
+    }
+}
+
+fn main() {
+    exprStr := "3 + 5 * ( 2 + 4 )"
+    p := Parser{src: exprStr, pos: 0}
+    ast := parseExpr(&p)
+
+    printf("Source Expression: %s\n", exprStr)
+    printf("AST Infix Tree:    ")
+    ast.printInfix()
+    printf("\n")
+    printf("Evaluated Result:  %.2f\n", eval(ast))
+}

@@ -1,0 +1,154 @@
+// =============================================================================
+// 40_bloom_filter.um - Bloom Filter & BitSet in Umka
+// Task:     Make the filter hash, set and test bits so every added word is found and the others are not.
+// Run:      umka 40_bloom_filter.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	BitSet = struct {
+		words: []uint
+		size: int
+	}
+
+	BloomFilter = struct {
+		bits: BitSet
+		k: int
+	}
+)
+
+fn createBitSet(size: int): BitSet {
+	numWords := (size + 31) / 32
+	bs := BitSet{
+		words: make([]uint, numWords),
+		size: size
+	}
+	return bs
+}
+
+fn (bs: ^BitSet) set(bit: int) {
+	// TODO: ignore `bit` outside 0..size-1. Otherwise bit `bit % 32` of word
+	//       `bit / 32` must become 1: OR the word with `uint(1) << b`
+	//       (`b` is a `uint`).
+}
+
+fn (bs: ^BitSet) test(bit: int): bool {
+	// TODO: return whether that same bit is 1: AND the word with the mask
+	//       `uint(1) << b` and compare with 0. Out of range is false.
+	return false
+}
+
+fn (bs: ^BitSet) countSetBits(): int {
+	count := 0
+	for i := 0; i < len(bs.words); i++ {
+		w := bs.words[i]
+		for w > 0 {
+			if (w & uint(1)) != 0 {
+				count++
+			}
+			w = w >> uint(1)
+		}
+	}
+	return count
+}
+
+// Polynomial rolling hash with modular arithmetic to prevent overflow
+fn hashString(s: str, seed: int, modulus: int): int {
+	// TODO: start with `h := seed`; for every character of `s` do
+	//       `h = (h * 31 + int(s[i])) % modulus`; return `h`.
+	return 0
+}
+
+fn createBloomFilter(numBits: int, numHashes: int): BloomFilter {
+	bf := BloomFilter{
+		bits: createBitSet(numBits),
+		k: numHashes
+	}
+	return bf
+}
+
+var seeds: [3]int
+
+fn (bf: ^BloomFilter) add(item: str) {
+	// TODO: for each of the `bf.k` hash functions i, hash `item` with
+	//       `hashString(item, seeds[i], 1000003)`, reduce it with `% bf.bits.size`
+	//       to a bit position, and set that bit.
+}
+
+fn (bf: ^BloomFilter) contains(item: str): bool {
+	// TODO: compute the same `k` bit positions as `add`. If any of them is
+	//       not set the item is definitely absent (false); if all are set it
+	//       is probably present (true).
+	return false
+}
+
+fn (bf: ^BloomFilter) printBits() {
+	printf("[")
+	for i := 0; i < bf.bits.size; i++ {
+		if i > 0 && (i % 8) == 0 {
+			printf(" ")
+		}
+		if bf.bits.test(i) {
+			printf("1")
+		} else {
+			printf("0")
+		}
+	}
+	printf("]\n")
+}
+
+fn testQuery(bf: ^BloomFilter, word: str, expected: bool) {
+	actual := bf.contains(word)
+	actStr := "false"
+	if actual {
+		actStr = "true"
+	}
+	expStr := "false"
+	if expected {
+		expStr = "true"
+	}
+	printf("  contains(\"%-12s) -> %-5s (expected: %s)\n", word + "\"", actStr, expStr)
+}
+
+fn main() {
+	seeds = [3]int{17, 37, 79}
+
+	std::println("=== Bloom Filter & BitSet ===")
+	std::println("Filter capacity: 64 bits, 3 hash functions")
+	std::println("Adding elements:")
+	std::println("  + \"umka\"")
+	std::println("  + \"lua\"")
+	std::println("  + \"compiler\"")
+	std::println("  + \"interpreter\"")
+
+	bf := createBloomFilter(64, 3)
+	bf.add("umka")
+	bf.add("lua")
+	bf.add("compiler")
+	bf.add("interpreter")
+
+	std::println("")
+	std::println("BitSet Visualization:")
+	bf.printBits()
+
+	setBits := bf.bits.countSetBits()
+	pct := (real(setBits) / real(bf.bits.size)) * 100.0
+	printf("Bits set: %d / %d (%.1f%% fill rate)\n\n", setBits, bf.bits.size, pct)
+
+	std::println("Querying Membership:")
+	testQuery(&bf, "umka", true)
+	testQuery(&bf, "lua", true)
+	testQuery(&bf, "compiler", true)
+	testQuery(&bf, "interpreter", true)
+	testQuery(&bf, "python", false)
+	testQuery(&bf, "rust", false)
+	testQuery(&bf, "javascript", false)
+
+	std::println("")
+	std::println("Bloom filter verification passed with zero false negatives.")
+}

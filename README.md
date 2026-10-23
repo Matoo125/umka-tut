@@ -2,6 +2,23 @@
 
 This repository contains 49 small [Umka](https://github.com/vtereshkov/umka-lang) exercises covering core language constructs, structs, dynamic arrays, maps, interfaces, type switches, coroutine fibers, standard library file I/O, linear algebra (`mat.um`), functional programming (`fnc.um`), Unicode decoding (`utf8.um`), heap/weak pointers, recursive-descent lexers/parsers, binary packet serialization/checksums, publish/subscribe event dispatchers, finite state machines (FSM), binary min-heaps, CSV tabular parsers, AST evaluators, prefix tries, LRU caches, lossless RLE compressors, circular ring buffers, Markdown-to-HTML compilers, Dijkstra graph pathfinding, stack-based bytecode virtual machines, 2D discrete image kernel convolutions, Bloom filters, Huffman compression trees, A* grid pathfinding, mark-and-sweep garbage collection, Pratt operator-precedence parsers, Kruskal's minimum spanning tree with disjoint sets, LR(0)/SLR(1) shift-reduce parsing, two-pass bytecode assemblers/disassemblers, Tarjan's strongly connected components algorithm, and 3-address register-based virtual machines.
 
+## How the course works
+
+The exercises are in `exercises/`: each is a small program with the work taken out. A `// TODO:` says what is missing and a `// Task:` line in the header says what the program must do. Fill them in, in order, until the output is right. The line
+
+```um
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+```
+
+keeps an exercise from being checked until you remove it. If you are stuck, `./umkalings hint <exercise>` gives a hint and `./umkalings explain <exercise>` a longer explanation. The finished programs are in `solutions/`: look only when you have tried.
+
+```
+exercises/   what you edit (one starter per exercise)
+solutions/   the complete programs, checked by test_exercises.sh
+exercises.json   each exercise: its starter ("path"), "solution", the input and expected output, a hint
+check_starters.py   keeps the starters honest (see below)
+```
+
 ## Requirements
 
 - `umka` installed and available on `PATH`
@@ -36,18 +53,26 @@ Inspired by `rustlings`, this repository includes an interactive runner with aut
 Run any exercise directly with:
 
 ```bash
-umka 01_hello_world.um
+umka exercises/01_hello_world.um     # or solutions/01_hello_world.um
 ```
 
 For exercises that expect input, pipe values into the program:
 
 ```bash
-printf '5\n' | umka 07_factorial.um
-printf '4\n' | umka 05_multiplication_table.um
-printf '10\n60\n42\n' | umka 12_guessing_game.um 42
+printf '5\n' | umka solutions/07_factorial.um
+printf '4\n' | umka solutions/05_multiplication_table.um
+printf '10\n60\n42\n' | umka solutions/12_guessing_game.um 42
 ```
 
 ## Run the Test Scripts
+
+`test_exercises.sh` checks the **solutions** in `solutions/`. `check_starters.py` checks the **starters**: that each one compiles once its `I AM NOT DONE` line is removed, fails the exercise's check (so it is not already solved), differs from its solution only at TODOs or in comments, and that the solution passes. Run it after editing a starter:
+
+```bash
+./check_starters.py            # every starter
+./check_starters.py 14 32      # just these
+./check_starters.py --strict   # also fail for a starter that does not exist yet
+```
 
 You can also run the automated bash test scripts:
 

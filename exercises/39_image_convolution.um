@@ -1,0 +1,162 @@
+// =============================================================================
+// 39_image_convolution.um - 2D Image Kernel Filter & Convolution in Umka
+// Task:     Make `convolve` apply the 3x3 kernel to every pixel, clamped to 0..255.
+// Run:      umka 39_image_convolution.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	Image = struct {
+		w: int
+		h: int
+		data: []int
+	}
+
+	Kernel3x3 = struct {
+		weights: [9]int
+		divisor: int
+		bias: int
+	}
+)
+
+fn createImage(w, h: int, initial: []int): Image {
+	img := Image{w: w, h: h, data: make([]int, w * h)}
+	for i := 0; i < len(initial) && i < w * h; i++ {
+		img.data[i] = initial[i]
+	}
+	return img
+}
+
+fn (img: ^Image) get(x, y: int): int {
+	// Clamp to border
+	cx := x
+	if cx < 0 {
+		cx = 0
+	} else if cx >= img.w {
+		cx = img.w - 1
+	}
+
+	cy := y
+	if cy < 0 {
+		cy = 0
+	} else if cy >= img.h {
+		cy = img.h - 1
+	}
+
+	return img.data[cy * img.w + cx]
+}
+
+fn (img: ^Image) set(x, y, val: int) {
+	if x >= 0 && x < img.w && y >= 0 && y < img.h {
+		img.data[y * img.w + x] = val
+	}
+}
+
+fn clamp(val, minVal, maxVal: int): int {
+	if val < minVal {
+		return minVal
+	}
+	if val > maxVal {
+		return maxVal
+	}
+	return val
+}
+
+fn (img: ^Image) convolve(k: Kernel3x3): Image {
+	res := Image{w: img.w, h: img.h, data: make([]int, img.w * img.h)}
+
+	for y := 0; y < img.h; y++ {
+		for x := 0; x < img.w; x++ {
+			// TODO: compute `val` for the pixel (x, y). Add up
+			//       `img.get(x + kx, y + ky) * k.weights[idx]` over the 3x3
+			//       neighbourhood (`ky`, `kx` from -1 to 1; `idx` counts 0..8 in
+			//       that same order; `get` already clamps at the border). Divide the
+			//       sum by `k.divisor` unless it is 0 or 1, then add `k.bias`.
+			val := 0
+			res.set(x, y, clamp(val, 0, 255))
+		}
+	}
+
+	return res
+}
+
+fn (img: ^Image) printMatrix(title: str) {
+	printf("%s (%dx%d):\n", title, img.w, img.h)
+	for y := 0; y < img.h; y++ {
+		line := ""
+		for x := 0; x < img.w; x++ {
+			printf("%4d", img.get(x, y))
+		}
+		std::println("")
+	}
+}
+
+fn (img: ^Image) printAscii(title: str) {
+	// Shade ramp: 6 density levels
+	ramp := " .:-*#"
+	printf("%s (ASCII):\n", title)
+	for y := 0; y < img.h; y++ {
+		for x := 0; x < img.w; x++ {
+			val := img.get(x, y)
+			// Map [0, 255] to [0, 5]
+			shadeIdx := (val * 5) / 255
+			printf("%c ", ramp[shadeIdx])
+		}
+		std::println("")
+	}
+}
+
+fn main() {
+	std::println("=== 2D Image Convolution & Kernel Filter ===")
+
+	// 5x5 image with a central 3x3 bright square
+	srcData := []int{
+		  0,   0,   0,   0,   0,
+		  0, 200, 200, 200,   0,
+		  0, 200, 200, 200,   0,
+		  0, 200, 200, 200,   0,
+		  0,   0,   0,   0,   0
+	}
+
+	img := createImage(5, 5, srcData)
+	img.printMatrix("Source Image")
+	img.printAscii("Source Image")
+	std::println("")
+
+	// Kernel 1: Laplacian Edge Detection
+	// [ -1, -1, -1,
+	//   -1,  8, -1,
+	//   -1, -1, -1 ]
+	laplacian := Kernel3x3{
+		weights: [9]int{-1, -1, -1, -1, 8, -1, -1, -1, -1},
+		divisor: 1,
+		bias: 0
+	}
+
+	edges := img.convolve(laplacian)
+	edges.printMatrix("Laplacian Edge Detection")
+	edges.printAscii("Laplacian Edge Detection")
+	std::println("")
+
+	// Kernel 2: Box Blur 3x3 (uniform 1/9)
+	// [ 1, 1, 1,
+	//   1, 1, 1,
+	//   1, 1, 1 ] / 9
+	blur := Kernel3x3{
+		weights: [9]int{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		divisor: 9,
+		bias: 0
+	}
+
+	blurred := img.convolve(blur)
+	blurred.printMatrix("Box Blur (3x3)")
+	blurred.printAscii("Box Blur (3x3)")
+	std::println("")
+
+	std::println("Convolution pipeline completed successfully.")
+}

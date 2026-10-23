@@ -1,0 +1,193 @@
+// =============================================================================
+// 42_astar_pathfinding.um - A* Grid Pathfinding with Heuristics in Umka
+// Task:     Make the A* search loop find the shortest path from S to E.
+// Run:      umka 42_astar_pathfinding.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	Point = struct {
+		x: int
+		y: int
+	}
+
+	Node = struct {
+		pt: Point
+		g: int
+		h: int
+		f: int
+	}
+)
+
+fn manhattan(a, b: Point): int {
+	return abs(a.x - b.x) + abs(a.y - b.y)
+}
+
+fn pointEquals(a, b: Point): bool {
+	return a.x == b.x && a.y == b.y
+}
+
+fn pointKey(p: Point): int {
+	// Map 2D coordinate to unique integer key (assuming coordinates < 1000)
+	return p.y * 1000 + p.x
+}
+
+fn main() {
+	std::println("=== A* Grid Pathfinding ===")
+
+	// 8x8 grid
+	w := 8
+	h := 8
+	grid := [8]str{
+		"########",
+		"#S.....#",
+		"#.###..#",
+		"#...#..#",
+		"#...#..#",
+		"#..##..#",
+		"#.....E#",
+		"########"
+	}
+
+	start := Point{x: 1, y: 1}
+	goal  := Point{x: 6, y: 6}
+
+	std::println("Source Grid:")
+	for y := 0; y < h; y++ {
+		std::println(grid[y])
+	}
+	std::println("")
+
+	// Open set (frontier nodes)
+	openSet := make([]Node, 0)
+	openSet = append(openSet, Node{
+		pt: start,
+		g: 0,
+		h: manhattan(start, goal),
+		f: manhattan(start, goal)
+	})
+
+	// Maps for cameFrom, gScore, closedSet
+	cameFrom := make(map[int]Point)
+	gScore := make(map[int]int)
+	closedSet := make(map[int]bool)
+
+	gScore[pointKey(start)] = 0
+
+	found := false
+
+	// Direction deltas: Up, Down, Left, Right
+	dx := [4]int{ 0,  0, -1, 1}
+	dy := [4]int{-1,  1,  0, 0}
+
+	for len(openSet) > 0 {
+		// Find node in openSet with lowest f score (tie-break on lowest h)
+		// TODO: set `bestIdx` to the index of the node in `openSet` with the
+		//       smallest `f`; on equal `f` prefer the smaller `h`.
+		bestIdx := 0
+
+		current := openSet[bestIdx]
+
+		if pointEquals(current.pt, goal) {
+			found = true
+			break
+		}
+
+		// Remove current from openSet
+		openSet = delete(openSet, bestIdx)
+		closedSet[pointKey(current.pt)] = true
+
+		// Explore 4 neighbors
+		for d := 0; d < 4; d++ {
+			nx := current.pt.x + dx[d]
+			ny := current.pt.y + dy[d]
+
+			// Boundary checks
+			if nx < 0 || nx >= w || ny < 0 || ny >= h {
+				continue
+			}
+
+			// Obstacle check
+			if grid[ny][nx] == '#' {
+				continue
+			}
+
+			neighbor := Point{x: nx, y: ny}
+			nKey := pointKey(neighbor)
+
+			if validkey(closedSet, nKey) && closedSet[nKey] {
+				continue
+			}
+
+			// TODO: `tentativeG` is `current.g + 1`. It is an improvement if the
+			// neighbour has no entry in `gScore` yet (`validkey`) or
+			// `tentativeG` is lower than the stored value. Then:
+			//   - set `cameFrom[nKey] = current.pt` and `gScore[nKey] = tentativeG`
+			//   - `h` is `manhattan(neighbor, goal)`, `f` is `tentativeG + h`
+			//   - if the neighbour is already in `openSet` (compare with
+			//     `pointEquals`), update its g, h and f there; otherwise append a
+			//     new `Node{pt: neighbor, g: ..., h: ..., f: ...}`.
+		}
+	}
+
+	if !found {
+		std::println("No path found to goal.")
+		return
+	}
+
+	// Reconstruct path
+	path := make([]Point, 0)
+	curr := goal
+	for !pointEquals(curr, start) {
+		path = append(path, curr)
+		curr = cameFrom[pointKey(curr)]
+	}
+	path = append(path, start)
+
+	// Reverse path so it goes from start to goal
+	for i := 0; i < len(path) / 2; i++ {
+		j := len(path) - 1 - i
+		tmp := path[i]
+		path[i] = path[j]
+		path[j] = tmp
+	}
+
+	printf("A* Search: Path found! Length: %d steps\n\n", len(path) - 1)
+
+	// Render Solved Grid
+	// Mark path steps with '*' (except start and goal)
+	isPath := make(map[int]bool)
+	for i := 1; i < len(path) - 1; i++ {
+		isPath[pointKey(path[i])] = true
+	}
+
+	std::println("Solved Grid:")
+	for y := 0; y < h; y++ {
+		line := ""
+		for x := 0; x < w; x++ {
+			p := Point{x: x, y: y}
+			if validkey(isPath, pointKey(p)) && isPath[pointKey(p)] {
+				line += "*"
+			} else {
+				line += str(grid[y][x])
+			}
+		}
+		std::println(line)
+	}
+
+	std::println("")
+	printf("Path Coordinates:\n  ")
+	for i := 0; i < len(path); i++ {
+		if i > 0 {
+			printf(" -> ")
+		}
+		printf("(%d,%d)", path[i].x, path[i].y)
+	}
+	std::println("\n")
+	std::println("Pathfinding completed successfully.")
+}

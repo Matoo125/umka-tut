@@ -1,0 +1,44 @@
+// =============================================================================
+// Exercise 22: Functional Programming with Closures and fnc.um
+// Concepts: Standard library `fnc.um`, closures, variable capture (`|threshold|`), `transform`, `filter`, `reduce`
+// Task:     Fill in the filter, square and sum closures so the pipeline gives 330
+// Run:      umka 22_functional_programming.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "fnc.um"
+
+fn main() {
+    numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    threshold := 5
+
+    // Closures with explicit variable capture
+    isGreaterThanThreshold := fn (x: any): bool |threshold| {
+        // TODO: keep only values greater than the captured threshold
+        //       (x arrives as `any`, convert it with int(x))
+        return true
+    }
+
+    square := fn (x: any): any {
+        // TODO: convert x with int(x) and return its square
+        return x
+    }
+
+    sum := fn (acc, x: any): any {
+        // TODO: add the accumulator and the new element (both `any`, use int())
+        return acc
+    }
+
+    // Pipeline: Filter (> 5) -> Transform (square) -> Reduce (sum)
+    arr := fnc::Array(numbers)
+    filtered := arr.filter(isGreaterThanThreshold)
+    squared := filtered.transform(square)
+    totalSum := int(squared.reduce(sum))
+
+    printf("Input: %v\n", numbers)
+    printf("Threshold: > %d\n", threshold)
+    printf("Filtered: %v\n", filtered)
+    printf("Squared: %v\n", squared)
+    printf("Total Sum of Squares: %lld\n", totalSum)
+}

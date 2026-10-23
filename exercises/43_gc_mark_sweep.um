@@ -1,0 +1,138 @@
+// =============================================================================
+// 43_gc_mark_sweep.um - Mark-and-Sweep Garbage Collector Simulation in Umka
+// Task:     Make `markObject` and `sweepPhase` reclaim exactly the objects unreachable from the roots.
+// Run:      umka 43_gc_mark_sweep.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	GCObject = struct {
+		id: int
+		marked: bool
+		refs: []int
+	}
+
+	Heap = struct {
+		objects: []GCObject
+		roots: []int
+	}
+)
+
+fn (h: ^Heap) findIndex(id: int): int {
+	for i := 0; i < len(h.objects); i++ {
+		if h.objects[i].id == id {
+			return i
+		}
+	}
+	return -1
+}
+
+fn (h: ^Heap) allocate(id: int, refs: []int) {
+	obj := GCObject{
+		id: id,
+		marked: false,
+		refs: refs
+	}
+	h.objects = append(h.objects, obj)
+}
+
+fn (h: ^Heap) addRoot(id: int) {
+	h.roots = append(h.roots, id)
+}
+
+fn (h: ^Heap) markObject(id: int) {
+	// TODO: find the object with `h.findIndex(id)`; return if there is none
+	//       (-1) or it is already marked (this is what stops the 5 <-> 6
+	//       cycle from looping forever). Otherwise set `marked = true` and
+	//       call `h.markObject` for every id in its `refs`.
+}
+
+fn (h: ^Heap) markPhase() {
+	std::println("[Mark Phase]")
+	// Reset marks
+	for i := 0; i < len(h.objects); i++ {
+		h.objects[i].marked = false
+	}
+
+	// Trace from all active roots
+	for i := 0; i < len(h.roots); i++ {
+		rootId := h.roots[i]
+		h.markObject(rootId)
+	}
+
+	std::println("  Marked live root 1 and transitively: 2, 3")
+	std::println("  Marked live root 4")
+}
+
+fn (h: ^Heap) sweepPhase(): int {
+	std::println("[Sweep Phase]")
+	reclaimed := 0
+	alive := make([]GCObject, 0)
+
+	// TODO: go through `h.objects`. An unmarked object is garbage: print
+	//       "  Reclaiming dead object <id> (Cycle garbage)" and count it in
+	//       `reclaimed`. A marked one survives: clear its `marked` flag (for
+	//       the next cycle) and append it to `alive`.
+
+	h.objects = alive
+	return reclaimed
+}
+
+fn (h: ^Heap) gc(): int {
+	h.markPhase()
+	return h.sweepPhase()
+}
+
+fn main() {
+	std::println("=== Mark-and-Sweep Garbage Collector Simulation ===")
+	std::println("Allocating 6 heap objects:")
+	std::println("  + Object 1 (Root A) -> refs [2]")
+	std::println("  + Object 2          -> refs [3]")
+	std::println("  + Object 3          -> refs []")
+	std::println("  + Object 4 (Root B) -> refs []")
+	std::println("  + Object 5 (Cycle)  -> refs [6]")
+	std::println("  + Object 6 (Cycle)  -> refs [5]")
+	std::println("")
+
+	heap := Heap{
+		objects: make([]GCObject, 0),
+		roots: make([]int, 0)
+	}
+
+	// Allocate objects
+	heap.allocate(1, []int{2})
+	heap.allocate(2, []int{3})
+	heap.allocate(3, make([]int, 0))
+	heap.allocate(4, make([]int, 0))
+	heap.allocate(5, []int{6})
+	heap.allocate(6, []int{5}) // Cycle: 5 <-> 6
+
+	// Configure root set
+	heap.addRoot(1)
+	heap.addRoot(4)
+
+	printf("Active Root Set: [ ")
+	for i := 0; i < len(heap.roots); i++ {
+		printf("%d ", heap.roots[i])
+	}
+	printf("]\n")
+	printf("Heap state before GC: %d objects allocated\n\n", len(heap.objects))
+
+	std::println("--- Triggering Garbage Collection ---")
+	reclaimed := heap.gc()
+	std::println("")
+
+	printf("Heap state after GC: %d objects active, %d reclaimed\n", len(heap.objects), reclaimed)
+	printf("Live objects: [ ")
+	for i := 0; i < len(heap.objects); i++ {
+		printf("%d ", heap.objects[i].id)
+	}
+	printf("]\n")
+
+	std::println("Garbage collection cycle completed successfully.")
+}

@@ -1,0 +1,162 @@
+// =============================================================================
+// 41_huffman_coding.um - Huffman Coding & Data Compression in Umka
+// Task:     Build the Huffman tree, derive the prefix codes and decode the bitstream back to the text.
+// Run:      umka 41_huffman_coding.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import (
+	"std.um"
+)
+
+type (
+	HuffNode = struct {
+		ch: char
+		freq: int
+		isLeaf: bool
+		left: ^HuffNode
+		right: ^HuffNode
+	}
+
+	CodeEntry = struct {
+		ch: char
+		code: str
+	}
+)
+
+fn createLeaf(ch: char, freq: int): ^HuffNode {
+	n := new(HuffNode)
+	n.ch = ch
+	n.freq = freq
+	n.isLeaf = true
+	n.left = null
+	n.right = null
+	return n
+}
+
+fn createInternal(left, right: ^HuffNode): ^HuffNode {
+	n := new(HuffNode)
+	n.ch = '\0'
+	n.freq = left.freq + right.freq
+	n.isLeaf = false
+	n.left = left
+	n.right = right
+	return n
+}
+
+// Global code table
+var codeTable: []CodeEntry
+
+fn buildCodes(node: ^HuffNode, prefix: str) {
+	// TODO: walk the tree recursively. Return on `null`. At a leaf, append
+	//       `CodeEntry{ch: node.ch, code: prefix}` to `codeTable` (use "0" if
+	//       `prefix` is empty: a tree with a single character). Otherwise
+	//       recurse into `node.left` with `prefix + "0"` and into `node.right`
+	//       with `prefix + "1"`.
+}
+
+fn getCode(ch: char): str {
+	for i := 0; i < len(codeTable); i++ {
+		if codeTable[i].ch == ch {
+			return codeTable[i].code
+		}
+	}
+	return ""
+}
+
+fn main() {
+	std::println("=== Huffman Coding & Compression ===")
+
+	text := "abracadabra"
+	printf("Input text: \"%s\"\n", text)
+	origBits := len(text) * 8
+	printf("Original size: %d characters (%d bits at 8 bits/char)\n\n", len(text), origBits)
+
+	// Step 1: Count character frequencies in order of first appearance
+	uniqueChars := make([]char, 0)
+	freqs := make([]int, 0)
+
+	for i := 0; i < len(text); i++ {
+		ch := text[i]
+		found := false
+		for j := 0; j < len(uniqueChars); j++ {
+			if uniqueChars[j] == ch {
+				freqs[j]++
+				found = true
+				break
+			}
+		}
+		if !found {
+			uniqueChars = append(uniqueChars, ch)
+			freqs = append(freqs, 1)
+		}
+	}
+
+	std::println("Character Frequencies:")
+	for i := 0; i < len(uniqueChars); i++ {
+		printf("  '%c': %d\n", uniqueChars[i], freqs[i])
+	}
+	std::println("")
+
+	// Step 2: Initialize forest with leaf nodes
+	forest := make([]^HuffNode, len(uniqueChars))
+	for i := 0; i < len(uniqueChars); i++ {
+		forest[i] = createLeaf(uniqueChars[i], freqs[i])
+	}
+
+	// Step 3: Repeatedly merge two nodes with smallest frequencies
+	// For deterministic tie-breaking, preserve stable scanning
+	for len(forest) > 1 {
+		// TODO: take the two trees with the smallest `freq` out of `forest`:
+		//       scan for the index of the smallest (the first one wins ties),
+		//       remember that node, remove it with `delete(forest, idx)`, then
+		//       do the same again for the second smallest. Append
+		//       `createInternal(node1, node2)` (first one found on the left) to
+		//       `forest`. Every pass shrinks `forest` by one, so the loop ends.
+		//       (Delete the placeholder `break` below once you have done this.)
+		break
+	}
+
+	root := forest[0]
+
+	// Step 4: Build prefix codes
+	codeTable = make([]CodeEntry, 0)
+	buildCodes(root, "")
+
+	// Sort codeTable by character order in uniqueChars for consistent output
+	std::println("Huffman Prefix Codes:")
+	for i := 0; i < len(uniqueChars); i++ {
+		ch := uniqueChars[i]
+		printf("  '%c' -> %s\n", ch, getCode(ch))
+	}
+	std::println("")
+
+	// Step 5: Encode text
+	encoded := ""
+	for i := 0; i < len(text); i++ {
+		encoded += getCode(text[i])
+	}
+
+	std::println("Encoded Bitstream:")
+	std::println(encoded)
+	encBits := len(encoded)
+	ratio := (1.0 - (real(encBits) / real(origBits))) * 100.0
+	printf("Encoded length: %d bits (%.1f%% space saved)\n\n", encBits, ratio)
+
+	// Step 6: Decode bitstream
+	decoded := ""
+	curr := root
+	// TODO: walk `encoded` bit by bit starting at `root`: '0' goes to
+	//       `curr.left`, anything else to `curr.right`. On reaching a leaf,
+	//       append `str(curr.ch)` to `decoded` and go back to `root`.
+
+	std::println("Decoded String:")
+	printf("\"%s\"\n\n", decoded)
+
+	if decoded == text {
+		std::println("Verification: PASS (Decoded matches original exactly)")
+	} else {
+		std::println("Verification: FAIL (Mismatch)")
+	}
+}

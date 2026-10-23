@@ -1,0 +1,47 @@
+// =============================================================================
+// Exercise 04: Interactive Timer
+// Concepts: Standard library `std.um`, `std::clock()`, state toggle, and input loop
+// Task:     Make the timer report elapsed time (negated in reverse mode) and let R toggle reverse mode
+// Run:      umka 04_timer.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+fn main() {
+    startTime := std::clock()
+    reversed := false // false = forward, true = backward
+    var elapsed: real // seconds
+    var input: str
+
+    printf("Timer started!\n")
+    printf("Press: L = lapse, R = reverse, S = stop\n\n")
+
+    input = ""
+    for input != "S" {
+        printf("Command: ")
+        scanf("%s", &input)
+
+        // TODO: set `elapsed` to the seconds since `startTime`
+        //       (std::clock() returns the current time in seconds)
+
+        // TODO: if `reversed` is on, report the time as negative
+
+        if input == "L" {
+            printf("Elapsed time: %.3f seconds\n", elapsed)
+        } else if input == "R" {
+            // TODO: flip `reversed` (true becomes false and vice versa)
+            if reversed {
+                printf("Reverse mode: ON\n")
+            } else {
+                printf("Reverse mode: OFF\n")
+            }
+        } else if input == "S" {
+            printf("Final time: %.3f seconds\n", elapsed)
+            printf("Timer stopped.\n")
+        } else {
+            printf("Unknown command.\n")
+        }
+    }
+}

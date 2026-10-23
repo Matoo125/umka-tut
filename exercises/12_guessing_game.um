@@ -1,0 +1,47 @@
+// =============================================================================
+// Exercise 12: Guessing Game
+// Concepts: Random number generation (`std::rand`), command line args (`std::argc`/`argv`), `for` loop game loop
+// Task:     Keep asking for guesses until the target is hit, hinting low or high and counting the attempts
+// Run:      umka 12_guessing_game.um [optional-target-for-testing]
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+fn runGame(target: int32) {
+    var guess: int32
+    attempts := int32(0)
+
+    printf("Welcome to the Guessing Game!\n")
+    printf("I'm thinking of a number between 1 and 100.\n")
+    printf("Can you guess it?\n\n")
+
+    for guess != target {
+        printf("Enter your guess: ")
+        scanf("%d", &guess)
+        // TODO: count this guess in `attempts` (attempts++)
+
+        // TODO: compare guess with target and print one of
+        //       "Too low! Try again."
+        //       "Too high! Try again."
+        //       "Correct! You guessed the number in %d attempts."   (using attempts)
+        //       Hint: an if / else if / else chain; the loop above ends by itself on a hit.
+    }
+}
+
+fn main() {
+    // If a command-line argument is passed, use it as a deterministic target (useful for tests)
+    var target: int32
+    target = 0
+    if std::argc() > 1 {
+        sscanf(std::argv(1), "%d", &target)
+    }
+
+    if target <= 0 {
+        std::srand(trunc(std::clock() * 1000))
+        target = int32(std::rand() % 100 + 1)
+    }
+
+    runGame(target)
+}

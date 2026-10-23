@@ -1,0 +1,174 @@
+// Task:     Finish the dialogue's state machine so that applyChoice moves between the story nodes
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+/*
+# Dialogue Engine
+
+This folder contains a small terminal-based dialogue engine written in Umka.
+
+Features in this first version:
+
+- branching dialogue nodes
+- numbered player choices
+- simple game state with variables
+- conditional choices
+- multiple endings
+
+Run it with:
+
+```bash
+umka 11_dialogue/main.um
+```
+
+Example playthrough:
+
+```bash
+printf '1\n1\n1\n' | umka 11_dialogue.um
+```
+*/
+
+const (
+    nodeIntro      = int32(1)
+    nodeTraveler   = int32(2)
+    nodeRude       = int32(3)
+    nodeNameLena   = int32(4)
+    nodeRefuseName = int32(5)
+    nodeGate       = int32(6)
+    nodeCell       = int32(7)
+    nodeMarket     = int32(8)
+    nodeEnd        = int32(9)
+)
+
+fn printState(trust: int32, hasPass: bool) {
+    printf("\n[trust=%d, pass=%v]\n\n", trust, hasPass)
+}
+
+fn showNode(node: int32, trust: int32, hasPass: bool) {
+    if node == nodeIntro {
+        printf("Guard: Halt. Why are you here?\n")
+        printf("1. I'm a traveler.\n")
+        printf("2. None of your business.\n")
+    } else if node == nodeTraveler {
+        printf("Guard: Then state your name.\n")
+        printf("1. Lena.\n")
+        printf("2. I'd rather not.\n")
+    } else if node == nodeRude {
+        printf("Guard: That's the wrong tone for this gate.\n")
+        printf("1. Apologize.\n")
+        printf("2. Double down.\n")
+    } else if node == nodeNameLena {
+        printf("Guard: Lena? I know that name. What is your business in the city?\n")
+        printf("1. Trade.\n")
+        if hasPass {
+            printf("2. Show the merchant pass.\n")
+        } else {
+            printf("2. Admit you have no papers.\n")
+        }
+    } else if node == nodeRefuseName {
+        printf("Guard: No name, no entry.\n")
+        printf("1. Leave peacefully.\n")
+        printf("2. Argue.\n")
+    } else if node == nodeGate {
+        printf("Guard: Everything seems in order. You may enter.\n")
+        printf("1. Enter the city.\n")
+    } else if node == nodeCell {
+        printf("Guard: I've heard enough. Take a night in the cell.\n")
+        printf("1. Accept your fate.\n")
+    } else if node == nodeMarket {
+        printf("Narrator: You step into the market as the city wakes around you.\n")
+        printf("1. Finish.\n")
+    } else if node == nodeEnd {
+        if trust >= 2 {
+            printf("Ending: You earned a warm welcome.\n")
+        } else if hasPass {
+            printf("Ending: Papers opened the gate, if not hearts.\n")
+        } else if trust <= -1 {
+            printf("Ending: Your journey stops at the city jail.\n")
+        } else {
+            printf("Ending: You leave the gate behind and try elsewhere.\n")
+        }
+    }
+}
+
+fn maxChoice(node: int32): int32 {
+    if node == nodeGate || node == nodeCell || node == nodeMarket {
+        return 1
+    }
+    return 2
+}
+
+fn applyChoice(node: int32, choice: int32, trust: int32, hasPass: bool): (int32, int32, bool) {
+    if node == nodeIntro {
+        if choice == 1 {
+            return nodeTraveler, trust + 1, hasPass
+        }
+        return nodeRude, trust - 1, hasPass
+    }
+
+    // TODO: node nodeTraveler. Choice 1 ("Lena") leads to nodeNameLena, trust + 1,
+    //       and the guard hands you a pass (hasPass becomes true).
+    //       Choice 2 leads to nodeRefuseName with trust - 1.
+    //       Follow the pattern of the nodeIntro block above.
+
+    if node == nodeRude {
+        if choice == 1 {
+            return nodeTraveler, trust + 1, hasPass
+        }
+        return nodeCell, trust - 1, hasPass
+    }
+
+    // TODO: node nodeNameLena. Choice 1 ("Trade") goes to nodeGate, nothing changes.
+    //       Choice 2: if hasPass, go to nodeGate with trust + 1;
+    //       otherwise go to nodeRefuseName with trust - 1.
+
+    if node == nodeRefuseName {
+        if choice == 1 {
+            return nodeEnd, trust, hasPass
+        }
+        return nodeCell, trust - 1, hasPass
+    }
+
+    // TODO: nodeGate has one choice and leads to nodeMarket, nothing changes.
+    //       nodeCell and nodeMarket each have one choice and lead to nodeEnd.
+
+    return nodeEnd, trust, hasPass
+}
+
+fn readChoice(limit: int32): int32 {
+    var choice: int32
+
+    choice = 0
+    for choice < 1 || choice > limit {
+        printf("Choose: ")
+        scanf("%d", &choice)
+
+        if choice < 1 || choice > limit {
+            printf("Invalid choice. Enter a number from 1 to %d.\n", limit)
+        }
+    }
+
+    return choice
+}
+
+fn main() {
+    node := nodeIntro
+    trust := int32(0)
+    hasPass := false
+    running := true
+
+    printf("City Gate\n")
+    printf("---------\n")
+
+    for running {
+        printState(trust, hasPass)
+        showNode(node, trust, hasPass)
+
+        if node == nodeEnd {
+            running = false
+        } else {
+            choice := readChoice(maxChoice(node))
+            node, trust, hasPass = applyChoice(node, choice, trust, hasPass)
+        }
+    }
+}

@@ -1,0 +1,79 @@
+// =============================================================================
+// Exercise 16: Polymorphic Shapes Interface
+// Concepts: Interface declaration (`type I = interface`), method sets, dynamic dispatch
+// Task:     Make Rectangle and Circle satisfy Shape and print their areas and perimeters
+// Run:      umka 16_interfaces_shapes.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+type (
+    Shape = interface {
+        name(): str
+        area(): real
+        perimeter(): real
+    }
+
+    Rectangle = struct {
+        width, height: real
+    }
+
+    Circle = struct {
+        radius: real
+    }
+)
+
+// --- Rectangle Methods ---
+
+fn (r: ^Rectangle) name(): str {
+    // TODO: return the shape's name
+    return ""
+}
+
+fn (r: ^Rectangle) area(): real {
+    // TODO: area of a rectangle
+    return 0.0
+}
+
+fn (r: ^Rectangle) perimeter(): real {
+    // TODO: perimeter of a rectangle: 2 * (width + height)
+    return 0.0
+}
+
+// --- Circle Methods ---
+
+fn (c: ^Circle) name(): str {
+    return "Circle"
+}
+
+fn (c: ^Circle) area(): real {
+    const pi = 3.14159
+    // TODO: area = pi * r^2
+    return 0.0
+}
+
+fn (c: ^Circle) perimeter(): real {
+    const pi = 3.14159
+    // TODO: circumference = 2 * pi * r
+    return 0.0
+}
+
+// --- Polymorphic Dispatch ---
+
+fn printShapeSummary(s: Shape) {
+    printf("%-10s -> Area: %6.2f, Perimeter: %6.2f\n", s.name(), s.area(), s.perimeter())
+}
+
+fn main() {
+    rect := Rectangle{width: 4.0, height: 5.0}
+    circle := Circle{radius: 3.0}
+
+    shapes := make([]Shape, 0)
+    shapes = append(shapes, &rect)
+    shapes = append(shapes, &circle)
+
+    printf("Shape Measurements:\n")
+    for i, s in shapes {
+        printShapeSummary(s)
+    }
+}

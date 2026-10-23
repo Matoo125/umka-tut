@@ -1,0 +1,65 @@
+// =============================================================================
+// Exercise 24: Linked Lists and Weak Pointers
+// Concepts: Dynamic allocation (`new()`), pointers (`^Node`), cycles, weak backlinks (`weak ^Node`)
+// Task:     Append nodes to the doubly linked list, linking prev with a weak pointer
+// Run:      umka 24_linked_list_weak_ptrs.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+type (
+    Node = struct {
+        value: int
+        next: ^Node
+        prev: weak ^Node
+    }
+
+    DoublyLinkedList = struct {
+        head: ^Node
+        tail: ^Node
+        size: int
+    }
+)
+
+// --- List Operations ---
+
+fn (list: ^DoublyLinkedList) append(val: int) {
+    // TODO: allocate a node with `new(Node, Node{value: val, next: null, prev: null})`.
+    //       If the list is empty (head == null) it becomes both head and tail.
+    //       Otherwise link it after the tail: set its `prev` to the old tail,
+    //       the old tail's `next` to it, and move `tail` to it.
+    list.size++
+}
+
+fn (list: ^DoublyLinkedList) printForward() {
+    printf("Forward:  [ ")
+    curr := list.head
+    for curr != null {
+        printf("%d ", curr.value)
+        curr = curr.next
+    }
+    printf("]\n")
+}
+
+fn (list: ^DoublyLinkedList) printBackward() {
+    printf("Backward: [ ")
+    curr := list.tail
+    for curr != null {
+        printf("%d ", curr.value)
+        curr = curr.prev
+    }
+    printf("]\n")
+}
+
+fn main() {
+    var list: DoublyLinkedList
+
+    list.append(10)
+    list.append(20)
+    list.append(30)
+    list.append(40)
+
+    printf("Doubly Linked List with Weak Backlinks (Size = %d):\n", list.size)
+    list.printForward()
+    list.printBackward()
+}

@@ -1,0 +1,178 @@
+// =============================================================================
+// Exercise 25: JSON Lexer & Parser
+// Concepts: Recursive-descent parsing, lexical scanning, token streams, dynamic values
+// Task:     Finish the lexer (strings, numbers, booleans) and the parser's value handling so the JSON object is parsed
+// Run:      umka 25_json_parser.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    TokenKind = enum {
+        tokLBrace
+        tokRBrace
+        tokColon
+        tokComma
+        tokString
+        tokNumber
+        tokBool
+        tokEOF
+    }
+
+    Token = struct {
+        kind: TokenKind
+        strVal: str
+        numVal: real
+        boolVal: bool
+    }
+
+    ValKind = enum {
+        valStr
+        valNum
+        valBool
+    }
+
+    Value = struct {
+        kind: ValKind
+        strVal: str
+        numVal: real
+        boolVal: bool
+    }
+
+    JSONMap = map[str]Value
+)
+
+fn (v: ^Value) repr(): str {
+    if v.kind == ValKind.valStr {
+        return sprintf("\"%s\"", v.strVal)
+    } else if v.kind == ValKind.valNum {
+        return sprintf("%.2f", v.numVal)
+    } else if v.kind == ValKind.valBool {
+        return sprintf("%v", v.boolVal)
+    }
+    return "null"
+}
+
+fn isDigit(ch: char): bool {
+    return ch >= '0' && ch <= '9'
+}
+
+// --- Lexical Scanner ---
+
+fn tokenize(src: str): []Token {
+    tokens := make([]Token, 0)
+    i := 0
+    n := len(src)
+
+    for i < n {
+        ch := src[i]
+        if ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' {
+            i++
+        } else if ch == '{' {
+            tokens = append(tokens, Token{kind: TokenKind.tokLBrace, strVal: "{"})
+            i++
+        } else if ch == '}' {
+            tokens = append(tokens, Token{kind: TokenKind.tokRBrace, strVal: "}"})
+            i++
+        } else if ch == ':' {
+            tokens = append(tokens, Token{kind: TokenKind.tokColon, strVal: ":"})
+            i++
+        } else if ch == ',' {
+            tokens = append(tokens, Token{kind: TokenKind.tokComma, strVal: ","})
+            i++
+        } else if ch == '"' {
+            i++
+            val := ""
+            // TODO: string literal. The opening quote is already skipped. Append
+            //       characters to a str until the closing '"' (watch for the end of
+            //       `src`), skip the closing quote, and emit a tokString token with
+            //       that text as strVal.
+            tokens = append(tokens, Token{kind: TokenKind.tokString, strVal: val})
+        } else if isDigit(ch) || ch == '-' {
+            // TODO: number literal. Collect characters while they are digits or '.'
+            //       (mind the leading '-': it is not a digit), convert with
+            //       `sscanf(numStr, "%lf", &numVal)`, and emit a tokNumber token with
+            //       strVal: numStr and numVal: numVal.
+            i++
+        } else if ch == 't' || ch == 'f' {
+            // TODO: `true`/`false` literal. Collect the lowercase letters 'a'..'z' into
+            //       a word (like the number loop above), then emit a tokBool token whose
+            //       boolVal is `word == "true"`.
+            i++
+        } else {
+            i++
+        }
+    }
+
+    tokens = append(tokens, Token{kind: TokenKind.tokEOF, strVal: "<EOF>"})
+    return tokens
+}
+
+// --- Parser ---
+
+fn parseJSONObject(tokens: []Token): (JSONMap, bool) {
+    result := make(JSONMap)
+    pos := 0
+
+    if pos >= len(tokens) || tokens[pos].kind != TokenKind.tokLBrace {
+        return result, false
+    }
+    pos++ // consume '{'
+
+    for pos < len(tokens) && tokens[pos].kind != TokenKind.tokRBrace {
+        // Expect string key
+        if tokens[pos].kind != TokenKind.tokString {
+            return result, false
+        }
+        key := tokens[pos].strVal
+        pos++
+
+        // Expect colon ':'
+        if pos >= len(tokens) || tokens[pos].kind != TokenKind.tokColon {
+            return result, false
+        }
+        pos++
+
+        // Expect value (string, number, or boolean)
+        if pos >= len(tokens) {
+            return result, false
+        }
+
+        tok := tokens[pos]
+        // TODO: turn the token `tok` into a Value stored in `result[key]`:
+        //       a tokString gives Value{kind: ValKind.valStr, strVal: tok.strVal},
+        //       a tokNumber gives kind valNum with numVal: tok.numVal, and a tokBool
+        //       gives kind valBool with boolVal: tok.boolVal. Any other token kind
+        //       is a syntax error: return `result, false`.
+        result[key] = Value{kind: ValKind.valBool}
+        pos++
+
+        // Optional comma ','
+        if pos < len(tokens) && tokens[pos].kind == TokenKind.tokComma {
+            pos++
+        }
+    }
+
+    return result, true
+}
+
+fn main() {
+    src := `{"lang": "Umka", "version": 1.6, "embedded": true, "author": "Vasiliy"}`
+    tokens := tokenize(src)
+    doc, ok := parseJSONObject(tokens)
+
+    if !ok {
+        printf("Failed to parse JSON\n")
+        return
+    }
+
+    ks := keys(doc)
+    sort(ks, true) // alphabetical sort
+
+    printf("Parsed %d JSON properties:\n", len(ks))
+    for i, k in ks {
+        printf("  %-10s : %s\n", k, doc[k].repr())
+    }
+}

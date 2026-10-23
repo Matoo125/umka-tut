@@ -1,0 +1,86 @@
+// =============================================================================
+// Exercise 28: Finite State Machine (FSM)
+// Concepts: `enum` definitions, state transition validation, switch-case state
+//           handlers, receiver methods, and deterministic event-driven workflows.
+// Task:     Implement the state transitions so valid events move the machine and invalid ones are ignored
+// Run:      umka 28_state_machine.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    State = enum {
+        Idle
+        Connecting
+        Connected
+        Disconnected
+    }
+
+    Event = enum {
+        Connect
+        Success
+        Timeout
+        Disconnect
+        Reset
+    }
+
+    StateMachine = struct {
+        current: State
+    }
+)
+
+fn stateName(s: State): str {
+    switch s {
+        case State.Idle:         return "Idle"
+        case State.Connecting:   return "Connecting"
+        case State.Connected:    return "Connected"
+        case State.Disconnected: return "Disconnected"
+    }
+    return "Unknown"
+}
+
+fn eventName(e: Event): str {
+    switch e {
+        case Event.Connect:    return "Connect"
+        case Event.Success:    return "Success"
+        case Event.Timeout:    return "Timeout"
+        case Event.Disconnect: return "Disconnect"
+        case Event.Reset:      return "Reset"
+    }
+    return "Unknown"
+}
+
+// Process an incoming event and execute state transition if valid
+fn (fsm: ^StateMachine) handle(e: Event): bool {
+    prevState := fsm.current
+    // TODO: `switch fsm.current` and, for each state, change `fsm.current` only on
+    //       the events that are valid there:
+    //         Idle         --Connect-->    Connecting
+    //         Connecting   --Success-->    Connected
+    //         Connecting   --Timeout-->    Disconnected
+    //         Connected    --Disconnect--> Disconnected
+    //         Disconnected --Reset-->      Idle
+    //       Any other event leaves the state unchanged (the code below reports it).
+
+    if fsm.current != prevState {
+        printf("Transition: %s --(%s)--> %s\n", stateName(prevState), eventName(e), stateName(fsm.current))
+        return true
+    }
+    printf("Ignored:    %s --(%s)--> [Invalid in this state]\n", stateName(prevState), eventName(e))
+    return false
+}
+
+fn main() {
+    fsm := StateMachine{current: State.Idle}
+
+    printf("=== Finite State Machine Simulation ===\n")
+    printf("Initial State: %s\n", stateName(fsm.current))
+
+    fsm.handle(Event.Connect)
+    fsm.handle(Event.Connect) // Invalid when already connecting
+    fsm.handle(Event.Success)
+    fsm.handle(Event.Disconnect)
+    fsm.handle(Event.Reset)
+}

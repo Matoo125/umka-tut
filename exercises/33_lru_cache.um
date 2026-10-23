@@ -1,0 +1,116 @@
+// =============================================================================
+// Exercise 33: LRU Cache (Least Recently Used)
+// Concepts: Hash map lookup (`map[str]^Node`), doubly linked list pointers
+//           (`head`, `tail`), weak back-pointers (`weak ^Node`), O(1) recency
+//           promotion, and oldest-entry eviction at capacity.
+// Task:     Maintain the doubly linked list so recently used entries move to the front and the oldest is evicted
+// Run:      umka 33_lru_cache.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    Node = struct {
+        key: str
+        val: int
+        prev: weak ^Node
+        next: ^Node
+    }
+
+    LRUCache = struct {
+        capacity: int
+        size: int
+        head: ^Node
+        tail: ^Node
+        items: map[str]^Node
+    }
+)
+
+// Detaches node from doubly linked list
+fn (c: ^LRUCache) removeNode(n: ^Node) {
+    // TODO: unlink `n`. Read its `prev` and `next`. If `prev` exists, its `next`
+    //       becomes n.next, otherwise `n` was the head so `c.head = next`.
+    //       Likewise, if `next` exists its `prev` becomes n.prev, otherwise
+    //       `n` was the tail so `c.tail = prev`. Finally clear n.prev and n.next.
+}
+
+// Inserts node at head of doubly linked list (MRU)
+fn (c: ^LRUCache) addToHead(n: ^Node) {
+    // TODO: put `n` at the front of the list: n.next = c.head, n.prev = null;
+    //       if the list had a head, that head's `prev` becomes `n`; then
+    //       `c.head = n`, and if the list was empty (`c.tail == null`) `n` is
+    //       also the tail.
+}
+
+// Retrieves value from cache and moves node to MRU position (-1 if not found)
+fn (c: ^LRUCache) get(key: str): int {
+    if !validkey(c.items, key) {
+        return -1
+    }
+    n := c.items[key]
+    c.removeNode(n)
+    c.addToHead(n)
+    return n.val
+}
+
+// Inserts or updates key/value pair, evicting the LRU item if at capacity
+fn (c: ^LRUCache) put(key: str, val: int) {
+    if validkey(c.items, key) {
+        n := c.items[key]
+        n.val = val
+        c.removeNode(n)
+        c.addToHead(n)
+        return
+    }
+
+    if c.size >= c.capacity && c.tail != null {
+        oldTail := c.tail
+        delete(c.items, oldTail.key)
+        c.removeNode(oldTail)
+        c.size--
+    }
+
+    newNode := new(Node, Node{key: key, val: val, prev: null, next: null})
+    c.addToHead(newNode)
+    c.items[key] = newNode
+    c.size++
+}
+
+// Prints the current cache elements ordered from MRU (head) to LRU (tail)
+fn (c: ^LRUCache) printState() {
+    printf("Cache (size=%d, cap=%d): [ ", c.size, c.capacity)
+    curr := c.head
+    for curr != null {
+        printf("%s:%d ", curr.key, curr.val)
+        curr = curr.next
+    }
+    printf("]\n")
+}
+
+fn main() {
+    cache := LRUCache{
+        capacity: 3,
+        size: 0,
+        head: null,
+        tail: null,
+        items: make(map[str]^Node),
+    }
+
+    printf("=== LRU Cache Simulation (Capacity = 3) ===\n")
+    cache.put("a", 100)
+    cache.put("b", 200)
+    cache.put("c", 300)
+    cache.printState()
+
+    printf("Accessing 'a': %d\n", cache.get("a"))
+    cache.printState()
+
+    printf("Inserting 'd': 400 (triggers eviction)\n")
+    cache.put("d", 400)
+    cache.printState()
+
+    printf("Querying evicted 'b': %d\n", cache.get("b"))
+    printf("Querying present 'c': %d\n", cache.get("c"))
+}

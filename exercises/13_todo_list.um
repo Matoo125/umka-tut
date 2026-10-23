@@ -1,0 +1,91 @@
+// =============================================================================
+// Exercise 13: To-Do List Manager
+// Concepts: Structs, dynamic arrays, slice operations (`append`, `delete`), record manipulation
+// Task:     Make the to-do list add, list, complete and delete tasks
+// Run:      umka 13_todo_list.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type Task = struct {
+    id: int32
+    title: str
+    done: bool
+}
+
+fn printTasks(tasks: []Task) {
+    if len(tasks) == 0 {
+        printf("Task list is empty.\n")
+        return
+    }
+
+    printf("Tasks:\n")
+    // TODO: print one line per task: "<id>. <status> <title>", where status is
+    //       "[x]" for a done task and "[ ]" otherwise.
+    //       Hint: for i, t in tasks { ... }
+}
+
+fn findTaskIndex(tasks: []Task, id: int32): int {
+    // TODO: return the position (index) in `tasks` of the task whose id matches,
+    //       or -1 when there is none. Careful: the id is not the same as the index.
+    return -1
+}
+
+fn main() {
+    tasks := make([]Task, 0)
+    nextId := int32(1)
+    running := true
+
+    printf("To-Do List Manager\n")
+    printf("Commands: 1 = Add, 2 = Complete, 3 = Delete, 4 = List, 0 = Exit\n")
+
+    for running {
+        printf("Command: ")
+        var cmd: int32
+        if scanf("%d", &cmd) != 1 {
+            break
+        }
+
+        if cmd == 0 {
+            printf("Goodbye!\n")
+            running = false
+        } else if cmd == 1 {
+            printf("Task title: ")
+            var title: str
+            scanf("%s", &title)
+            // TODO: append a new Task with id nextId, this title and done false
+            //       to `tasks` (tasks = append(tasks, Task{...}))
+            printf("Added task %d: %s\n", nextId, title)
+            nextId++
+        } else if cmd == 2 {
+            printf("Task ID to complete: ")
+            var id: int32
+            scanf("%d", &id)
+            idx := findTaskIndex(tasks, id)
+            if idx >= 0 {
+                tasks[idx].done = true
+                printf("Task %d marked as completed.\n", id)
+            } else {
+                printf("Task %d not found.\n", id)
+            }
+        } else if cmd == 3 {
+            printf("Task ID to delete: ")
+            var id: int32
+            scanf("%d", &id)
+            idx := findTaskIndex(tasks, id)
+            if idx >= 0 {
+                // TODO: remove the task at position idx from `tasks`
+                //       (the built-in delete(slice, index) returns the shortened slice)
+                printf("Task %d deleted.\n", id)
+            } else {
+                printf("Task %d not found.\n", id)
+            }
+        } else if cmd == 4 {
+            printTasks(tasks)
+        } else {
+            printf("Unknown command %d. Choose between 0 and 4.\n", cmd)
+        }
+    }
+}

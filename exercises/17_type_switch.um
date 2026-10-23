@@ -1,0 +1,35 @@
+// =============================================================================
+// Exercise 17: Type Switch and Any
+// Concepts: `any` alias (`interface{}`), `switch val := type(item)`, runtime type recovery
+// Task:     Print each value of an `any` slice according to its dynamic type
+// Run:      umka 17_type_switch.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn describe(item: any) {
+    // TODO: use a type switch, `switch val := type(item) { case int: ... }`,
+    //       with cases for int, real, str and bool; inside each case `val`
+    //       already has that type. Expected line formats:
+    //         Integer: 100 (doubled = 200)
+    //         Real: 45.50 (half = 22.75)
+    //         String: "Umka Scripting" (length = 14)
+    //         Boolean: true (negated = false)
+    //       Keep a `default:` case that prints "Unknown type".
+    printf("Unknown type\n")
+}
+
+fn main() {
+    items := []any{
+        100,
+        45.5,
+        "Umka Scripting",
+        true,
+        false
+    }
+
+    printf("Inspecting Items via Type Switch:\n")
+    for i, it in items {
+        describe(it)
+    }
+}

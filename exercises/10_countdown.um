@@ -1,0 +1,25 @@
+// =============================================================================
+// Exercise 10: Countdown
+// Concepts: Decrementing loops (`i--`), loop boundaries, final sentinel action
+// Task:     Count down from the number read to 0, one number per line, then print Lift off!
+// Run:      printf '5\n' | umka 10_countdown.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    var start: int32
+
+    printf("Enter countdown start: ")
+    scanf("%d", &start)
+
+    if start < 0 {
+        printf("Countdown start must be zero or greater.\n")
+        return
+    }
+
+    // TODO: print start, start-1, ... down to 0, one number per line.
+    //       Hint: a for loop whose step is `i--` and which keeps going while i >= 0.
+
+    printf("Lift off!\n")
+}

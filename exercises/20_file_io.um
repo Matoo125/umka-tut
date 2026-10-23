@@ -1,0 +1,65 @@
+// =============================================================================
+// Exercise 20: File I/O and Content Processing
+// Concepts: `std::fopen`, `std::fwrite`, `std::freadall`, `std::fclose`, `std::remove`, file error handling
+// Task:     Write text to a file, read it back, and report its line count
+// Run:      umka 20_file_io.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+fn writeFile(filename: str, content: str): bool {
+    // TODO: open `filename` for writing with std::fopen(filename, "wb"),
+    //       which returns (file, err); if err.code != 0 print
+    //       "Error opening file for write: <err.msg>" and return false.
+    //       Convert the text with `[]char(content)`, write it with
+    //       std::fwrite(f, chars), close with std::fclose(f), report a write
+    //       error the same way, and return true on success.
+    return false
+}
+
+fn readFile(filename: str): (str, bool) {
+    // TODO: open `filename` with mode "rb"; on an error print
+    //       "Error opening file for read: <err.msg>" and return "", false.
+    //       Read everything with std::freadall(f) (returns (data, err)),
+    //       close the file, and return str(data), true.
+    return "", false
+}
+
+fn countLines(text: str): int {
+    if len(text) == 0 {
+        return 0
+    }
+    lines := 0
+    for i := 0; i < len(text); i++ {
+        if text[i] == '\n' {
+            lines++
+        }
+    }
+    return lines
+}
+
+fn main() {
+    filename := "notes.txt"
+    payload := "Umka Scripting Language\nFast, statically typed, embeddable\nEnjoying exercises!\n"
+
+    printf("Writing %d bytes to %s...\n", len(payload), filename)
+    ok := writeFile(filename, payload)
+    if !ok {
+        return
+    }
+
+    printf("Reading back from %s...\n", filename)
+    content, readOk := readFile(filename)
+    if !readOk {
+        return
+    }
+
+    printf("--- File Content ---\n%s", content)
+    printf("Line count: %d\n", countLines(content))
+
+    // Cleanup
+    std::remove(filename)
+    printf("Temporary file cleaned up.\n")
+}

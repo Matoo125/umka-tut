@@ -1,0 +1,78 @@
+// =============================================================================
+// Exercise 18: Stream Readers, Writers, and Embedded Interfaces
+// Concepts: Interface composition/embedding (`Reader; Writer`), decorator pattern, stream wrappers
+// Task:     Implement the buffer and the prefixing wrapper so the log lines reach the buffer
+// Run:      umka 18_embedded_interfaces.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+type (
+    Reader = interface {
+        read(): str
+    }
+
+    Writer = interface {
+        write(msg: str)
+    }
+
+    // Composed interface embedding both Reader and Writer
+    ReadWriter = interface {
+        Reader
+        Writer
+    }
+
+    // MemoryBuffer implements Reader, Writer, and therefore ReadWriter
+    MemoryBuffer = struct {
+        data: str
+    }
+
+    // PrefixedWriter wraps an underlying Writer to prepend a prefix
+    PrefixedWriter = struct {
+        prefix: str
+        target: Writer
+    }
+)
+
+// --- MemoryBuffer Methods ---
+
+fn (b: ^MemoryBuffer) read(): str {
+    // TODO: return the buffered data
+    return ""
+}
+
+fn (b: ^MemoryBuffer) write(msg: str) {
+    // TODO: append `msg` to the buffer's data
+}
+
+// --- PrefixedWriter Wrapper ---
+
+fn (pw: ^PrefixedWriter) write(msg: str) {
+    // TODO: forward to the wrapped writer, with the prefix put in front of
+    //       the message: `pw.target.write(...)`
+}
+
+// --- High-level Operations ---
+
+fn writeLog(w: Writer, msg: str) {
+    w.write(msg + "\n")
+}
+
+fn printBuffer(r: Reader) {
+    printf("--- Buffer Output ---\n%s---------------------\n", r.read())
+}
+
+fn main() {
+    var buf: MemoryBuffer
+
+    // Use interface polymorphism with embedded interfaces
+    var rw: ReadWriter = &buf
+
+    writeLog(rw, "INFO: System started")
+    writeLog(rw, "INFO: Loading modules...")
+
+    logger := PrefixedWriter{prefix: "[APP] ", target: rw}
+    writeLog(&logger, "Ready for user requests.")
+
+    printBuffer(rw)
+}

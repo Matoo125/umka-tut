@@ -1,0 +1,66 @@
+// =============================================================================
+// Exercise 34: Run-Length Encoding (RLE) Byte Stream Compressor
+// Concepts: Byte buffer slices (`[]uint8`), run scanning, count-value chunking,
+//           lossless decompression, and compression ratio calculation.
+// Task:     Compress a byte stream into (count, value) pairs and expand it back
+// Run:      umka 34_rle_compressor.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+// Compresses a byte slice using Run-Length Encoding into pairs of [count, value]
+fn compressRLE(input: []uint8): []uint8 {
+    out := make([]uint8, 0)
+    // TODO: walk `input` counting how many equal bytes follow each other
+    //       (cap a run at 255 so it fits in a uint8). When a run ends, append
+    //       `uint8(run)` then the byte itself to `out`; don't forget to flush
+    //       the last run after the loop.
+    return out
+}
+
+// Expands an RLE stream of [count, value] pairs back into the raw byte slice
+fn decompressRLE(comp: []uint8): []uint8 {
+    out := make([]uint8, 0)
+        // TODO: read the stream two bytes at a time: `comp[i]` is the run length
+        //       and `comp[i + 1]` the byte; append that byte `count` times to `out`.
+    return out
+}
+
+fn main() {
+    // 17-byte raw input buffer with runs of identical bytes
+    raw := make([]uint8, 17)
+    for i := 0; i < 5; i++ { raw[i] = 0xAA }  // 5x 0xAA
+    for i := 5; i < 8; i++ { raw[i] = 0xBB }  // 3x 0xBB
+    for i := 8; i < 16; i++ { raw[i] = 0xCC } // 8x 0xCC
+    raw[16] = 0xDD                           // 1x 0xDD
+
+    compressed := compressRLE(raw)
+    decompressed := decompressRLE(compressed)
+
+    printf("=== Run-Length Encoding (RLE) Stream Compressor ===\n")
+    printf("Original size:     %d bytes\n", len(raw))
+    printf("Compressed size:   %d bytes\n", len(compressed))
+
+    reduction := (1.0 - real(len(compressed)) / real(len(raw))) * 100.0
+    printf("Space saved:       %.1f%%\n", reduction)
+
+    printf("Compressed stream: [ ")
+    for i := 0; i < len(compressed); i += 2 {
+        printf("(%d x 0x%02X) ", int(compressed[i]), int(compressed[i + 1]))
+    }
+    printf("]\n")
+
+    matches := (len(decompressed) == len(raw))
+    if matches {
+        for i := 0; i < len(raw); i++ {
+            if decompressed[i] != raw[i] {
+                matches = false
+                break
+            }
+        }
+    }
+
+    printf("Verification:      %s\n", matches ? "PASS (Exact byte match)" : "FAIL")
+}
