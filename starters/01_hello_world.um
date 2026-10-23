@@ -1,0 +1,12 @@
+// =============================================================================
+// Exercise 01: Hello World
+// Concepts: Program entry point (`fn main`), standard output (`printf`)
+// Task:     Make the program print the line  Hello Umka!
+// Run:      umka 01_hello_world.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    // TODO: print "Hello Umka!" followed by a newline
+}

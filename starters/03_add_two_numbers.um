@@ -1,0 +1,20 @@
+// =============================================================================
+// Exercise 03: Add Two Numbers
+// Concepts: Formatted console input (`scanf`), pointer arguments, floating point addition
+// Task:     Read two numbers from the keyboard and print their sum
+// Run:      printf '1\n2\n' | umka 03_add_two_numbers.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    var a, b: real32
+
+    printf("Enter first number: ")
+    // TODO: read a with scanf (`scanf("%f", &a)`)
+
+    printf("Enter second number: ")
+    // TODO: read b the same way
+
+    // TODO: print "Result: " followed by a + b and a newline (use %f)
+}

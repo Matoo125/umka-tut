@@ -1,0 +1,110 @@
+// =============================================================================
+// Exercise 32: Trie (Prefix Tree) & Autocomplete
+// Concepts: Multi-way tree heap allocation (`new()`), fixed-size child arrays
+//           (`[26]^TrieNode`), character indexing, prefix matching, and recursive
+//           depth-first word collection for autocomplete.
+// Task:     Implement insert, contains, startsWith and autocomplete
+// Run:      umka 32_trie_prefix_tree.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+type (
+    TrieNode = struct {
+        isEndOfWord: bool
+        children: [26]^TrieNode
+    }
+
+    Trie = struct {
+        root: ^TrieNode
+    }
+)
+
+// Allocates and initializes a new Trie node with null children
+fn newTrieNode(): ^TrieNode {
+    node := new(TrieNode)
+    node.isEndOfWord = false
+    for i := 0; i < 26; i++ {
+        node.children[i] = null
+    }
+    return node
+}
+
+// Inserts a lowercase word into the Trie
+fn (t: ^Trie) insert(word: str) {
+    // TODO: start at `t.root` and follow (creating with newTrieNode() when
+    //       missing) the child for each letter of `word`: the child index of
+    //       a letter is `int(ch) - int('a')`. Mark the node you end on with
+    //       `isEndOfWord = true`. Only 'a'..'z' count; skip other characters.
+}
+
+// Checks if the exact word exists in the Trie
+fn (t: ^Trie) contains(word: str): bool {
+    // TODO: follow the letters of `word` down from `t.root`. If a child is
+    //       missing, or `word` has a character outside 'a'..'z', the word is
+    //       not there. If you reach the end, it is there only when the node
+    //       you stopped on is the end of a word (`app` is not in a trie that
+    //       only holds `apple`).
+    return false
+}
+
+// Checks if any word starts with the given prefix
+fn (t: ^Trie) startsWith(prefix: str): bool {
+    // TODO: like `contains`, but reaching the end of `prefix` is enough:
+    //       any word may continue from the node you stopped on.
+    return false
+}
+
+// Recursively collects all words descending from a given prefix node
+fn collectWords(node: ^TrieNode, prefix: str, results: ^[]str) {
+    if node == null { return }
+    if node.isEndOfWord {
+        results^ = append(results^, prefix)
+    }
+
+    for i := 0; i < 26; i++ {
+        if node.children[i] != null {
+            childChar := char(int('a') + i)
+            collectWords(node.children[i], prefix + str(childChar), results)
+        }
+    }
+}
+
+// Returns a list of all words sharing the given prefix
+fn (t: ^Trie) autocomplete(prefix: str): []str {
+    results := make([]str, 0)
+    // TODO: follow `prefix` down from `t.root` (return the empty list if it
+    //       is not there), then call
+    //       `collectWords(node, prefix, &results)` on the node you reach to
+    //       gather every word below it. `collectWords` is already written.
+    return results
+}
+
+fn main() {
+    t := Trie{root: newTrieNode()}
+
+    words := [6]str{"apple", "app", "application", "apt", "banana", "bat"}
+    printf("Inserting words into Trie:\n")
+    for i := 0; i < len(words); i++ {
+        printf("  + %s\n", words[i])
+        t.insert(words[i])
+    }
+
+    printf("\nMembership Queries:\n")
+    queries := [3]str{"app", "apple", "appl"}
+    for i := 0; i < len(queries); i++ {
+        printf("  contains(\"%s\") = %s\n", queries[i], t.contains(queries[i]) ? "true" : "false")
+    }
+
+    printf("\nPrefix Search:\n")
+    printf("  startsWith(\"ap\") = %s\n", t.startsWith("ap") ? "true" : "false")
+    printf("  startsWith(\"cat\") = %s\n", t.startsWith("cat") ? "true" : "false")
+
+    printf("\nAutocomplete for 'app':\n")
+    completions := t.autocomplete("app")
+    for i := 0; i < len(completions); i++ {
+        printf("  -> %s\n", completions[i])
+    }
+}

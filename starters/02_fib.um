@@ -1,0 +1,20 @@
+// =============================================================================
+// Exercise 02: Fibonacci
+// Concepts: Recursive function definitions, base cases, and loop iteration
+// Task:     Make `fib` return the n-th Fibonacci number: 0, 1, 1, 2, 3, 5, ...
+// Run:      umka 02_fib.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn fib(n: int): int {
+    // TODO: fib(0) is 0 and fib(1) is 1; every later number is the sum of the
+    //       two before it. A recursive call, or a loop, will do.
+    return 0
+}
+
+fn main() {
+    for i := 0; i <= 10; i++ {
+        printf("%d\n", fib(i))
+    }
+}

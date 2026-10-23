@@ -1,0 +1,24 @@
+// =============================================================================
+// Exercise 07: Factorial
+// Concepts: Iterative loops, multiplicative accumulator, non-negative validation
+// Task:     Print n! for the number read, refusing negative numbers
+// Run:      printf '5\n' | umka 07_factorial.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+fn main() {
+    var n: int32
+    var result: int32 = 1
+
+    printf("Enter a non-negative integer: ")
+    scanf("%d", &n)
+
+    // TODO: if n is negative, print
+    //       "Factorial is only defined for non-negative integers."
+    //       and return before anything else is printed
+
+    // TODO: multiply `result` by every whole number from 2 up to n
+
+    printf("%d! = %d\n", n, result)
+}

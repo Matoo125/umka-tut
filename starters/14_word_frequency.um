@@ -1,0 +1,52 @@
+// =============================================================================
+// Exercise 14: Word Frequency Counter
+// Concepts: Hash maps (`map[str]int`), `validkey`, `keys()`, character predicates, string tokenization
+// Task:     Split a text into lowercase words and count how often each occurs
+// Run:      umka 14_word_frequency.um
+// =============================================================================
+
+// I AM NOT DONE   <- delete this line when you are ready to check your work
+
+import "std.um"
+
+fn isLetter(ch: char): bool {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
+}
+
+fn toLower(ch: char): char {
+    if ch >= 'A' && ch <= 'Z' {
+        return char(int(ch) + 32)
+    }
+    return ch
+}
+
+// Splits `text` into words: runs of letters, lowercased. Everything else
+// (spaces, commas, colons, ...) separates words and is dropped.
+fn tokenize(text: str): []str {
+    // TODO: walk through `text` one character at a time. Build the current
+    //       word with `current += str(toLower(ch))` while ch is a letter;
+    //       when a non-letter ends a word, append it to the result.
+    //       Don't forget a word that ends at the very end of the text.
+    return make([]str, 0)
+}
+
+// Counts how many times each word occurs.
+fn countWords(words: []str): map[str]int {
+    // TODO: for each word, add one to its count; `validkey(counts, w)` tells
+    //       you whether the word has been seen before.
+    return make(map[str]int)
+}
+
+fn main() {
+    sample := "To be, or not to be: that is the question. To be is to live!"
+    printf("Input text:\n\"%s\"\n\n", sample)
+
+    words := tokenize(sample)
+    counts := countWords(words)
+    wordKeys := keys(counts)
+
+    printf("Word counts (%d unique words, %d total):\n", len(wordKeys), len(words))
+    for i, w in wordKeys {
+        printf("%-10s: %d\n", w, counts[w])
+    }
+}
